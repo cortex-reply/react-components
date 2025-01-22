@@ -26,7 +26,7 @@ interface Holiday {
 export function CalendarView({ currentDate, setCurrentDate, holidays }: CalendarViewProps) {
   const [selectedDay, setSelectedDay] = useState<Date | null>(null)
 
-  const firstDayOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1).getDay()
+  const firstDayOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1).getDay() -1
 
   const days = Array.from({ length: 42 }, (_, i) => {
     const day = new Date(currentDate.getFullYear(), currentDate.getMonth(), i - firstDayOfMonth + 1)
