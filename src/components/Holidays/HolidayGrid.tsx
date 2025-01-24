@@ -146,7 +146,7 @@ export function HolidayGrid({
                             }`}
                             title={
                               holiday
-                                ? `${employee.name}: ${holiday.status} (${holiday.startDate} - ${holiday.endDate})`
+                                ? `${employee.name}: ${holiday.status} (${holiday.startDate} ${holiday.leaveTypeStart === 'Full Day' ? '' : holiday.leaveTypeStart} - ${holiday.endDate} ${!holiday.leaveTypeEnd || (holiday.leaveTypeEnd && holiday.leaveTypeEnd === 'Full Day') ? '' : holiday.leaveTypeEnd})`
                                 : ''
                             }
                           >

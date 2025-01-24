@@ -108,6 +108,17 @@ export const Default: Story = {
         leaveTypeStart: 'Afternoon',
         leaveTypeEnd: 'Full Day',
       },
+      {
+        id: '7',
+        userId: '5',
+        userName: 'Sarah Smith',
+        startDate: '2025-01-07',
+        endDate: '2025-01-09',
+        status: 'approved',
+        totalDays: 2.5,
+        leaveTypeStart: 'Full Day',
+        leaveTypeEnd: 'Morning',
+      },
     ],
     leaveApprovals: [
       {
