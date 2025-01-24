@@ -18,3 +18,5 @@ tsup.config.bundled*
 
 *storybook.log
 .idea
+
+storybook-static

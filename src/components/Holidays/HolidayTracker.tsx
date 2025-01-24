@@ -7,57 +7,36 @@ import { HolidayGrid } from './HolidayGrid'
 import { CalendarView } from './CalendarView'
 import { RequestLeave } from './RequestLeave'
 import { ApproveLeave } from './ApproveLeave'
-import { H } from 'vitest/dist/chunks/environment.LoooBwUu.js'
-// import { useUser } from './hooks/useUser'
+import { Employee } from '../../model/Employee'
+import { Holiday } from '../../model/Holiday'
+import { LeaveRequest } from '../../model/LeaveRequest'
 
-interface Holiday {
-    id: string;
-    userId: string;
-    userName: string;
-    startDate: string;
-    endDate: string;
-    status: 'approved' | 'requested' | 'rejected';
-    totalDays: number;
-    leaveType: 'Full Day' | 'Morning' | 'Afternoon';
-  }
-  interface LeaveRequest {
-    id: string
-    userId: string
-    userName: string
-    userEmail: string
-    userImage?: string
-    startDate: string
-    endDate: string
-    status: 'requested' | 'approved' | 'rejected'
-    totalDays: number
-    leaveType: 'Full Day' | 'Morning' | 'Afternoon'
-  }
-
-interface Employee {
-    id: string
-    name: string
-    email: string
-    image?: string
-  }
 interface HolidayTrackerProps {
-    holidays: Holiday[]
-    leaveApprovals: LeaveRequest[]
-    employees: Employee[]
-    currentDate: Date
-    userGrade: string
-    submitLeaveRequest?: (formData: FormData) => Promise<{ success: boolean; message: string }>
-    setCurrentDate?: (date: Date) => Promise<{ success: boolean }>
+  holidays: Holiday[]
+  leaveApprovals: LeaveRequest[]
+  employees: Employee[]
+  currentDate: Date
+  userGrade: string
+  submitLeaveRequest?: (formData: FormData) => Promise<{ success: boolean; message: string }>
+  setCurrentDate?: (date: Date) => Promise<{ success: boolean }>
 }
-
 
 function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(' ')
 }
 
-export function HolidayTracker({holidays, currentDate, leaveApprovals,employees, userGrade,setCurrentDate = async () => ({ success: true }), submitLeaveRequest}: HolidayTrackerProps) {
+export function HolidayTracker({
+  holidays,
+  currentDate,
+  leaveApprovals,
+  employees,
+  userGrade,
+  setCurrentDate = async () => ({ success: true }),
+  submitLeaveRequest,
+}: HolidayTrackerProps) {
   const [currentTab, setCurrentTab] = useState('Calendar View')
-//   const { user, isLoading } = useUser()
-        const isLoading = false
+  //   const { user, isLoading } = useUser()
+  const isLoading = false
   // For preview purposes, we'll assume the user is a manager
   const previewUser = {
     id: 'manager1',
@@ -68,9 +47,11 @@ export function HolidayTracker({holidays, currentDate, leaveApprovals,employees,
   }
 
   if (isLoading) {
-    return <div className="flex justify-center items-center h-screen">
-      <div className="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-gray-900"></div>
-    </div>
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <div className="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-gray-900"></div>
+      </div>
+    )
   }
 
   // Use the preview user for demonstration
@@ -86,7 +67,7 @@ export function HolidayTracker({holidays, currentDate, leaveApprovals,employees,
   return (
     <div className="container mx-auto p-4">
       <h1 className="text-3xl font-bold mb-4">Holiday Tracker</h1>
-      
+
       <div className="mb-8">
         <div className="sm:hidden">
           <select
@@ -106,11 +87,16 @@ export function HolidayTracker({holidays, currentDate, leaveApprovals,employees,
         <div className="hidden sm:block">
           <div className="border-b border-gray-200">
             <nav className="-mb-px flex space-x-8" aria-label="Tabs">
-            {tabs.map((tab) => (
+              {tabs.map((tab) => (
                 <a
                   key={tab.name}
                   onClick={() => {
-                    if (tab.name !== 'Approve Leave' || userGrade === 'Manager' || userGrade === 'Senior Manager' || userGrade === 'Partner') {
+                    if (
+                      tab.name !== 'Approve Leave' ||
+                      userGrade === 'Manager' ||
+                      userGrade === 'Senior Manager' ||
+                      userGrade === 'Partner'
+                    ) {
                       setCurrentTab(tab.name)
                     }
                   }}
@@ -118,15 +104,20 @@ export function HolidayTracker({holidays, currentDate, leaveApprovals,employees,
                     tab.current
                       ? 'border-accent text-accent'
                       : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700',
-                    (tab.name === 'Approve Leave' && userGrade !== 'Manager' && userGrade !== 'Senior Manager' && userGrade !== 'Partner') ? 'cursor-not-allowed opacity-50' : '',
-                    'group inline-flex items-center border-b-2 py-4 px-1 text-sm font-medium'
+                    tab.name === 'Approve Leave' &&
+                      userGrade !== 'Manager' &&
+                      userGrade !== 'Senior Manager' &&
+                      userGrade !== 'Partner'
+                      ? 'cursor-not-allowed opacity-50'
+                      : '',
+                    'group inline-flex items-center border-b-2 py-4 px-1 text-sm font-medium',
                   )}
                   aria-current={tab.current ? 'page' : undefined}
                 >
                   <tab.icon
                     className={classNames(
                       tab.current ? 'text-accent' : 'text-gray-400 group-hover:text-gray-500',
-                      '-ml-0.5 mr-2 h-5 w-5'
+                      '-ml-0.5 mr-2 h-5 w-5',
                     )}
                     aria-hidden="true"
                   />
@@ -139,18 +130,35 @@ export function HolidayTracker({holidays, currentDate, leaveApprovals,employees,
       </div>
 
       {currentTab === 'Grid View' && (
-        <HolidayGrid currentDate={currentDate} setCurrentDate={setCurrentDate} holidays={holidays} employees={employees} />
+        <HolidayGrid
+          currentDate={currentDate}
+          setCurrentDate={setCurrentDate}
+          holidays={holidays}
+          employees={employees}
+        />
       )}
       {currentTab === 'Calendar View' && (
-        <CalendarView currentDate={currentDate} setCurrentDate={setCurrentDate} holidays={holidays} />
+        <CalendarView
+          currentDate={currentDate}
+          setCurrentDate={setCurrentDate}
+          holidays={holidays}
+        />
       )}
       {currentTab === 'Request Leave' && (
-        <RequestLeave userId={currentUser.id} userName={`${currentUser.firstName} ${currentUser.lastName}`} remainingDays={currentUser.remainingLeaveDays} submitLeaveRequest={(formData) => {
-          if (submitLeaveRequest) {
-            return submitLeaveRequest(formData);
-          }
-          return Promise.resolve({ success: false, message: 'Submit leave request function not provided' });
-        }}/>
+        <RequestLeave
+          userId={currentUser.id}
+          userName={`${currentUser.firstName} ${currentUser.lastName}`}
+          remainingDays={currentUser.remainingLeaveDays}
+          submitLeaveRequest={(formData) => {
+            if (submitLeaveRequest) {
+              return submitLeaveRequest(formData)
+            }
+            return Promise.resolve({
+              success: false,
+              message: 'Submit leave request function not provided',
+            })
+          }}
+        />
       )}
       {currentTab === 'Approve Leave' && (
         <ApproveLeave leaveRequests={leaveApprovals} onApprove={() => {}} onReject={() => {}} />

@@ -1,26 +1,15 @@
 'use client'
 
 import { useState } from 'react'
-import { Menu } from '@headlessui/react'
-import { ChevronLeft, ChevronRight, ChevronDown, MoreHorizontal, Clock } from 'lucide-react'
+import { ChevronLeft, ChevronRight } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
+import { Holiday } from '../../model/Holiday'
 
 interface CalendarViewProps {
   currentDate: Date
   setCurrentDate: (date: Date) => void
   holidays: Holiday[]
-}
-
-interface Holiday {
-  id: string
-  userId: string
-  userName: string
-  startDate: string
-  endDate: string
-  status: 'approved' | 'requested' | 'rejected'
-  totalDays: number
-  leaveType: 'Full Day' | 'Morning' | 'Afternoon'
 }
 
 export function CalendarView({ currentDate, setCurrentDate, holidays }: CalendarViewProps) {
@@ -35,9 +24,7 @@ export function CalendarView({ currentDate, setCurrentDate, holidays }: Calendar
       date: day,
       isCurrentMonth: day.getMonth() === currentDate.getMonth(),
       isToday: day.toDateString() === new Date().toDateString(),
-      holidays: holidays.filter(h => 
-        new Date(h.startDate) <= day && new Date(h.endDate) >= day
-      )
+      holidays: holidays.filter((h) => new Date(h.startDate) <= day && new Date(h.endDate) >= day),
     }
   })
 
@@ -59,7 +46,12 @@ export function CalendarView({ currentDate, setCurrentDate, holidays }: Calendar
         </h1>
         <div className="flex items-center">
           <div className="relative flex items-center rounded-md gap-1 md:items-stretch">
-            <Button onClick={prevMonth} variant="outline" size="icon" className="rounded-l-md border-accent hover:text-accent">
+            <Button
+              onClick={prevMonth}
+              variant="outline"
+              size="icon"
+              className="rounded-l-md border-accent hover:text-accent"
+            >
               <span className="sr-only">Previous month</span>
               <ChevronLeft className="h-5 w-5" aria-hidden="true" />
             </Button>
@@ -69,7 +61,12 @@ export function CalendarView({ currentDate, setCurrentDate, holidays }: Calendar
             >
               Today
             </Button>
-            <Button onClick={nextMonth} variant="outline" size="icon" className="rounded-r-md border-accent hover:text-accent">
+            <Button
+              onClick={nextMonth}
+              variant="outline"
+              size="icon"
+              className="rounded-r-md border-accent hover:text-accent"
+            >
               <span className="sr-only">Next month</span>
               <ChevronRight className="h-5 w-5" aria-hidden="true" />
             </Button>
@@ -170,14 +167,14 @@ export function CalendarView({ currentDate, setCurrentDate, holidays }: Calendar
                 key={day.date.toISOString()}
                 className={cn(
                   day.isCurrentMonth ? 'bg-white' : 'bg-gray-50 text-gray-500',
-                  'relative px-3 py-2'
+                  'relative px-3 py-2',
                 )}
               >
                 <time
                   dateTime={day.date.toISOString()}
                   className={cn(
                     'flex h-6 w-6 items-center justify-center rounded-full',
-                    day.isToday && 'bg-indigo-600 font-semibold text-white'
+                    day.isToday && 'bg-indigo-600 font-semibold text-white',
                   )}
                 >
                   {day.date.getDate()}
@@ -186,9 +183,11 @@ export function CalendarView({ currentDate, setCurrentDate, holidays }: Calendar
                   <ol className="mt-2 space-y-1">
                     {day.holidays.map((holiday) => (
                       <li key={holiday.id}>
-                        <div className={`text-xs px-1 py-0.5 rounded ${
-                          holiday.status === 'approved' ? 'border-green-500' : 'border-gray-500'
-                        } border`}>
+                        <div
+                          className={`text-xs px-1 py-0.5 rounded ${
+                            holiday.status === 'approved' ? 'border-green-500' : 'border-gray-500'
+                          } border`}
+                        >
                           {holiday.userName}
                         </div>
                       </li>
@@ -209,16 +208,23 @@ export function CalendarView({ currentDate, setCurrentDate, holidays }: Calendar
                   day.date === selectedDay && 'text-white',
                   !day.date && day.isToday && 'text-indigo-600',
                   day.date !== selectedDay && day.isCurrentMonth && !day.isToday && 'text-gray-900',
-                  day.date !== selectedDay && !day.isCurrentMonth && !day.isToday && 'text-gray-500',
-                  'flex h-14 flex-col px-3 py-2 hover:bg-gray-100 focus:z-10'
+                  day.date !== selectedDay &&
+                    !day.isCurrentMonth &&
+                    !day.isToday &&
+                    'text-gray-500',
+                  'flex h-14 flex-col px-3 py-2 hover:bg-gray-100 focus:z-10',
                 )}
               >
                 <time
                   dateTime={day.date.toISOString()}
                   className={cn(
                     'ml-auto',
-                    day.date === selectedDay && day.isToday && 'flex h-6 w-6 items-center justify-center rounded-full bg-indigo-600',
-                    day.date === selectedDay && !day.isToday && 'flex h-6 w-6 items-center justify-center rounded-full bg-gray-900'
+                    day.date === selectedDay &&
+                      day.isToday &&
+                      'flex h-6 w-6 items-center justify-center rounded-full bg-indigo-600',
+                    day.date === selectedDay &&
+                      !day.isToday &&
+                      'flex h-6 w-6 items-center justify-center rounded-full bg-gray-900',
                   )}
                 >
                   {day.date.getDate()}
@@ -227,9 +233,12 @@ export function CalendarView({ currentDate, setCurrentDate, holidays }: Calendar
                 {day.holidays.length > 0 && (
                   <span className="-mx-0.5 mt-auto flex flex-wrap-reverse">
                     {day.holidays.map((holiday) => (
-                      <span key={holiday.id} className={`mx-0.5 mb-1 h-1.5 w-1.5 rounded-full ${
-                        holiday.status === 'approved' ? 'bg-green-500' : 'bg-gray-500'
-                      }`} />
+                      <span
+                        key={holiday.id}
+                        className={`mx-0.5 mb-1 h-1.5 w-1.5 rounded-full ${
+                          holiday.status === 'approved' ? 'bg-green-500' : 'bg-gray-500'
+                        }`}
+                      />
                     ))}
                   </span>
                 )}

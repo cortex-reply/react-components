@@ -1,7 +1,9 @@
 import React from 'react'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
 import { Button } from '@/components/ui/button'
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+import { Employee } from '../../model/Employee'
+import { Holiday } from '../../model/Holiday'
 
 interface HolidayGridProps {
   currentDate: Date
@@ -10,29 +12,16 @@ interface HolidayGridProps {
   employees: Employee[]
 }
 
-interface Holiday {
-  id: string
-  userId: string
-  userName: string
-  startDate: string
-  endDate: string
-  status: 'approved' | 'requested' | 'rejected',
-  totalDays: number
-  leaveType: 'Full Day' | 'Morning' | 'Afternoon'
-}
-
-interface Employee {
-  id: string
-  name: string
-  email: string
-  image?: string
-}
-
 function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(' ')
 }
 
-export function HolidayGrid({ currentDate, setCurrentDate, holidays, employees }: HolidayGridProps) {
+export function HolidayGrid({
+  currentDate,
+  setCurrentDate,
+  holidays,
+  employees,
+}: HolidayGridProps) {
   const daysInMonth = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0).getDate()
 
   return (
@@ -48,7 +37,9 @@ export function HolidayGrid({ currentDate, setCurrentDate, holidays, employees }
         </div>
         <div className="mt-4 sm:ml-16 sm:mt-0 sm:flex-none">
           <Button
-            onClick={() => setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() - 1, 1))}
+            onClick={() =>
+              setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() - 1, 1))
+            }
             variant="outline"
             size="icon"
             className="mr-2"
@@ -56,7 +47,9 @@ export function HolidayGrid({ currentDate, setCurrentDate, holidays, employees }
             <ChevronLeft className="h-4 w-4" />
           </Button>
           <Button
-            onClick={() => setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 1))}
+            onClick={() =>
+              setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 1))
+            }
             variant="outline"
             size="icon"
           >
@@ -93,34 +86,52 @@ export function HolidayGrid({ currentDate, setCurrentDate, holidays, employees }
                     <td
                       className={classNames(
                         employeeIdx !== employees.length - 1 ? ' border-gray-200' : '',
-                        'whitespace-nowrap py-4 border-r pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6 lg:pl-8'
+                        'whitespace-nowrap py-4 border-r pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6 lg:pl-8',
                       )}
                     >
                       <div className="flex items-center">
                         <Avatar className="h-11 w-11">
                           <AvatarImage src={employee.image} alt={employee.name} />
-                          <AvatarFallback>{employee.name.split(' ').map(n => n[0]).join('')}</AvatarFallback>
+                          <AvatarFallback>
+                            {employee.name
+                              .split(' ')
+                              .map((n) => n[0])
+                              .join('')}
+                          </AvatarFallback>
                         </Avatar>
                         <div className="ml-4">
                           <div className="font-medium text-accent">{employee.name}</div>
-                          {/* <div className="mt-1 text-gray-500">{employee.email}</div> */}
                         </div>
                       </div>
                     </td>
                     {[...Array(daysInMonth)].map((_, day) => {
-                      const date = new Date(currentDate.getFullYear(), currentDate.getMonth(), day + 1)
+                      const date = new Date(
+                        currentDate.getFullYear(),
+                        currentDate.getMonth(),
+                        day + 1,
+                      )
+
                       const holiday = holidays.find(
                         (h) =>
                           h.userId === employee.id &&
                           new Date(h.startDate) <= date &&
-                          new Date(h.endDate) >= date
+                          new Date(h.endDate) >= date,
                       )
+
+                      const isFirstDay =
+                        holiday &&
+                        new Date(holiday.startDate).toDateString() === date.toDateString()
+                      const isLastDay =
+                        holiday && new Date(holiday.endDate).toDateString() === date.toDateString()
+
+                      const isMultipleDays = holiday && holiday.startDate !== holiday.endDate
+
                       return (
                         <td
                           key={`${employee.id}-${day}`}
                           className={classNames(
                             employeeIdx !== employees.length - 1 ? 'border-r border-gray-200' : '',
-                            'whitespace-nowrap border-r border-gray-200'
+                            'whitespace-nowrap border-r border-gray-200',
                           )}
                         >
                           <div
@@ -129,21 +140,40 @@ export function HolidayGrid({ currentDate, setCurrentDate, holidays, employees }
                                 ? holiday.status === 'approved'
                                   ? 'bg-green-500'
                                   : holiday.status === 'rejected'
-                                  ? 'bg-red-500'
-                                  : 'bg-gray-600'
+                                    ? 'bg-red-500'
+                                    : 'bg-gray-600'
                                 : 'bg-gray-100'
                             }`}
-                            title={holiday ? `${employee.name}: ${holiday.status} (${holiday.startDate} - ${holiday.endDate}) - ${holiday.leaveType}` : ''}
+                            title={
+                              holiday
+                                ? `${employee.name}: ${holiday.status} (${holiday.startDate} - ${holiday.endDate})`
+                                : ''
+                            }
                           >
-                            {holiday && holiday.leaveType !== 'Full Day' && (
+                            {/* Half-Day for Start */}
+                            {holiday && isFirstDay && holiday.leaveTypeStart !== 'Full Day' && (
                               <div
                                 className={`h-3 w-6 ${
-                                  holiday.leaveType === 'Morning'
-                                    ? 'bg-white rounded-t-full'
+                                  holiday.leaveTypeStart === 'Morning'
+                                    ? 'bg-white rounded-b-full mt-3'
                                     : 'bg-white rounded-t-full'
                                 }`}
                               />
                             )}
+                            {/* Half-Day for End */}
+                            {holiday &&
+                              isLastDay &&
+                              isMultipleDays &&
+                              holiday.leaveTypeEnd &&
+                              holiday.leaveTypeEnd !== 'Full Day' && (
+                                <div
+                                  className={`h-3 w-6 ${
+                                    holiday.leaveTypeEnd === 'Morning'
+                                      ? 'bg-white rounded-b-full mt-3'
+                                      : 'bg-white rounded-t-full'
+                                  }`}
+                                />
+                              )}
                           </div>
                         </td>
                       )
@@ -158,4 +188,3 @@ export function HolidayGrid({ currentDate, setCurrentDate, holidays, employees }
     </div>
   )
 }
-
