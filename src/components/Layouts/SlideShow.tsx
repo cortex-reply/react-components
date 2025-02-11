@@ -5,6 +5,16 @@ import { Page } from '@/payload-types'
 import { RenderBlocks } from '../Blocks'
 import { AnimatePresence, motion } from 'framer-motion'
 import { cn } from '@/lib/utils'
+import { Header } from '../HeaderFooter'
+import { Footer } from '../HeaderFooter'
+import logoDark from '../../images/cortex-reply-dark.png'
+import logoLight from '../../images/cortex-reply-light.png'
+import { HeadingImage } from '../Blocks/HeadingImage'
+import AOS from 'aos'
+import 'aos/dist/aos.css'
+import 'pagedjs'
+import { Printable } from './Printable';
+import Image1 from '../../images/stock1.jpg';
 
 export const SlideShow: React.FC<{
   blocks: Page['layout'][0][]
@@ -62,8 +72,9 @@ export const SlideShow: React.FC<{
       goToPreviousSlide()
     }
   }
-
+  
   useEffect(() => {
+    AOS.init({ duration: 1000 })
     window.addEventListener('wheel', handleWheel)
     window.addEventListener('keydown', handleKeyDown)
 
@@ -74,7 +85,15 @@ export const SlideShow: React.FC<{
   }, [])
 
   return (
-    <div className="flex h-screen relative">
+    <div className={`flex flex-col min-h-screen relative overflow-hidden`}>
+
+      {/* Header */}
+      <Header 
+      isMenuOpen={true} 
+      logoLight={logoLight} 
+      logoDark={logoDark}
+      />
+
       {/* Vertical Slider */}
 
       <div className="fixed left-0 top-0 flex h-screen w-9 z-10 flex-col items-center justify-center bg-gray-100">
@@ -82,9 +101,8 @@ export const SlideShow: React.FC<{
           blocks.map((section: any, id: number) => (
             <button
               key={section.id}
-              className={`group relative flex items-center justify-center my-2 h-16 w-4 rounded-full transition-all hover:bg-accent duration-300 ${
-                activeSection === id ? 'bg-accent' : 'bg-gray-300'
-              }`}
+              className={`group relative flex items-center justify-center my-2 h-16 w-4 rounded-full transition-all hover:bg-accent duration-300 ${activeSection === id ? 'bg-accent' : 'bg-gray-300'
+                }`}
               onClick={() => handleSliderClick(id)}
             >
               {/* Label */}
@@ -96,17 +114,31 @@ export const SlideShow: React.FC<{
       </div>
 
       {/* Main Content */}
+      <AnimatePresence>
+        {blocks.map((block, index) => (
+          <div id={`slide-${index}`} key={index} className="print-section">
+            <div
+              className={`absolute flex items-center justify-center transition-opacity duration-300 ${index === activeSection ? 'opacity-100' : 'opacity-0'
+                } w-full h-full bg-cover bg-center`}
+            >
+              {index === 0 ? (
+                <HeadingImage
+                  image={Image1}
+                  title="Reply Cortex"
+                  // companyLogo={logoLight}
+                  // customerLogo={logoDark}
+                />
+              ) : (
+                <RenderBlocks blocks={[block]} />
+              )}
+            </div>
+          </div>
+        ))}
+      </AnimatePresence>
 
-      {blocks.map((block, index) => (
-        <div
-          key={index}
-          className={`absolute flex items-center justify-center transition-opacity duration-300 ${
-            index === activeSection ? 'opacity-100' : 'opacity-0'
-          }`}
-        >
-          <RenderBlocks blocks={[block]} />
-        </div>
-      ))}
+      {/* Printable */}
+      <Printable blocks={blocks} />
+
 
       {/* Down Arrow */}
       <button
@@ -115,7 +147,66 @@ export const SlideShow: React.FC<{
       >
         <ScrollDownIcon />
       </button>
+
+      {/* Footer */}
+
+      {/* <Footer
+        className="w-full mt-auto z-50"
+        logoLight={logoLight}
+        logoDark={logoDark}
+        footerData={{
+          about: {
+            description:
+              'Cortex Reply is a leading consulting company in the field of digital transformation and innovation. We help our clients to successfully master the challenges of digital transformation.',
+            socialLinks: [],
+          },
+          columnOne: {
+            title: 'Quick Links',
+            links: [
+              { label: 'Home', href: '/' },
+              { label: 'Services', href: '/services' },
+              { label: 'About', href: '/about' },
+              { label: 'Contact', href: '/contact' },
+            ],
+          },
+          columnTwo: {
+            title: 'Company',
+            location: '123 Business St, Tech City',
+            mails: ['contact@cortexreply.com'],
+            phoneNumbers: ['+123 456 7890'],
+          },
+          columnThree: {
+            title: 'Recent Blogs',
+            blogs: [
+              {
+                title: 'The Future of AI in Business',
+                slug: '/blogs/the-future-of-ai-in-business',
+                date: '2024-01-01',
+                image: {
+                  src: logoDark,
+                  alt: 'Blog Image',
+                },
+              },
+              {
+                title: 'The Benefits of Cloud Computing',
+                slug: '/blogs/the-benefits-of-cloud-computing',
+                date: '2024-01-01',
+                image: {
+                  src: logoDark,
+                  alt: 'Blog Image',
+                },
+
+              },
+            ],
+          },
+          footerBottom: {
+            copyrightText: '© 2024 Cortex Reply. All rights reserved.',
+            links: [],
+          },
+        }}
+      /> */}
     </div>
+
   )
 }
 
