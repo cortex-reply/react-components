@@ -16,7 +16,7 @@ export function HeadingImage({
   customerLogo,
 }: HeadingImageProps) {
   return (
-    <div className="relative w-full overflow-hidden bg-white pb-16 pt-[calc(80vw*0.5)]">
+    <div className="relative w-full overflow-hidden pb-16 pt-[calc(80vw*0.5)]">
       <div className="absolute left-0 top-0 h-[calc(100%+80vw*0.5)] w-full overflow-hidden">
         <div className="absolute left-[calc(50%-40vw*0.5)] top-[calc(40vw*0.5*-0.29)] h-[80vw] w-[80vw] origin-top-left -rotate-45 overflow-hidden rounded-[24vw]">
           <Image

@@ -6,15 +6,15 @@ import { RenderBlocks } from '../Blocks'
 import { AnimatePresence, motion } from 'framer-motion'
 import { cn } from '@/lib/utils'
 import { Header } from '../HeaderFooter'
-import { Footer } from '../HeaderFooter'
 import logoDark from '../../images/cortex-reply-dark.png'
 import logoLight from '../../images/cortex-reply-light.png'
-import { HeadingImage } from '../Blocks/HeadingImage'
 import AOS from 'aos'
 import 'aos/dist/aos.css'
 import 'pagedjs'
-import { Printable } from './Printable';
 import Image1 from '../../images/stock1.jpg';
+import { useTheme } from 'next-themes'
+import Image from 'next/image'
+
 
 export const SlideShow: React.FC<{
   blocks: Page['layout'][0][]
@@ -72,7 +72,7 @@ export const SlideShow: React.FC<{
       goToPreviousSlide()
     }
   }
-  
+
   useEffect(() => {
     AOS.init({ duration: 1000 })
     window.addEventListener('wheel', handleWheel)
@@ -88,10 +88,10 @@ export const SlideShow: React.FC<{
     <div className={`flex flex-col min-h-screen relative overflow-hidden`}>
 
       {/* Header */}
-      <Header 
-      isMenuOpen={true} 
-      logoLight={logoLight} 
-      logoDark={logoDark}
+      <Header
+        isMenuOpen={true}
+        logoLight={logoLight}
+        logoDark={logoDark}
       />
 
       {/* Vertical Slider */}
@@ -118,16 +118,34 @@ export const SlideShow: React.FC<{
         {blocks.map((block, index) => (
           <div id={`slide-${index}`} key={index} className="print-section">
             <div
-              className={`absolute flex items-center justify-center transition-opacity duration-300 ${index === activeSection ? 'opacity-100' : 'opacity-0'
-                } w-full h-full bg-cover bg-center`}
+              className={`absolute flex items-center justify-center transition-opacity duration-300 
+          ${index === activeSection ? 'opacity-100' : 'opacity-0'} 
+          w-full h-full bg-cover bg-center`}
             >
               {index === 0 ? (
-                <HeadingImage
-                  image={Image1}
-                  title="Reply Cortex"
-                  // companyLogo={logoLight}
-                  // customerLogo={logoDark}
-                />
+                <div className="relative w-full h-full flex flex-col items-center justify-center text-center p-10">
+                  <div className="absolute inset-0">
+                    <Image
+                      src={Image1}
+                      alt="Background"
+
+                      className="opacity-80 dark:opacity-60"
+                    />
+                  </div>
+
+                  <div className="absolute inset-0 bg-black/30 dark:bg-black/50"></div>
+
+                  <div className="relative z-10 max-w-3xl">
+                    <p className="text-lg font-medium text-sky-400 mb-2">
+                      Case Study
+                    </p>
+
+                    <h1 className="text-4xl md:text-6xl font-bold leading-tight tracking-tight 
+                text-white dark:text-gray-100">
+                      Reply Cortex
+                    </h1>
+                  </div>
+                </div>
               ) : (
                 <RenderBlocks blocks={[block]} />
               )}
@@ -135,10 +153,6 @@ export const SlideShow: React.FC<{
           </div>
         ))}
       </AnimatePresence>
-
-      {/* Printable */}
-      <Printable blocks={blocks} />
-
 
       {/* Down Arrow */}
       <button
@@ -150,61 +164,9 @@ export const SlideShow: React.FC<{
 
       {/* Footer */}
 
-      {/* <Footer
-        className="w-full mt-auto z-50"
-        logoLight={logoLight}
-        logoDark={logoDark}
-        footerData={{
-          about: {
-            description:
-              'Cortex Reply is a leading consulting company in the field of digital transformation and innovation. We help our clients to successfully master the challenges of digital transformation.',
-            socialLinks: [],
-          },
-          columnOne: {
-            title: 'Quick Links',
-            links: [
-              { label: 'Home', href: '/' },
-              { label: 'Services', href: '/services' },
-              { label: 'About', href: '/about' },
-              { label: 'Contact', href: '/contact' },
-            ],
-          },
-          columnTwo: {
-            title: 'Company',
-            location: '123 Business St, Tech City',
-            mails: ['contact@cortexreply.com'],
-            phoneNumbers: ['+123 456 7890'],
-          },
-          columnThree: {
-            title: 'Recent Blogs',
-            blogs: [
-              {
-                title: 'The Future of AI in Business',
-                slug: '/blogs/the-future-of-ai-in-business',
-                date: '2024-01-01',
-                image: {
-                  src: logoDark,
-                  alt: 'Blog Image',
-                },
-              },
-              {
-                title: 'The Benefits of Cloud Computing',
-                slug: '/blogs/the-benefits-of-cloud-computing',
-                date: '2024-01-01',
-                image: {
-                  src: logoDark,
-                  alt: 'Blog Image',
-                },
+      <Footer />
 
-              },
-            ],
-          },
-          footerBottom: {
-            copyrightText: '© 2024 Cortex Reply. All rights reserved.',
-            links: [],
-          },
-        }}
-      /> */}
+
     </div>
 
   )
@@ -233,3 +195,23 @@ const ScrollDownIcon: React.FC = () => (
     </motion.div>
   </AnimatePresence>
 )
+
+
+export const Footer: React.FC = () => {
+  const { theme } = useTheme()
+
+  return (
+    <footer className="absolute bottom-0 left-0 w-full py-4 px-8 border-t flex justify-between items-center transition-colors duration-300 
+      bg-white text-gray-600 dark:bg-gray-900 dark:text-gray-300">
+
+      <div className="flex items-center space-x-2">
+        <img src={theme === 'dark' ? logoDark.src : logoLight.src} alt="Reply Logo" className="h-6" />
+        <span className="text-sm">technology, done right</span>
+      </div>
+
+      <a href="https://airwalkreply.com" className="text-sm hover:underline">
+        airwalkreply.com
+      </a>
+    </footer>
+  )
+}
