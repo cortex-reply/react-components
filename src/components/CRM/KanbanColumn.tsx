@@ -76,41 +76,36 @@ export function KanbanColumn({
           </DialogContent>
         </Dialog>
       )}
-      <div className="h-[80vh]">
-        <Droppable droppableId={status} isDropDisabled={false}>
-          {(provided) => (
-            <div
-              ref={provided.innerRef}
-              {...provided.droppableProps}
-              className="bg-gray-100 p-4 rounded-lg flex-grow  shadow-inner"
-            >
-              {deals.map((deal, index) => (
-                <Draggable
-                  key={deal.id.toString()}
-                  draggableId={deal.id.toString()}
-                  index={deal.id}
-                >
-                  {(provided) => (
-                    <div
-                      ref={provided.innerRef}
-                      {...provided.draggableProps}
-                      {...provided.dragHandleProps}
-                    >
-                      <DealCard
-                        deal={deal}
-                        customer={deal.customer as Customer}
-                        categories={categories}
-                        onClick={() => onDealClick(deal)}
-                      />
-                    </div>
-                  )}
-                </Draggable>
-              ))}
-              {provided.placeholder}
-            </div>
-          )}
-        </Droppable>
-      </div>
+
+      <Droppable droppableId={status} isDropDisabled={false}>
+        {(provided) => (
+          <div
+            ref={provided.innerRef}
+            {...provided.droppableProps}
+            className="bg-gray-100 p-4 rounded-lg flex-grow  shadow-inner"
+          >
+            {deals.map((deal, index) => (
+              <Draggable key={deal.id.toString()} draggableId={deal.id.toString()} index={deal.id}>
+                {(provided) => (
+                  <div
+                    ref={provided.innerRef}
+                    {...provided.draggableProps}
+                    {...provided.dragHandleProps}
+                  >
+                    <DealCard
+                      deal={deal}
+                      customer={deal.customer as Customer}
+                      categories={categories}
+                      onClick={() => onDealClick(deal)}
+                    />
+                  </div>
+                )}
+              </Draggable>
+            ))}
+            {provided.placeholder}
+          </div>
+        )}
+      </Droppable>
     </>
   )
 }

@@ -119,21 +119,19 @@ export function CRMKanbanBoard({
               .map((status) => {
                 const deals = getColumnDeals(status)
                 return (
-                  <div className="flex flex-col w-80">
-                    <KanbanColumn
-                      key={status}
-                      status={status}
-                      deals={deals}
-                      customers={initialData.customers ?? []}
-                      users={initialData.users}
-                      categories={initialData.categories ?? []}
-                      onDealClick={setSelectedDeal}
-                      calculateColumnValue={calculateColumnValue}
-                      calculateWeightedValue={calculateWeightedValue}
-                      addNewDeal={status === 'Cold' ? addNewDeal : undefined}
-                      onAddCustomer={addNewCustomer}
-                    />
-                  </div>
+                  <KanbanColumn
+                    key={status}
+                    status={status}
+                    deals={deals}
+                    customers={initialData.customers ?? []}
+                    users={initialData.users}
+                    categories={initialData.categories ?? []}
+                    onDealClick={setSelectedDeal}
+                    calculateColumnValue={calculateColumnValue}
+                    calculateWeightedValue={calculateWeightedValue}
+                    addNewDeal={status === 'Cold' ? addNewDeal : undefined}
+                    onAddCustomer={addNewCustomer}
+                  />
                 )
               })}
           </div>
