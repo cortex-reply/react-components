@@ -9,15 +9,29 @@ import {
   type DropResult,
 } from '@atlaskit/pragmatic-drag-and-drop-react-beautiful-dnd-migration'
 
-const statuses: CRMStatus[] = ['Cold', 'Qualified', 'Proposal Made', 'SoW Submitted', 'Won', 'Lost']
+export const statuses: CRMStatus[] = [
+  'Cold',
+  'Qualified',
+  'Proposal Made',
+  'SoW Submitted',
+  'Won',
+  'Lost',
+]
 
 type KanbanBoardProps = {
   initialData: BoardData
   // onDragEnd: (result: DropResult) => void
-  addNewDeal: (newDeal: Deal) => Promise<{ success: boolean; errors?: Record<string, string> }>;
-  updateDeal: (updatedDeal: Partial<EditableDeal>) => Promise<{ success: boolean; errors?: Record<string, string> }>;
-  addComment: (dealId: string, comment: PartialComment) => Promise<{ success: boolean; errors?: Record<string, string> }>;
-  addNewCustomer: (newCustomer: Partial<Customer>) => Promise<{ success: boolean; errors?: Record<string, string> }>;
+  addNewDeal: (newDeal: Deal) => Promise<{ success: boolean; errors?: Record<string, string> }>
+  updateDeal: (
+    updatedDeal: Partial<EditableDeal>,
+  ) => Promise<{ success: boolean; errors?: Record<string, string> }>
+  addComment: (
+    dealId: string,
+    comment: PartialComment,
+  ) => Promise<{ success: boolean; errors?: Record<string, string> }>
+  addNewCustomer: (
+    newCustomer: Partial<Customer>,
+  ) => Promise<{ success: boolean; errors?: Record<string, string> }>
 }
 
 export function CRMKanbanBoard({
@@ -85,29 +99,68 @@ export function CRMKanbanBoard({
 
   return (
     <DragDropContext onDragEnd={onDragEnd}>
-      <div className="p-4 max-h-[90vh] overflow-auto">
-        {/* <h1 className="text-3xl font-bold mb-8">Cortex Sales Pipeline</h1> */}
-        <div className="flex space-x-4 pb-4">
-          {statuses
-            .filter((status) => status !== 'Won' && status !== 'Lost')
-            .map((status) => {
-              const deals = getColumnDeals(status)
-              return (
-                <KanbanColumn
-                  key={status}
-                  status={status}
-                  deals={deals}
-                  customers={initialData.customers ?? []}
-                  users={initialData.users}
-                  categories={initialData.categories ?? []}
-                  onDealClick={setSelectedDeal}
-                  calculateColumnValue={calculateColumnValue}
-                  calculateWeightedValue={calculateWeightedValue}
-                  addNewDeal={status === 'Cold' ? addNewDeal : undefined}
-                  onAddCustomer={addNewCustomer}
-                />
-              )
-            })}
+      <div className="p-4">
+        <div className="flex flex-col">
+          <div className="flex flex-row">
+            {statuses
+              .filter((status) => status !== 'Won' && status !== 'Lost')
+              .map((status) => {
+                return (
+                  <div key={status} className="w-80">
+                    <h2 className="text-xl font-semibold mb-7">{status}</h2>
+                  </div>
+                )
+              })}
+          </div>
+
+          <div className="flex flex-row h-[80vh] overflow-y-auto">
+            {statuses
+              .filter((status) => status !== 'Won' && status !== 'Lost')
+              .map((status) => {
+                const deals = getColumnDeals(status)
+                return (
+                  <div className="flex flex-col w-80">
+                    <KanbanColumn
+                      key={status}
+                      status={status}
+                      deals={deals}
+                      customers={initialData.customers ?? []}
+                      users={initialData.users}
+                      categories={initialData.categories ?? []}
+                      onDealClick={setSelectedDeal}
+                      calculateColumnValue={calculateColumnValue}
+                      calculateWeightedValue={calculateWeightedValue}
+                      addNewDeal={status === 'Cold' ? addNewDeal : undefined}
+                      onAddCustomer={addNewCustomer}
+                    />
+                  </div>
+                )
+              })}
+          </div>
+
+          <div className="flex flex-row">
+            {statuses
+              .filter((status) => status !== 'Won' && status !== 'Lost')
+              .map((status) => {
+                const deals = getColumnDeals(status)
+                return (
+                  <div className="w-80 mt-4 text-sm bg-white p-3 rounded-lg shadow">
+                    <p className="font-semibold">
+                      Total:{' '}
+                      <span className="text-green-600">
+                        £{calculateColumnValue(deals).toLocaleString()}
+                      </span>
+                    </p>
+                    <p className="font-semibold">
+                      Weighted:{' '}
+                      <span className="text-blue-600">
+                        £{calculateWeightedValue(deals, status).toLocaleString()}
+                      </span>
+                    </p>
+                  </div>
+                )
+              })}
+          </div>
         </div>
 
         {selectedDeal && (

@@ -20,7 +20,7 @@ type Story = StoryObj<typeof SlideShow>
 
 export const Primary: Story = {
   args: {
-    sections: [
+    blocks: [
       { id: 'section1', title: 'Section 1', color: 'bg-red-500' },
       { id: 'section2', title: 'Section 2', color: 'bg-blue-500' },
       { id: 'section3', title: 'Section 3', color: 'bg-green-500' },

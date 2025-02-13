@@ -1,5 +1,4 @@
 import React, { useState } from 'react'
-import { Button } from '@/components/ui/button'
 import {
   Dialog,
   DialogContent,
@@ -10,8 +9,12 @@ import {
 import { PlusCircle } from 'lucide-react'
 import type { Deal, CRMStatus, DealCategory, Customer, User } from './types'
 import { DealCard } from './DealCard'
-import { Droppable, Draggable } from '@atlaskit/pragmatic-drag-and-drop-react-beautiful-dnd-migration'
+import {
+  Droppable,
+  Draggable,
+} from '@atlaskit/pragmatic-drag-and-drop-react-beautiful-dnd-migration'
 import { NewDealForm } from './NewDealForm'
+import { Button, Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '../ui'
 
 type KanbanColumnProps = {
   status: CRMStatus
@@ -22,8 +25,10 @@ type KanbanColumnProps = {
   onDealClick: (deal: Deal) => void
   calculateColumnValue: (deals: Deal[]) => number
   calculateWeightedValue: (deals: Deal[], status: CRMStatus) => number
-  addNewDeal?: (deal: Deal) => Promise<{ success: boolean; errors?: Record<string, string> }>;
-  onAddCustomer: (customer: Partial<Customer>) => Promise<{ success: boolean; errors?: Record<string, string> }>;
+  addNewDeal?: (deal: Deal) => Promise<{ success: boolean; errors?: Record<string, string> }>
+  onAddCustomer: (
+    customer: Partial<Customer>,
+  ) => Promise<{ success: boolean; errors?: Record<string, string> }>
 }
 
 export function KanbanColumn({
@@ -41,16 +46,21 @@ export function KanbanColumn({
   const [isDialogOpen, setIsDialogOpen] = useState(false)
 
   return (
-    <div className="flex flex-col w-80">
-      <h2 className="text-xl font-semibold mb-4">{status}</h2>
+    <>
       {addNewDeal && (
         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-          <DialogTrigger asChild>
-            <Button className="mb-4 w-full bg-green-500 hover:bg-green-600 text-white">
-              <PlusCircle className="mr-2 h-4 w-4" />
-              Add New Deal
-            </Button>
-          </DialogTrigger>
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <DialogTrigger asChild>
+                  <Button className="absolute top-14 left-2 bg-green-600 text-white p-2 rounded-full shadow-lg hover:bg-green-700 transition-all flex items-center justify-center w-9 h-9">
+                    <PlusCircle className="w-6 h-6" />
+                  </Button>
+                </DialogTrigger>
+              </TooltipTrigger>
+              <TooltipContent>Add new deal</TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
           <DialogContent>
             <DialogHeader>
               <DialogTitle>Add New Deal</DialogTitle>
@@ -66,47 +76,41 @@ export function KanbanColumn({
           </DialogContent>
         </Dialog>
       )}
-      <Droppable droppableId={status} isDropDisabled={false}>
-        {(provided) => (
-          <div
-            ref={provided.innerRef}
-            {...provided.droppableProps}
-            className="bg-gray-100 p-4 rounded-lg flex-grow min-h-[200px] shadow-inner"
-          >
-            {deals.map((deal, index) => (
-              <Draggable key={deal.id.toString()} draggableId={deal.id.toString()} index={deal.id}>
-                {(provided) => (
-                  <div
-                    ref={provided.innerRef}
-                    {...provided.draggableProps}
-                    {...provided.dragHandleProps}
-                  >
-                    <DealCard
-                      deal={deal}
-                      customer={deal.customer as Customer}
-                      categories={categories}
-                      onClick={() => onDealClick(deal)}
-                    />
-                  </div>
-                )}
-              </Draggable>
-            ))}
-            {provided.placeholder}
-          </div>
-        )}
-      </Droppable>
-      <div className="mt-4 text-sm bg-white p-3 rounded-lg shadow">
-        <p className="font-semibold">
-          Total:{' '}
-          <span className="text-green-600">£{calculateColumnValue(deals).toLocaleString()}</span>
-        </p>
-        <p className="font-semibold">
-          Weighted:{' '}
-          <span className="text-blue-600">
-            £{calculateWeightedValue(deals, status).toLocaleString()}
-          </span>
-        </p>
+      <div className="h-[80vh]">
+        <Droppable droppableId={status} isDropDisabled={false}>
+          {(provided) => (
+            <div
+              ref={provided.innerRef}
+              {...provided.droppableProps}
+              className="bg-gray-100 p-4 rounded-lg flex-grow  shadow-inner"
+            >
+              {deals.map((deal, index) => (
+                <Draggable
+                  key={deal.id.toString()}
+                  draggableId={deal.id.toString()}
+                  index={deal.id}
+                >
+                  {(provided) => (
+                    <div
+                      ref={provided.innerRef}
+                      {...provided.draggableProps}
+                      {...provided.dragHandleProps}
+                    >
+                      <DealCard
+                        deal={deal}
+                        customer={deal.customer as Customer}
+                        categories={categories}
+                        onClick={() => onDealClick(deal)}
+                      />
+                    </div>
+                  )}
+                </Draggable>
+              ))}
+              {provided.placeholder}
+            </div>
+          )}
+        </Droppable>
       </div>
-    </div>
+    </>
   )
 }
