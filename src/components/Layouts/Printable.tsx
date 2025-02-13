@@ -8,79 +8,74 @@ import Image from 'next/image';
 import logoDark from '../../images/cortex-reply-dark.png';
 import logoLight from '../../images/cortex-reply-light.png';
 import { Header } from '../HeaderFooter';
-
-interface Section {
-  sectionTitle: string;
-  blocks: any[];
-}
+import { RenderHero } from '@/components/Heros/RenderHero';
+import { RenderBlocks } from '@/components/Blocks/RenderBlocks';
+import { Page } from '@/payload-types';
+import { getTableOfContents } from '../../utils';
+import Image1 from '../../images/stock1.jpg';
+import { HeadingImage } from '../Blocks';
 
 interface PrintableProps {
-  sections: Section[];
+  page: Page;
   layout?: 'portrait' | 'landscape';
-  titlePage?: React.ReactNode;
 }
 
-export const Printable: React.FC<PrintableProps> = ({ sections = [], layout = 'portrait', titlePage }) => {
-  const { theme } = useTheme();
+export const Printable: React.FC<PrintableProps> = ({ page, layout = 'portrait' }) => {
+  const { contentWithIds } = getTableOfContents(page);
   const previewContainer = useRef<HTMLDivElement>(null);
   const pagedRef = useRef(new Previewer());
   const [pageCount, setPageCount] = useState<number>(0);
 
-  const updatePagedPreview = useCallback(() => {
-    if (!previewContainer.current || !document.getElementById('printable-content')) {
-      console.error('Preview container or content is missing.');
-      return;
-    }
+  useEffect(() => {
+    const style = document.createElement('style');
+    style.textContent = `@page { size: A4 ${layout}; margin: 20mm; }`;
+    document.head.appendChild(style);
+    return () => document.head.removeChild(style);
+  }, [layout]);
 
-    const paged = pagedRef.current;
-    paged.preview(document.getElementById('printable-content')!.innerHTML, [], previewContainer.current)
-      .then(result => {
-        console.log('Paged.js rendered successfully.');
-        setPageCount(result.pageCount);
-      })
+  const updatePagedPreview = useCallback(() => {
+    if (!previewContainer.current) return;
+    pagedRef.current.preview(document.getElementById('printable-content')!.innerHTML, [], previewContainer.current)
+      .then(result => setPageCount(result.pageCount))
       .catch(error => console.error('Paged.js error:', error));
   }, []);
 
   useEffect(() => {
+    pagedRef.current = new Previewer();
     updatePagedPreview();
-  }, [sections, layout, updatePagedPreview]);
+  }, [updatePagedPreview]);
 
   const handlePrint = async () => {
-    console.log('Preparing document for print...');
     await new Promise(resolve => setTimeout(resolve, 300));
     window.print();
   };
 
   return (
-    <div className="printable-container p-4">
-      <div className="fixed top-28 left-4 flex gap-2 print-controls">
-        <Button onClick={handlePrint} variant="outline">Print to PDF</Button>
+    <div className={`pagedjs-container`}>
+      <div className="fixed top-20 right-4 z-[1000] print:hidden">
+        <Button onClick={handlePrint} variant="outline" className="px-5 py-2 text-sm font-semibold">
+          Print to PDF
+        </Button>
       </div>
-      <Header isMenuOpen={true} logoLight={logoLight} logoDark={logoDark} />
-      
-      <div id="printable-content" key={layout} className={layout}>
-        {titlePage && (
-          <div className="title-page">
-            {titlePage}
-            <Footer />
-          </div>
-        )}
 
-        <div className="content">
-          {sections.map((section, index) => (
-            <div key={index} className="print-section">
-              <h2 className="section-header text-2xl font-semibold mt-14 text-center">{section.sectionTitle}</h2>
-              {section.blocks.map((block, blockIndex) => (
-                <div key={blockIndex} className="block">
-                  {block.type === 'image' ? (
-                    <Image src={block.content} alt="" className="rounded shadow-md" />
-                  ) : (
-                    <p className="mt-4">{block.content}</p>
-                  )}
-                </div>
-              ))}
+      <div className="relative w-full h-screen print:page-break-before">
+        <HeadingImage
+          image={Image1}
+          title="Reply Cortex"
+        />
+      </div>
+
+
+
+      <div id="printable-content" className="pagedjs-content">
+        {page.hero && <RenderHero {...page.hero} />}
+        <div className="pagedjs-blocks">
+          {contentWithIds.map((block, index) => (
+            <section key={index} className="pagedjs-section p-10 relative flex flex-col justify-between print:page-break-before">
+              <Header isMenuOpen={true} logoLight={logoLight} logoDark={logoDark} />
+              <RenderBlocks blocks={[block]} />
               <Footer />
-            </div>
+            </section>
           ))}
         </div>
       </div>
@@ -89,51 +84,96 @@ export const Printable: React.FC<PrintableProps> = ({ sections = [], layout = 'p
 
       <style jsx global>{`
         @page {
-          size: ${layout === 'landscape' ? 'A4 landscape' : 'A4 portrait'} !important;
-          margin: 0;
-        }
-        .title-page {
-          display: flex;
-          flex-direction: column;
-          justify-content: center;
-          align-items: center;
-          min-height: 100vh;
-          page-break-before: always;
-          margin: 0;
-        }
-        .print-section {
-          page-break-inside: avoid;
-          min-height: 100vh;
-          display: flex;
-          flex-direction: column;
-          justify-content: space-between;
-        }
-        .footer {
-          width: 100%;
-          text-align: center;
-          font-size: 12px;
-          color: gray;
-          padding: 10px;
-          margin-top: auto;
-        }
-        .print-controls { display: block; z-index: 1000; }
-        @media print {
-          .print-controls { display: none !important; }
-        }
+            margin: 25mm 20mm 30mm; 
+          }
+
+          @media print {
+            @page {
+            size: ${layout === 'landscape' ? 'A4 landscape' : 'A4 portrait'} !important;
+              margin: 20mm 20mm 30mm;
+            }
+
+            body, .pagedjs-container {
+              background: white !important;
+              margin: 0;
+              padding: 0;
+            }
+
+            .pagedjs-content {
+              margin-top: 50mm;
+            }
+
+            .pagedjs-header {
+              position: running(header);
+              background: white;
+              padding: 5mm 0;
+              text-align: center;
+              font-size: 12px;
+            }
+
+            .pagedjs-footer {
+              position: running(footer);
+              text-align: center;
+              font-size: 12px;
+              padding: 5mm 0;
+              border-top: 1px solid #ccc;
+            }
+
+            .pagedjs-section {
+              break-inside: avoid;
+              page-break-inside: avoid;
+              page-break-after: auto;
+              display: flex;
+              flex-direction: column;
+              justify-content: space-between;
+              padding: 3rem;
+              margin: 10px 0;
+            }
+
+            table, figure, h1, h2, h3, h4, h5 {
+              page-break-inside: avoid;
+            }
+
+            h1:first-of-type {
+              break-before: avoid;
+            }
+
+            .title-page {
+              page-break-before: always;
+              text-align: center;
+              padding: 50px;
+            }
+          }
+
       `}</style>
     </div>
   );
 };
 
-export const Footer: React.FC = () => {
+const Footer: React.FC = () => {
   const { theme } = useTheme();
+
   return (
-    <footer className="footer border-t flex justify-between items-center bg-white text-gray-600 dark:bg-gray-900 dark:text-gray-300">
-      <div className="flex items-center space-x-2">
-        <img src={theme === 'dark' ? logoDark.src : logoLight.src} alt="Reply Logo" className="h-6" />
-        <span className="text-sm">technology, done right</span>
+    <footer className="pagedjs-footer flex justify-between items-center p-4 border-t border-gray-300 shadow-md bg-white dark:bg-gray-900 print:fixed print:bottom-0 print:left-0 print:w-full">
+      <div className="flex items-center space-x-4">
+        <Image src={theme === 'dark' ? logoDark : logoLight} alt="Reply Logo" width={35} height={35} />
+        <div>
+          <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100"> Reply</h3>
+          <p className="text-sm text-gray-600 dark:text-gray-400">Technology, done right</p>
+        </div>
       </div>
-      <a href="https://airwalkreply.com" className="text-sm hover:underline">airwalkreply.com</a>
+
+      <nav className="flex space-x-6 text-sm">
+        <a href="#" className="hover:text-blue-600 dark:hover:text-blue-400 transition">Privacy Policy</a>
+        <a href="#" className="hover:text-blue-600 dark:hover:text-blue-400 transition">Terms of Service</a>
+        <a href="#" className="hover:text-blue-600 dark:hover:text-blue-400 transition">Support</a>
+      </nav>
+      <div className="text-right">
+        <p className="text-sm text-gray-600 dark:text-gray-400">&copy; {new Date().getFullYear()} Reply</p>
+        <a href="https://airwalkreply.com" className="text-blue-600 hover:underline dark:text-blue-400">
+          airwalkreply.com
+        </a>
+      </div>
     </footer>
   );
 };

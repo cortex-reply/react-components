@@ -206,12 +206,24 @@ export const Footer: React.FC = () => {
 
       <div className="flex items-center space-x-2">
         <img src={theme === 'dark' ? logoDark.src : logoLight.src} alt="Reply Logo" className="h-6" />
-        <span className="text-sm">technology, done right</span>
+        <div>
+          <h3 className="text-lg font-semibold">Reply</h3>
+          <p className="text-sm">Technology, done right</p>
+        </div>
       </div>
 
-      <a href="https://airwalkreply.com" className="text-sm hover:underline">
-        airwalkreply.com
-      </a>
+      <nav className="flex space-x-6 text-sm">
+        <a href="#" className="hover:text-blue-600 dark:hover:text-blue-400 transition">Privacy Policy</a>
+        <a href="#" className="hover:text-blue-600 dark:hover:text-blue-400 transition">Terms of Service</a>
+        <a href="#" className="hover:text-blue-600 dark:hover:text-blue-400 transition">Support</a>
+      </nav>
+
+      <div className="text-right">
+        <p className="text-sm">&copy; {new Date().getFullYear()} Reply</p>
+        <a href="https://airwalkreply.com" className="text-blue-600 hover:underline dark:text-blue-400 transition">
+          airwalkreply.com
+        </a>
+      </div>
     </footer>
   )
 }
