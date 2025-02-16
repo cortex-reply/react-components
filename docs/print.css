@@ -1,0 +1,182 @@
+.preview-container {
+  width: fit-content;
+  box-shadow: 10px 12px 30px 0 rgba(0, 0, 0, 0.1);
+  /* margin: 0.5in; */
+  flex-shrink: 0;
+  flex-grow: 0;
+  /* margin-top: 10mm; */
+  margin-left: auto;
+  margin-right: auto;
+}
+
+@media print {
+  @page {
+    /* size: A4 portrait; */
+    /* 210 × 297 mm */
+    margin-left: 0px;
+    margin-right: 0px;
+    margin-top: 0px;
+    margin-bottom: 1cm;
+    bleed: 0mm;
+    /* marks: crop cross; */
+
+    @top-left-corner {
+      background: #a42368;
+      content: '';
+      display: block;
+      height: 0.05cm;
+      opacity: 0.5;
+      /* width: 100%; */
+    }
+
+    @top-center {
+      background: #a42368;
+      content: string(heading);
+      font-size: 9pt;
+      display: block;
+      height: 0.05cm;
+      opacity: 0.5;
+      /* width: 100%; */
+    }
+
+    @top-right-corner {
+      background: #a42368;
+      content: '';
+      display: block;
+      height: 0.05cm;
+      opacity: 0.5;
+      /* width: 100%; */
+    }
+
+    @bottom-left {
+      background: #000000;
+      content: '';
+      height: 1cm;
+      width: 1cm;
+      opacity: 0.5;
+    }
+
+    @bottom-center {
+      content: 'Power up your people | Cortex Reply';
+      color: white;
+      vertical-align: middle;
+      font-size: 12px;
+      /* display: block; */
+      /* height: 0.05cm; */
+      /* opacity: 0.5; */
+      /* width: 100%; */
+    }
+
+    @bottom-right {
+      background: #a42368;
+      content: counter(page);
+      font-size: 16px;
+      color: white;
+      height: 1cm;
+      /* opacity: 0.5; */
+      text-align: center;
+      width: 1cm;
+    }
+  }
+  @page:first {
+    margin-bottom: 0cm;
+    @bottom-left {
+      content: none;
+      height: 0cm;
+    }
+    @bottom-center {
+      content: none;
+      height: 0cm;
+    }
+    @bottom-right {
+      content: none;
+      height: 0cm;
+    }
+  }
+}
+.normal-page {
+  break-inside: avoid;
+  break-after: page;
+}
+.title-page {
+  break-after: page;
+  /* text-align: center; */
+  /* padding: 50px; */
+}
+
+.pagedjs_margin-bottom {
+  background: #000000;
+}
+/* .pagedjs-footer {
+            position: running(footer);
+            text-align: center;
+            font-size: 12px;
+            padding: 5mm 0;
+            border-top: 1px solid #ccc;
+          } */
+
+/* 
+
+
+@media print {
+          @page {
+            size: A4 portrait !important;
+            margin-top: 1mm;
+            bleed: 6mm;
+            marks: crop cross;
+          }
+
+          body,
+          .pagedjs-container {
+            margin: 0;
+            padding: 0;
+          }
+
+          .pagedjs-content {
+            margin-top: 50mm;
+          }
+
+          .pagedjs-header {
+            position: running(header);
+            padding: 5mm 0;
+            page-break-after: auto;
+          }
+
+          .pagedjs-footer {
+            position: running(footer);
+            text-align: center;
+            font-size: 12px;
+            padding: 5mm 0;
+            border-top: 1px solid #ccc;
+          }
+
+          .pagedjs-section {
+            break-inside: avoid;
+            page-break-inside: avoid;
+            page-break-after: auto;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            margin: 10px 0;
+          }
+
+          table,
+          figure,
+          h1,
+          h2,
+          h3,
+          h4,
+          h5 {
+            page-break-inside: avoid;
+          }
+
+          h1:first-of-type {
+            break-before: avoid;
+          }
+
+          .pagedjs-title-page {
+            break-after: page;
+            text-align: center;
+            padding: 50px;
+          }
+        } */
