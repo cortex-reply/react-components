@@ -1,12 +1,6 @@
+
 .preview-container {
-  width: fit-content;
-  box-shadow: 10px 12px 30px 0 rgba(0, 0, 0, 0.1);
-  /* margin: 0.5in; */
-  flex-shrink: 0;
-  flex-grow: 0;
-  /* margin-top: 10mm; */
-  margin-left: auto;
-  margin-right: auto;
+  contain: size;
 }
 
 @media print {
