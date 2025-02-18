@@ -5,7 +5,9 @@
 
 @media print {
   @page {
-    /* size: A4 portrait; */
+    /* size: 445.5mm 297mm portrait; */
+    size: 330mm 185mm portrait;
+    /* size: A3 landscape; */
     /* 210 × 297 mm */
     margin-left: 0px;
     margin-right: 0px;

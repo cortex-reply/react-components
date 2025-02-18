@@ -1,13 +1,13 @@
 
 @media print {
   @page {
-    /* size: 297mm 445.5mm landscape; */
-    size: A4 landscape;
+    /* size: 445.5mm 297mm landscape; */
+    /* size: A4 landscape; */
     /* 210 × 297 mm */
   }
 }
 
-section {
+/* section {
   height: 210mm;
   width: 297mm;
-}
+} */
