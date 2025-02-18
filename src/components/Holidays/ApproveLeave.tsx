@@ -7,19 +7,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Badge } from '@/components/ui/badge'
 import { Toaster, toast } from 'sonner'
 import { useRouter } from 'next/navigation'
-
-interface LeaveRequest {
-  id: string
-  userId: string
-  userName: string
-  userEmail: string
-  userImage?: string
-  startDate: string
-  endDate: string
-  status: 'requested' | 'approved' | 'rejected'
-  totalDays: number
-  leaveType: 'Full Day' | 'Morning' | 'Afternoon'
-}
+import { LeaveRequest } from '../../model/LeaveRequest'
 
 interface ApproveLeaveProps {
   leaveRequests: LeaveRequest[]
@@ -35,22 +23,21 @@ export function ApproveLeave({ leaveRequests, onApprove, onReject }: ApproveLeav
     if (selectedRequests.length === leaveRequests.length) {
       setSelectedRequests([])
     } else {
-      setSelectedRequests(leaveRequests.map(request => request.id))
+      setSelectedRequests(leaveRequests.map((request) => request.id))
     }
   }
 
   const handleSelect = (id: string) => {
-    setSelectedRequests(prev => 
-      prev.includes(id) ? prev.filter(r => r !== id) : [...prev, id]
+    setSelectedRequests((prev) =>
+      prev.includes(id) ? prev.filter((r) => r !== id) : [...prev, id],
     )
   }
 
-  const handleApprove =  async () => {
-    
+  const handleApprove = async () => {
     const result = await onApprove(selectedRequests)
     if (result.success) {
       toast.success(result.message)
-    
+
       router.refresh() // Refresh the page to show updated data
     } else {
       toast.error(`Error: ${result.message}`)
@@ -59,7 +46,6 @@ export function ApproveLeave({ leaveRequests, onApprove, onReject }: ApproveLeav
   }
 
   const handleReject = async () => {
-
     const result = await onReject(selectedRequests)
     if (result.success) {
       toast.success(result.message)
@@ -75,15 +61,15 @@ export function ApproveLeave({ leaveRequests, onApprove, onReject }: ApproveLeav
       <div className="flex justify-between items-center">
         <h2 className="text-2xl font-bold">Approve Leave Requests</h2>
         <div className="space-x-2">
-          <Button 
-            onClick={handleApprove} 
+          <Button
+            onClick={handleApprove}
             disabled={selectedRequests.length === 0}
             variant="default"
           >
             Approve Selected
           </Button>
-          <Button 
-            onClick={handleReject} 
+          <Button
+            onClick={handleReject}
             disabled={selectedRequests.length === 0}
             variant="destructive"
           >
@@ -100,7 +86,7 @@ export function ApproveLeave({ leaveRequests, onApprove, onReject }: ApproveLeav
                   id="select-all"
                   checked={selectedRequests.length === leaveRequests.length}
                   onCheckedChange={handleSelectAll}
-                  className='border-accent'
+                  className="border-accent"
                 />
                 <label htmlFor="select-all" className="ml-2 text-sm font-medium text-foreground">
                   Select All
@@ -119,15 +105,22 @@ export function ApproveLeave({ leaveRequests, onApprove, onReject }: ApproveLeav
                     id={`select-${request.id}`}
                     checked={selectedRequests.includes(request.id)}
                     onCheckedChange={() => handleSelect(request.id)}
-                    className='border-accent'
+                    className="border-accent"
                   />
                   <div className="ml-3 flex items-center">
                     <Avatar className="h-10 w-10">
                       <AvatarImage src={request.userImage} alt={request.userName} />
-                      <AvatarFallback>{request.userName.split(' ').map(n => n[0]).join('')}</AvatarFallback>
+                      <AvatarFallback>
+                        {request.userName
+                          .split(' ')
+                          .map((n) => n[0])
+                          .join('')}
+                      </AvatarFallback>
                     </Avatar>
                     <div className="ml-3">
-                      <p className="text-sm font-medium text-foreground group-hover:text-accent">{request.userName}</p>
+                      <p className="text-sm font-medium text-foreground group-hover:text-accent">
+                        {request.userName}
+                      </p>
                       {/* <p className="text-sm text-gray-500">{request.userEmail}</p> */}
                     </div>
                   </div>
@@ -135,11 +128,20 @@ export function ApproveLeave({ leaveRequests, onApprove, onReject }: ApproveLeav
                 <div className="flex items-center space-x-2">
                   <span className="text-sm text-gray-500">
                     {new Date(request.startDate).toLocaleDateString()}
-                    {request.startDate !== request.endDate && ` - ${new Date(request.endDate).toLocaleDateString()}`}
+                    {request.startDate !== request.endDate &&
+                      ` - ${new Date(request.endDate).toLocaleDateString()}`}
                     {request.leaveType != 'Full Day' && ` (${request.leaveType})`}
                     {` - ${request.totalDays} day${request.totalDays !== 1 ? 's' : ''}`}
                   </span>
-                  <Badge variant={request.status === 'approved' ? 'default' : request.status === 'rejected' ? 'destructive' : 'secondary'}>
+                  <Badge
+                    variant={
+                      request.status === 'approved'
+                        ? 'default'
+                        : request.status === 'rejected'
+                          ? 'destructive'
+                          : 'secondary'
+                    }
+                  >
                     {request.status}
                   </Badge>
                 </div>
@@ -148,8 +150,7 @@ export function ApproveLeave({ leaveRequests, onApprove, onReject }: ApproveLeav
           ))}
         </ul>
       </div>
-      <Toaster richColors position="top-right" closeButton visibleToasts={9} className='z-50'/>
+      <Toaster richColors position="top-right" closeButton visibleToasts={9} className="z-50" />
     </div>
   )
 }
-

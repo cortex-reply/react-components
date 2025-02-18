@@ -9,42 +9,16 @@ import { RequestLeave } from './RequestLeave'
 import { ApproveLeave } from './ApproveLeave'
 // import { useUser } from './hooks/useUser'
 import { useRouter } from 'next/navigation'
-import { format, parseISO } from 'date-fns';
+import { format, parseISO } from 'date-fns'
+import { Holiday } from '../../model/Holiday'
+import { LeaveRequest } from '../../model/LeaveRequest'
+import { Employee } from '../../model/Employee'
 
-interface Holiday {
-  id: string
-  userId: string
-  userName: string
-  startDate: string
-  endDate: string
-  status: 'approved' | 'requested' | 'rejected'
-  totalDays: number
-  leaveType: 'Full Day' | 'Morning' | 'Afternoon'
-}
-interface LeaveRequest {
-  id: string
-  userId: string
-  userName: string
-  userEmail: string
-  userImage?: string
-  startDate: string
-  endDate: string
-  status: 'requested' | 'approved' | 'rejected'
-  totalDays: number
-  leaveType: 'Full Day' | 'Morning' | 'Afternoon'
-}
-
-interface Employee {
-  id: string
-  name: string
-  email: string
-  image?: string
-}
 interface HolidayTrackerProps {
   holidays: Holiday[]
   leaveApprovals: LeaveRequest[]
   employees: Employee[]
-  currentDate: string; // ISO 8601 string
+  currentDate: string // ISO 8601 string
   currentUser: { grade: string; remainingLeaveDays: number }
   submitLeaveRequest?: (formData: FormData) => Promise<{ success: boolean; message: string }>
   approveLeave: (ids: string[]) => Promise<{ success: boolean; message: string }>
@@ -78,7 +52,7 @@ export function HolidayTracker({
   //   grade: 'manager',
   //   remainingLeaveDays: 20,
   // }
-  const parsedCurrentDate = parseISO(currentDate);
+  const parsedCurrentDate = parseISO(currentDate)
 
   // console.log('parsedCurrentDate:holidayTracker:', parsedCurrentDate)
 

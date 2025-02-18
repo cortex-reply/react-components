@@ -26,7 +26,8 @@ interface Holiday {
 export function CalendarView({ currentDate, setCurrentDate, holidays }: CalendarViewProps) {
   const [selectedDay, setSelectedDay] = useState<Date | null>(null)
 
-  const firstDayOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1).getDay()
+  const firstDayOfMonth =
+    (new Date(currentDate.getFullYear(), currentDate.getMonth(), 1).getDay() + 6) % 7
 
   const days = Array.from({ length: 42 }, (_, i) => {
     const day = new Date(currentDate.getFullYear(), currentDate.getMonth(), i - firstDayOfMonth + 1)
@@ -34,9 +35,7 @@ export function CalendarView({ currentDate, setCurrentDate, holidays }: Calendar
       date: day,
       isCurrentMonth: day.getMonth() === currentDate.getMonth(),
       isToday: day.toDateString() === new Date().toDateString(),
-      holidays: holidays.filter(h => 
-        new Date(h.startDate) <= day && new Date(h.endDate) >= day
-      )
+      holidays: holidays.filter((h) => new Date(h.startDate) <= day && new Date(h.endDate) >= day),
     }
   })
 
@@ -60,7 +59,12 @@ export function CalendarView({ currentDate, setCurrentDate, holidays }: Calendar
         </h1>
         <div className="flex items-center">
           <div className="relative flex items-center rounded-md gap-1 md:items-stretch">
-            <Button onClick={prevMonth} variant="outline" size="icon" className="rounded-l-md border-accent hover:text-accent">
+            <Button
+              onClick={prevMonth}
+              variant="outline"
+              size="icon"
+              className="rounded-l-md border-accent hover:text-accent"
+            >
               <span className="sr-only">Previous month</span>
               <ChevronLeft className="h-5 w-5" aria-hidden="true" />
             </Button>
@@ -71,74 +75,16 @@ export function CalendarView({ currentDate, setCurrentDate, holidays }: Calendar
             >
               Today
             </Button>
-            <Button onClick={nextMonth} variant="outline" size="icon" className="rounded-r-md border-accent hover:text-accent">
+            <Button
+              onClick={nextMonth}
+              variant="outline"
+              size="icon"
+              className="rounded-r-md border-accent hover:text-accent"
+            >
               <span className="sr-only">Next month</span>
               <ChevronRight className="h-5 w-5" aria-hidden="true" />
             </Button>
           </div>
-          {/* <Menu as="div" className="relative ml-4 md:hidden">
-            <Menu.Button className="flex items-center gap-x-1.5 rounded-md bg-white px-3 py-2 text-sm font-semibold text-accent shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50">
-              Month view
-              <ChevronDown className="-mr-1 h-5 w-5 text-gray-400" aria-hidden="true" />
-            </Menu.Button>
-
-            <Menu.Items className="absolute right-0 z-10 mt-3 w-36 origin-top-right overflow-hidden rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
-              <div className="py-1">
-                <Menu.Item>
-                  {({ active }) => (
-                    <a
-                      href="#"
-                      className={cn(
-                        active ? 'bg-gray-100 text-gray-900' : 'text-gray-700',
-                        'block px-4 py-2 text-sm'
-                      )}
-                    >
-                      Day view
-                    </a>
-                  )}
-                </Menu.Item>
-                <Menu.Item>
-                  {({ active }) => (
-                    <a
-                      href="#"
-                      className={cn(
-                        active ? 'bg-gray-100 text-gray-900' : 'text-gray-700',
-                        'block px-4 py-2 text-sm'
-                      )}
-                    >
-                      Week view
-                    </a>
-                  )}
-                </Menu.Item>
-                <Menu.Item>
-                  {({ active }) => (
-                    <a
-                      href="#"
-                      className={cn(
-                        active ? 'bg-gray-100 text-gray-900' : 'text-gray-700',
-                        'block px-4 py-2 text-sm'
-                      )}
-                    >
-                      Month view
-                    </a>
-                  )}
-                </Menu.Item>
-                <Menu.Item>
-                  {({ active }) => (
-                    <a
-                      href="#"
-                      className={cn(
-                        active ? 'bg-gray-100 text-gray-900' : 'text-gray-700',
-                        'block px-4 py-2 text-sm'
-                      )}
-                    >
-                      Year view
-                    </a>
-                  )}
-                </Menu.Item>
-              </div>
-            </Menu.Items>
-          </Menu> */}
         </div>
       </header>
       <div className="shadow ring-1 ring-black ring-opacity-5 lg:flex lg:flex-auto lg:flex-col">
@@ -172,14 +118,14 @@ export function CalendarView({ currentDate, setCurrentDate, holidays }: Calendar
                 key={day.date.toISOString()}
                 className={cn(
                   day.isCurrentMonth ? 'bg-white' : 'bg-gray-50 text-gray-500',
-                  'relative px-3 py-2'
+                  'relative px-3 py-2',
                 )}
               >
                 <time
                   dateTime={day.date.toISOString()}
                   className={cn(
                     'flex h-6 w-6 items-center justify-center rounded-full',
-                    day.isToday && 'bg-indigo-600 font-semibold text-white'
+                    day.isToday && 'bg-indigo-600 font-semibold text-white',
                   )}
                 >
                   {day.date.getDate()}
@@ -188,9 +134,11 @@ export function CalendarView({ currentDate, setCurrentDate, holidays }: Calendar
                   <ol className="mt-2 space-y-1">
                     {day.holidays.map((holiday) => (
                       <li key={holiday.id}>
-                        <div className={`text-xs px-1 py-0.5 rounded ${
-                          holiday.status === 'approved' ? 'border-green-500' : 'border-gray-500'
-                        } border`}>
+                        <div
+                          className={`text-xs px-1 py-0.5 rounded ${
+                            holiday.status === 'approved' ? 'border-green-500' : 'border-gray-500'
+                          } border`}
+                        >
                           {holiday.userName}
                         </div>
                       </li>
@@ -211,16 +159,23 @@ export function CalendarView({ currentDate, setCurrentDate, holidays }: Calendar
                   day.date === selectedDay && 'text-white',
                   !day.date && day.isToday && 'text-indigo-600',
                   day.date !== selectedDay && day.isCurrentMonth && !day.isToday && 'text-gray-900',
-                  day.date !== selectedDay && !day.isCurrentMonth && !day.isToday && 'text-gray-500',
-                  'flex h-14 flex-col px-3 py-2 hover:bg-gray-100 focus:z-10'
+                  day.date !== selectedDay &&
+                    !day.isCurrentMonth &&
+                    !day.isToday &&
+                    'text-gray-500',
+                  'flex h-14 flex-col px-3 py-2 hover:bg-gray-100 focus:z-10',
                 )}
               >
                 <time
                   dateTime={day.date.toISOString()}
                   className={cn(
                     'ml-auto',
-                    day.date === selectedDay && day.isToday && 'flex h-6 w-6 items-center justify-center rounded-full bg-indigo-600',
-                    day.date === selectedDay && !day.isToday && 'flex h-6 w-6 items-center justify-center rounded-full bg-gray-900'
+                    day.date === selectedDay &&
+                      day.isToday &&
+                      'flex h-6 w-6 items-center justify-center rounded-full bg-indigo-600',
+                    day.date === selectedDay &&
+                      !day.isToday &&
+                      'flex h-6 w-6 items-center justify-center rounded-full bg-gray-900',
                   )}
                 >
                   {day.date.getDate()}
@@ -229,9 +184,12 @@ export function CalendarView({ currentDate, setCurrentDate, holidays }: Calendar
                 {day.holidays.length > 0 && (
                   <span className="-mx-0.5 mt-auto flex flex-wrap-reverse">
                     {day.holidays.map((holiday) => (
-                      <span key={holiday.id} className={`mx-0.5 mb-1 h-1.5 w-1.5 rounded-full ${
-                        holiday.status === 'approved' ? 'bg-green-500' : 'bg-gray-500'
-                      }`} />
+                      <span
+                        key={holiday.id}
+                        className={`mx-0.5 mb-1 h-1.5 w-1.5 rounded-full ${
+                          holiday.status === 'approved' ? 'bg-green-500' : 'bg-gray-500'
+                        }`}
+                      />
                     ))}
                   </span>
                 )}
@@ -240,29 +198,6 @@ export function CalendarView({ currentDate, setCurrentDate, holidays }: Calendar
           </div>
         </div>
       </div>
-      {/* {selectedDay && selectedDay.holidays.length > 0 && (
-        <div className="px-4 py-10 sm:px-6 lg:hidden">
-          <ol className="divide-y divide-gray-100 overflow-hidden rounded-lg bg-white text-sm shadow ring-1 ring-black ring-opacity-5">
-            {selectedDay.holidays.map((holiday) => (
-              <li key={holiday.id} className="group flex p-4 pr-6 focus-within:bg-gray-50 hover:bg-gray-50">
-                <div className="flex-auto">
-                  <p className="font-semibold text-gray-900">{holiday.userName}</p>
-                  <time dateTime={holiday.startDate} className="mt-2 flex items-center text-gray-700">
-                    <Clock className="mr-2 h-5 w-5 text-gray-400" aria-hidden="true" />
-                    {new Date(holiday.startDate).toLocaleDateString()} - {new Date(holiday.endDate).toLocaleDateString()}
-                  </time>
-                </div>
-                <a
-                  href="#"
-                  className="ml-6 flex-none self-center rounded-md bg-white px-3 py-2 font-semibold text-gray-900 opacity-0 shadow-sm ring-1 ring-inset ring-gray-300 hover:ring-gray-400 focus:opacity-100 group-hover:opacity-100"
-                >
-                  Edit<span className="sr-only">, {holiday.userName}</span>
-                </a>
-              </li>
-            ))}
-          </ol>
-        </div>
-      )} */}
     </div>
   )
 }

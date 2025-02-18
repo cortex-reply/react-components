@@ -1,32 +1,15 @@
-import React from 'react'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
-import { consolidateHTMLConverters } from '@payloadcms/richtext-lexical'
+import { Holiday } from '../../model/Holiday'
+import { Employee } from '../../model/Employee'
+import { isDayOff } from '@/lib/utils/DaysUtil'
 
 interface HolidayGridProps {
   currentDate: Date
   setCurrentDate: (date: Date) => Promise<{ success: boolean }>
   holidays: Holiday[]
   employees: Employee[]
-}
-
-interface Holiday {
-  id: string
-  userId: string
-  userName: string
-  startDate: string
-  endDate: string
-  status: 'approved' | 'requested' | 'rejected'
-  totalDays: number
-  leaveType: 'Full Day' | 'Morning' | 'Afternoon'
-}
-
-interface Employee {
-  id: string
-  name: string
-  email: string
-  image?: string
 }
 
 function classNames(...classes: string[]) {
@@ -42,17 +25,21 @@ export function HolidayGrid({
   const daysInMonth = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0).getDate()
 
   const prevMonth = () => {
+    console.log('prevMonth')
     setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() - 1, 1))
   }
 
   const nextMonth = () => {
+    console.log('nextMonth')
     setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 1))
   }
   const setToday = () => {
     setCurrentDate(new Date())
   }
 
-  // console.log('currentDate:holidayGrid', currentDate)
+  const getDayInitial = (date: Date) => {
+    return date.toLocaleString('default', { weekday: 'short' }).charAt(0)
+  }
 
   return (
     <div className="px-4 sm:px-6 lg:px-8">
@@ -108,15 +95,26 @@ export function HolidayGrid({
                     Employee
                   </th>
                   {/* Scrollable Header Cells */}
-                  {[...Array(daysInMonth)].map((_, index) => (
-                    <th
-                      key={index}
-                      scope="col"
-                      className="sticky top-0 z-10 border-b border-r border-gray-300 bg-white bg-opacity-75 px-0 py-3.5 text-center text-sm font-semibold text-gray-900 backdrop-blur backdrop-filter"
-                    >
-                      {index + 1}
-                    </th>
-                  ))}
+                  {[...Array(daysInMonth)].map((_, index) => {
+                    const date = new Date(
+                      currentDate.getFullYear(),
+                      currentDate.getMonth(),
+                      index + 1,
+                    )
+
+                    return (
+                      <th
+                        key={index}
+                        scope="col"
+                        className={`sticky top-0 z-10 border-b border-r border-gray-300 bg-white bg-opacity-75 px-0 py-3.5 text-center text-sm font-semibold text-gray-900 backdrop-blur backdrop-filter ${
+                          isDayOff(date) ? 'bg-gray-200' : ''
+                        }`}
+                      >
+                        <div>{getDayInitial(date)}</div>
+                        <div>{index + 1}</div>
+                      </th>
+                    )
+                  })}
                 </tr>
               </thead>
 
@@ -153,6 +151,7 @@ export function HolidayGrid({
                         currentDate.getMonth(),
                         day + 1,
                       )
+
                       const holiday = holidays.find(
                         (h) =>
                           h.userId === employee.id &&
@@ -165,6 +164,7 @@ export function HolidayGrid({
                           className={classNames(
                             employeeIdx !== employees.length - 1 ? 'border-r border-gray-200' : '',
                             'whitespace-nowrap border-r border-gray-200',
+                            isDayOff(date) ? 'bg-gray-200' : '',
                           )}
                         >
                           <div
