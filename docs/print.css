@@ -5,12 +5,12 @@
 @media print {
   @page {
     /* size: 445.5mm 297mm portrait; */
-    size: 330mm 185mm portrait;
+    /* size: 330mm 185mm portrait; */
     /* size: A3 landscape; */
     /* 210 × 297 mm */
     margin-left: 0px;
     margin-right: 0px;
-    margin-top: 0px;
+    margin-top: 2cm;
     margin-bottom: 1cm;
     bleed: 0mm;
     /* marks: crop cross; */
@@ -72,6 +72,10 @@
       text-align: center;
       width: 1cm;
     }
+    body {
+      /* transform: scale(0.8); */
+    }
+    ,
     table,
     figure,
     h1,
@@ -99,6 +103,9 @@
   }
 }
 .normal-page {
+  .prose : {
+    transform: scale(0.8);
+  }
   break-inside: avoid;
   break-after: page;
 }
