@@ -1,31 +1,20 @@
 'use client'
 import React from 'react'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import Image from 'next/image'
 import { LowImpactHero } from '@/components/Heros/LowImpact'
 import { MediumImpactHero } from '@/components/Heros/MediumImpact'
 import { HighImpactHero } from '@/components/Heros/HighImpact'
-import { PostHero } from '@/components/Heros/PostHero'
 import { Header } from '../components/HeaderFooter'
-import { VideoHeader } from '../components/HeaderFooter'
-import logoVideo from '../images/cortex-reply-bw.png'
 import logoLight from '../images/cortex-reply-light.png'
 import logoDark from '../images/cortex-reply-dark.png'
 import { Container, PageShape } from '@/components/Other'
-import { SectionHero } from '@/components/Heros/SectionHero'
 import { type Page, type Media as MediaType } from '@/payload-types'
 import { RichText } from '@/components/Payload/RichText'
 import { cn } from '@/lib/utils/cn'
 import { Footer } from '../components/HeaderFooter'
 import { Media } from '@/components/Payload/Media'
-import {
-  ServiceSection,
-  AboutSection,
-  ContactSection,
-  LocationsSection,
-  BlogList,
-  ServiceDetailSection,
-} from '../sections'
+import { ServiceSection, ContactSection, LocationsSection, BlogList } from '../sections'
+import { SectionHero } from '@/components/Heros/SectionHero'
 
 interface TopSectionProps {
   children: React.ReactNode
@@ -68,10 +57,14 @@ const content = (description: string) => {
 }
 const TopSection: React.FC<TopSectionProps> = ({ children }) => {
   return (
-    <div>
-      <div className="sticky top-0 h-screen">
-        {children}
-        <PageShape className="text-black z-10" position="header" />
+    <div className="bg-white">
+      <div
+        className="relative h-screen text-white bg-black"
+        style={{
+          clipPath: 'polygon(0 0, 100% 0, 100% 85%, 65% 100%, 0% 85%)',
+        }}
+      >
+        <div className="relative z-10">{children}</div>
       </div>
     </div>
   )
@@ -90,33 +83,8 @@ const Dummy = () => {
         <source src="assets/videos/background2.mp4" type="video/mp4" />
         Your browser does not support the video tag.
       </video>
-      {/* <div className="absolute inset-0 bg-primary-900/50" /> */}
-
-      {/* {!isScrolled && !isMenuOpen && (
-          <button
-            className="fixed hidden lg:block top-4 right-4 z-[60] p-2 rounded-full bg-white/10 backdrop-blur-sm transition-all duration-300 hover:bg-white/20"
-            onClick={toggleMenu}
-          >
-           
-              <Menu className="w-6 h-6 text-white" />
-  
-  
-          </button>
-        )}
-         */}
 
       <div className="fixed inset-0 h-full z-10 flex flex-col items-start justify-center text-white px-4">
-        {/* { !isScrolled && !isMenuOpen && <Image
-            src={logoVideo}
-            alt="Cortex Reply Logo"
-            width={720}
-            height={320}
-            className={cn('absolute top-2.5 h-auto w-auto mt-8 hidden lg:block', isMenuOpen && 'lg:hidden')}
-          />} */}
-        {/* <div className="absolute top-1/2vv h-full flex flex-col px-4 items-center justify-center">
-            <h1 className="text-6xl font-bold pt-auto mb-12">{title && title}</h1>
-            <div className="text-3xl mb-8 max-w-2xl">{subtitle && subtitle}</div>
-          </div> */}
         <Container>
           <div className="flex flex-col items-start md:w-1/2 mb-10 z-0 md:mb-0">
             <h1 className="text-5xl md:text-6xl mb-6">Lorum ipsum.</h1>
@@ -134,45 +102,31 @@ const heroes = {
   highImpact: HighImpactHero,
   lowImpact: LowImpactHero,
   mediumImpact: MediumImpactHero,
-  sectionHero: SectionHero,
   dummy: Dummy,
 }
 
 export default function Page({ ...args }) {
   const style = args.style
 
-
   return (
     <div className="relative overflow-y-none scroll-smooth snap-y snap-mandatory">
-      {/* <div className="flex fixed flex-col w-screen h-screen max-h-screen overflow-auto overscroll-contain"> */}
       <Header isMenuOpen={true} logoLight={logoLight} logoDark={logoDark} {...args.header} />
       <RenderHero {...args.hero} />
       <Section theme="light" style={style}>
         <ServiceSection {...args.service} />
       </Section>
-      
+
       <Section theme="dark" style={style} image={args.service.services[0].image}>
         <DummyContent />
       </Section>
-      {/* <Section theme="light" style={style}>
-        <DummyContent />
-      </Section>
-      <Section theme="dark" shape={['left', 'left']}>
-        <DummyContent />
-      </Section> */}
 
-      {/* <Section theme="light" style={style}>
-        <DummyContent />
-      </Section>
-      <Section theme="dark" style={style}>
-        <DummyContent />
-      </Section> */}
       <Section theme="light" style={style}>
         <DummyContent />
-      </Section> 
+      </Section>
+
       <Section theme="dark" style={style}>
         <ContactSection {...args.contact} />
-      </Section> 
+      </Section>
 
       <Section theme="light" style={style}>
         <LocationsSection {...args.contact} />
@@ -253,51 +207,49 @@ interface SectionProps {
   shape?: ('left' | 'right')[]
   theme: 'light' | 'dark' | 'first' | 'last'
   style?: 'scroll' | 'slide' // anything that is fixed
-  image? : MediaType
+  image?: MediaType
   id?: string
 }
 
+export const Section: React.FC<SectionProps> = ({
+  children,
+  theme,
+  style,
 
-
-
-export const Section: React.FC<SectionProps> = ({ children, theme, style, neighbours, shape, image, id }) => {
-
+  id,
+}) => {
   // const actionType = action === 'slide' ? 'sticky' : 'relative'
   const BackgroundImage = (media: MediaType) => {
     return (
       <div className="select-none">
-              {media && typeof media === 'object' && (
-                <Media
-                  fill
-                  imgClassName="z-5 object-cover"
-                  priority={false}
-                  loading="lazy"
-                  resource={media}
-                />
-              )}
-              {media && typeof media === 'string' && (
-                <div>
-                  <Image className="-z-10 object-cover" alt="" fill priority src={media} />
-                </div>
-              )}
-              {/* Overlay  */}
-              {/* <span className="absolute inset-0 bg-gradient-1 from-white/0 to-white dark:from-background/0 dark:to-background"></span> */}
-              
-      
-            </div>
+        {media && typeof media === 'object' && (
+          <Media
+            fill
+            imgClassName="z-5 object-cover"
+            priority={false}
+            loading="lazy"
+            resource={media}
+          />
+        )}
+        {media && typeof media === 'string' && (
+          <div>
+            <Image className="-z-10 object-cover" alt="" fill priority src={media} />
+          </div>
+        )}
+        {/* Overlay  */}
+        {/* <span className="absolute inset-0 bg-gradient-1 from-white/0 to-white dark:from-background/0 dark:to-background"></span> */}
+      </div>
     )
   }
 
-
   if (theme === 'dark' && style === 'slide') {
     return (
-      <section id={id || "next-section"} className="sticky md:top-0 h-screen">
+      <section id={id || 'next-section'} className="sticky md:top-0 h-screen">
         {/* <div className="absolute w-full h-full bg-accent"></div> */}
         <div className="dark pt-0 min-h-[80vh]">
-          <PageShape className="z-10" position="dark-top"/>
+          <PageShape className="z-10" position="dark-top" />
           <div className="relative">
-            <div className="flex items-center bg-black justify-center pt-12"><div className='container'>{children}</div></div>
-            <PageShape className="text-black z-10" position="dark-bottom" />
+            <div className="flex items-center bg-black justify-center pt-12">{children}</div>
           </div>
         </div>
       </section>
@@ -306,14 +258,13 @@ export const Section: React.FC<SectionProps> = ({ children, theme, style, neighb
 
   if (theme === 'light' && style === 'slide') {
     return (
-      <section id={id || "next-section"} className="sticky top-0 light pt-0 h-screen">
+      <section id={id || 'next-section'} className="sticky top-0 light pt-0 h-screen">
         {/* <div className="absolute w-full h-full bg-accent"></div> */}
         <div className="sticky top-0 light pt-0 h-screen">
           <PageShape className="z-10" position="light-top" />
           <div className="relative bg-white">
-            <div className="flex items-center bg-white justify-center pt-12"><div className='container'>{children}</div></div>
+            <div className="flex items-center bg-white justify-center pt-12">{children}</div>
             <div className="h-[200px] bg-white"></div>
-            {/* <PageShape className="text-black z-10" position="light-bottom" /> */}
           </div>
         </div>
       </section>
@@ -322,11 +273,11 @@ export const Section: React.FC<SectionProps> = ({ children, theme, style, neighb
 
   if (theme === 'first') {
     return (
-      <section id={id || "next-section"} className="">
+      <section id={id || 'next-section'} className="">
         {/* <div className="absolute w-full h-full bg-accent"></div> */}
         <div className="sticky top-0 light bg-background pt-6 min-h-[80vh]">
           <div className="relative">
-            <div className="flex items-center justify-center pt-12"><div className='container'>{children}</div></div>
+            <div className="flex items-center justify-center pt-12">{children}</div>
             <PageShape className="text-black z-10" position="bottom-right" />
           </div>
         </div>
@@ -335,132 +286,36 @@ export const Section: React.FC<SectionProps> = ({ children, theme, style, neighb
   }
   if (theme === 'light') {
     return (
-      <section id={id || "next-section"} className="">
+      <section id={id || 'next-section'} className="">
         <div className="sticky top-0 light bg-background min-h-[50vh]">
-          {/* <PageShape className="text-black z-10" position="top" /> */}
-          <div className="flex items-center justify-center"><div className='container'>{children}</div></div>
-          {/* <PageShape className="text-black z-10" position="bottom-right" /> */}
+          <div className="flex items-center justify-center">{children}</div>
         </div>
       </section>
     )
   }
   if (theme === 'dark') {
     return (
-      <section id={id || "next-section"} className="">
-        <div className="sticky top-0 dark min-h-[80vh] bg-white">
-          {/* <BackgroundImage {...image} /> */}
-          <PageShape className="text-black z-10" position="bottom-right" />
-
-          <div className="flex items-center justify-center pt-12 bg-black"><div className='container'>{children}</div></div>
-          <PageShape className="text-accent z-10" position="top" />
+      <section id="next-section">
+        <div className="sticky top-0 dark bg-white overflow-hidden">
+          <div
+            className="flex items-center h-[80vh] justify-center pt-12 bg-black text-white"
+            style={{
+              clipPath: 'polygon(0 15%, 35% 0, 100% 15%, 100% 85%, 65% 100%, 0 85%)',
+            }}
+          >
+            {children}
+          </div>
         </div>
       </section>
     )
   }
   if (theme === 'last') {
     return (
-      <section id={id || "next-section"} className="">
-        <div className="sticky top-0 dark min-h-[80vh] bg-white">
-          {/* <BackgroundImage {...image} /> */}
-          <PageShape className="text-black z-10" position="bottom-right" />
-
-          <div className="flex items-center justify-center pb-12 bg-black min-h-[80vh]"><div className='container'>{children}</div></div>
-          {/* <PageShape className="text-accent z-10" position="top" /> */}
+      <section id={id || 'next-section'} className="">
+        <div className="sticky top-0 dark h-[80vh] bg-white">
+          <div className="flex items-center justify-center pb-12 bg-black">{children}</div>
         </div>
       </section>
     )
   }
-
-  
- // style={{
-    //   backgroundImage: `url(${image?.src})`, // Use the src property from ImageProps
-    //   backgroundSize: 'cover',
-    //   backgroundPosition: 'center',
-    // }}
-
-  //   return (
-  //     <section className="relative">
-  //       {/* <div
-  //         className={cn(
-  //           'absolute mt-[50%] w-full h-full',
-  //           theme === 'dark' ? 'bg-white' : 'bg-black',
-  //         )}
-  //       ></div> */}
-
-  //       {/* <div
-  //         className={cn(
-  //           'flex flex-col md:flex-row items-center justify-between gap-12 px-6 md:px-16 py-16 bg-background',
-  //           theme,
-  //           theme === 'dark' && 'bg-black clip-custom-top-l',
-  //         )}
-  //       > */}
-
-  //       <div className={cn('sticky top-0 light bg-background py-6', theme)}>
-  //         {children}
-  //         {/* <div className="clip-bottom w-full h-[15vh] bg-black"></div> */}
-  //         <style jsx>{`
-  //           .clip-bottom {
-  //             clip-path: polygon(0% 0%, 0% 50%, 100% 100%, 100% 0%);
-  //           }
-  //           .clip-custom-bottom {
-  //             clip-path: polygon(
-  //               0% 0%,
-  //               0% 16.2%,
-  //               0% 83.2%,
-  //               0% 87.3%,
-  //               65.4% 99.6%,
-  //               100% 72.9%,
-  //               100% 16.2%,
-  //               100% 0%
-  //             );
-  //           }
-  //           .clip-custom-top-r {
-  //             clip-path: polygon(
-  //               0% 100%,
-  //               0% 83.8%,
-  //               0% 16.8%,
-  //               0% 12.7%,
-  //               65.4% 0.4%,
-  //               100% 27.1%,
-  //               100% 83.8%,
-  //               100% 100%
-  //             );
-  //           }
-  //           .clip-custom-top-l {
-  //             clip-path: polygon(
-  //               100% 100%,
-  //               100% 83.8%,
-  //               100% 16.8%,
-  //               100% 12.7%,
-  //               34.6% 0.4%,
-  //               0% 27.1%,
-  //               0% 83.8%,
-  //               0% 100%
-  //             );
-  //           }
-  //           .clip-custom-top-bottom {
-  //             clip-path: polygon(
-  //               0% 0%,
-  //               0% 12.7%,
-  //               34.6% 0.4%,
-  //               100% 16.8%,
-  //               100% 83.8%,
-  //               65.4% 99.6%,
-  //               0% 87.3%,
-  //               0% 100%,
-  //               100% 100%,
-  //               100% 83.8%,
-  //               100% 16.8%,
-  //               100% 12.7%,
-  //               65.4% 0.4%,
-  //               0% 27.1%,
-  //               0% 83.8%,
-  //               0% 100%
-  //             );
-  //           }
-  //         `}</style>
-  //       </div>
-  //       {/* { theme === 'dark' &&         <PageShape className="text-black z-10" position="top" /> } */}
-  //     </section>
-  //   )
 }
