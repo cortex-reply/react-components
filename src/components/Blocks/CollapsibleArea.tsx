@@ -1,17 +1,15 @@
+'use client'
 import React from 'react'
 
-import type { CollapsableAreaBlock as CollapsableAreaBlockProps } from '@/payload-types'
+import type { CollapsibleAreaBlock as CollapsibleAreaBlockProps } from '@/payload-types'
 
 import * as Collapsible from '@radix-ui/react-collapsible'
 import { ChevronDownIcon, ChevronUpIcon } from '@radix-ui/react-icons'
 import { cn } from '@/lib/utils/cn'
 import { RichText } from '../Payload/RichText'
 
-export const CollapsableBlock: React.FC<CollapsableAreaBlockProps> = ({ title, richText }) => {
+export const CollapsibleBlock: React.FC<CollapsibleAreaBlockProps> = ({ title, richText }) => {
   const [isOpen, setIsOpen] = React.useState(false)
-
-  console.log('title', title)
-  console.log('richText', richText)
 
   return (
     <div className="border rounded-lg overflow-hidden">

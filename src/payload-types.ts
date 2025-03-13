@@ -225,7 +225,7 @@ export interface Page {
   };
   layout: (
     | CallToActionBlock
-    | CollapsableAreaBlock
+    | CollapsibleAreaBlock
     | ContentBlock
     | MediaBlock
     | ImageBlock
@@ -397,9 +397,9 @@ export interface CallToActionBlock {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "CollapsableAreaBlock".
+ * via the `definition` "CollapsibleAreaBlock".
  */
-export interface CollapsableAreaBlock {
+export interface CollapsibleAreaBlock {
   title?: string | null;
   richText?: {
     root: {
@@ -418,7 +418,7 @@ export interface CollapsableAreaBlock {
   } | null;
   id?: string | null;
   blockName?: string | null;
-  blockType: 'ca';
+  blockType: 'collasibleArea';
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -1144,7 +1144,7 @@ export interface ReusableContent {
   };
   layout: (
     | CallToActionBlock
-    | CollapsableAreaBlock
+    | CollapsibleAreaBlock
     | ContentBlock
     | MediaBlock
     | ImageBlock
@@ -1255,7 +1255,17 @@ export interface Proposition {
       | null;
     media?: (number | null) | Media;
   };
-  layout?: (CallToActionBlock | ContentBlock | MediaBlock | ImageBlock | ArchiveBlock | FeaturesBlock)[] | null;
+  layout?:
+    | (
+        | CallToActionBlock
+        | CollapsibleAreaBlock
+        | ContentBlock
+        | MediaBlock
+        | ImageBlock
+        | ArchiveBlock
+        | FeaturesBlock
+      )[]
+    | null;
   meta?: {
     title?: string | null;
     /**
@@ -1381,7 +1391,7 @@ export interface PublishedPage {
   };
   layout: (
     | CallToActionBlock
-    | CollapsableAreaBlock
+    | CollapsibleAreaBlock
     | ContentBlock
     | MediaBlock
     | ImageBlock
@@ -2106,7 +2116,7 @@ export interface PagesSelect<T extends boolean = true> {
     | T
     | {
         cta?: T | CallToActionBlockSelect<T>;
-        ca?: T | CollapsableAreaBlockSelect<T>;
+        collasibleArea?: T | CollapsibleAreaBlockSelect<T>;
         content?: T | ContentBlockSelect<T>;
         mediaBlock?: T | MediaBlockSelect<T>;
         imageBlock?: T | ImageBlockSelect<T>;
@@ -2179,9 +2189,9 @@ export interface CallToActionBlockSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "CollapsableAreaBlock_select".
+ * via the `definition` "CollapsibleAreaBlock_select".
  */
-export interface CollapsableAreaBlockSelect<T extends boolean = true> {
+export interface CollapsibleAreaBlockSelect<T extends boolean = true> {
   title?: T;
   richText?: T;
   id?: T;
@@ -2434,7 +2444,7 @@ export interface PublishedPagesSelect<T extends boolean = true> {
     | T
     | {
         cta?: T | CallToActionBlockSelect<T>;
-        ca?: T | CollapsableAreaBlockSelect<T>;
+        collasibleArea?: T | CollapsibleAreaBlockSelect<T>;
         content?: T | ContentBlockSelect<T>;
         mediaBlock?: T | MediaBlockSelect<T>;
         imageBlock?: T | ImageBlockSelect<T>;
@@ -2504,7 +2514,7 @@ export interface ReusableContentSelect<T extends boolean = true> {
     | T
     | {
         cta?: T | CallToActionBlockSelect<T>;
-        ca?: T | CollapsableAreaBlockSelect<T>;
+        collasibleArea?: T | CollapsibleAreaBlockSelect<T>;
         content?: T | ContentBlockSelect<T>;
         mediaBlock?: T | MediaBlockSelect<T>;
         imageBlock?: T | ImageBlockSelect<T>;
@@ -3066,6 +3076,7 @@ export interface PropositionsSelect<T extends boolean = true> {
     | T
     | {
         cta?: T | CallToActionBlockSelect<T>;
+        collasibleArea?: T | CollapsibleAreaBlockSelect<T>;
         content?: T | ContentBlockSelect<T>;
         mediaBlock?: T | MediaBlockSelect<T>;
         imageBlock?: T | ImageBlockSelect<T>;
@@ -4014,4 +4025,3 @@ export interface CodeBlock {
 export interface Auth {
   [k: string]: unknown;
 }
-

@@ -9,13 +9,13 @@ import { ContentBlock } from './Content'
 import { MediaBlock } from './MediaBlock'
 import { FeaturesBlock } from './FeaturesBlock'
 import { ReusableContentBlock } from './ReusableContentBlock'
-import { CollapsableBlock } from './CollapsableArea'
+import { CollapsibleBlock } from './CollapsibleArea'
 
 const blockComponents: { [key: string]: React.FC<any> } = {
   content: ContentBlock,
   cta: CallToActionBlock,
   mediaBlock: MediaBlock,
-  collasableBlock: CollapsableBlock,
+  collapsibleArea: CollapsibleBlock,
   imageBlock: MediaBlock,
   features: FeaturesBlock,
   reusableContentBlock: ReusableContentBlock,

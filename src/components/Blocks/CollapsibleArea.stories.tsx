@@ -1,20 +1,20 @@
 import React from 'react'
 import { Meta, StoryObj } from '@storybook/react'
-import { CollapsableBlock } from './CollapsableArea'
+import { CollapsibleBlock } from './CollapsibleArea'
 
-const meta: Meta<typeof CollapsableBlock> = {
-  title: 'Reusable Blocks/CollapsableArea',
-  component: CollapsableBlock,
+const meta: Meta<typeof CollapsibleBlock> = {
+  title: 'Reusable Blocks/CollapsibleArea',
+  component: CollapsibleBlock,
 }
 
 export default meta
-type Story = StoryObj<typeof CollapsableBlock>
+type Story = StoryObj<typeof CollapsibleBlock>
 
-const Template: Story = (args) => <CollapsableBlock {...args} />
+const Template: Story = (args) => <CollapsibleBlock {...args} />
 
 export const Default: Story = Template.bind({})
 Default.args = {
-  title: 'Collapsable Area',
+  title: 'Collapsible Area',
   richText: {
     root: {
       children: [
