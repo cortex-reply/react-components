@@ -24,6 +24,7 @@ export const Blogs: React.FC<{
     autoplaySpeed: 5000,
     nextArrow: <></>,
     prevArrow: <></>,
+    rtl: true,
     slidesToShow: 3.3, // Allows last slide to be partially visible,
     Infinity: false,
     dotsClass: 'slick-dots !text-left -left-px bottom-[-65px]',
@@ -103,7 +104,7 @@ export const Blogs: React.FC<{
             >
               {blogs?.map(({ image, content, link, name, title }, index) => (
                 <div
-                  className={`pr-4 ${index === 0 ? 'pl-2' : 'pl-4'} max-h-[650px] overflow-y-auto h-full`}
+                  className={`pr-4 ${index === 0 ? 'pl-2' : 'pl-4'} max-h-[650px] overflow-hidden h-full`}
                   key={`blogs-${name}`}
                 >
                   <FeatureCard
