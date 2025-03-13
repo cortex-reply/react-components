@@ -176,7 +176,7 @@
   text-align: center;
 
   opacity: 0.25;
-  @apply text-black dark:text-white;
+  @apply text-gray-400 dark:text-white;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }

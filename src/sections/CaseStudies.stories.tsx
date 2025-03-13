@@ -1,7 +1,7 @@
 import React from 'react'
 import type { Meta, StoryObj } from '@storybook/react'
 import { CaseStudies } from './CaseStudies'
-import Case_Studies_BG from '../images/case-studies/Case-Studies-bg.png'
+import Case_Studies_BG from '../../.storybook/public/image-post1.webp'
 
 const caseStudies = [
   {
