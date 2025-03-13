@@ -78,28 +78,22 @@ import { LowImpactHero } from '@/components/Heros/LowImpact'
 import { MediumImpactHero } from '@/components/Heros/MediumImpact'
 import { HighImpactHero } from '@/components/Heros/HighImpact'
 import { PostHero } from '@/components/Heros/PostHero'
-import { SectionHero } from '@/components/Heros/SectionHero'
 
 import logoLight from '../images/cortex-reply-light.png'
 import logoDark from '../images/cortex-reply-dark.png'
 import { BlogDetail } from '../sections/BlogDetail'
 export default function WebsiteSection({ ...args }) {
   return (
-
     <div>
+      <Header isMenuOpen={true} logoLight={logoLight} logoDark={logoDark} />
+      {/* <HeaderMobile isMenuOpen={true} logoLight={logoLight} logoDark={logoDark} {...args.header}/> */}
 
+      {/* Hero Section */}
 
-              <Header isMenuOpen={true} logoLight={logoLight} logoDark={logoDark} />
-              {/* <HeaderMobile isMenuOpen={true} logoLight={logoLight} logoDark={logoDark} {...args.header}/> */}
-
-
-        {/* Hero Section */}
-        
-
-        {/* <main> */}
-         <PostHero {...args.hero} />
-         <BlogDetail className="!pb-0" {...args.blog} />
-         {/* </main> */}
-         </div>
+      {/* <main> */}
+      <PostHero {...args.hero} />
+      <BlogDetail className="!pb-0" {...args.blog} />
+      {/* </main> */}
+    </div>
   )
 }

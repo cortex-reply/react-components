@@ -134,13 +134,12 @@ const heroes = {
   highImpact: HighImpactHero,
   lowImpact: LowImpactHero,
   mediumImpact: MediumImpactHero,
-  sectionHero: SectionHero,
+  // sectionHero: SectionHero,
   dummy: Dummy,
 }
 
 export default function Page({ ...args }) {
   const style = args.style
-
 
   return (
     <div className="relative overflow-y-none scroll-smooth snap-y snap-mandatory">
@@ -150,7 +149,7 @@ export default function Page({ ...args }) {
       <Section theme="light" style={style}>
         <ServiceSection {...args.service} />
       </Section>
-      
+
       <Section theme="dark" style={style} image={args.service.services[0].image}>
         <DummyContent />
       </Section>
@@ -160,7 +159,6 @@ export default function Page({ ...args }) {
       <Section theme="dark" shape={['left', 'left']}>
         <DummyContent />
       </Section> */}
-
       {/* <Section theme="light" style={style}>
         <DummyContent />
       </Section>
@@ -169,19 +167,20 @@ export default function Page({ ...args }) {
       </Section> */}
       <Section theme="light" style={style}>
         <DummyContent />
-      </Section> 
+      </Section>
       <Section theme="dark" style={style}>
         <ContactSection {...args.contact} />
-      </Section> 
-
-      <Section theme="light" style={style}>
-        <LocationsSection {...args.contact} />
       </Section>
-
-      <Section theme="last" style={style}>
-        <BlogList {...args.blog} />
-      </Section>
-
+      <div className="-mt-1">
+        <Section theme="light" style={'scroll'}>
+          <LocationsSection {...args.contact} />
+        </Section>
+      </div>
+      <div className="-mb-1">
+        <Section theme="last" style={style}>
+          <BlogList {...args.blog} />
+        </Section>
+      </div>
       {/* <div className="bottom-0"> */}
       <Footer {...args.footer} />
       {/* </div> */}
@@ -253,50 +252,56 @@ interface SectionProps {
   shape?: ('left' | 'right')[]
   theme: 'light' | 'dark' | 'first' | 'last'
   style?: 'scroll' | 'slide' // anything that is fixed
-  image? : MediaType
+  image?: MediaType
   id?: string
 }
 
-
-
-
-export const Section: React.FC<SectionProps> = ({ children, theme, style, neighbours, shape, image, id }) => {
-
+export const Section: React.FC<SectionProps> = ({
+  children,
+  theme,
+  style,
+  neighbours,
+  shape,
+  image,
+  id,
+}) => {
   // const actionType = action === 'slide' ? 'sticky' : 'relative'
   const BackgroundImage = (media: MediaType) => {
     return (
       <div className="select-none">
-              {media && typeof media === 'object' && (
-                <Media
-                  fill
-                  imgClassName="z-5 object-cover"
-                  priority={false}
-                  loading="lazy"
-                  resource={media}
-                />
-              )}
-              {media && typeof media === 'string' && (
-                <div>
-                  <Image className="-z-10 object-cover" alt="" fill priority src={media} />
-                </div>
-              )}
-              {/* Overlay  */}
-              {/* <span className="absolute inset-0 bg-gradient-1 from-white/0 to-white dark:from-background/0 dark:to-background"></span> */}
-              
-      
-            </div>
+        {media && typeof media === 'object' && (
+          <Media
+            fill
+            imgClassName="z-5 object-cover"
+            priority={false}
+            loading="lazy"
+            resource={media}
+          />
+        )}
+        {media && typeof media === 'string' && (
+          <div>
+            <Image className="-z-10 object-cover" alt="" fill priority src={media} />
+          </div>
+        )}
+        {/* Overlay  */}
+        {/* <span className="absolute inset-0 bg-gradient-1 from-white/0 to-white dark:from-background/0 dark:to-background"></span> */}
+      </div>
     )
   }
 
-
   if (theme === 'dark' && style === 'slide') {
     return (
-      <section id={id || "next-section"} className="sticky md:top-0 h-screen">
+      <section
+        id={id || 'next-section'}
+        className="sticky md:top-[-500px] min-h-screen bg-transparent"
+      >
         {/* <div className="absolute w-full h-full bg-accent"></div> */}
         <div className="dark pt-0 min-h-[80vh]">
-          <PageShape className="z-10" position="dark-top"/>
+          <PageShape className="z-10" position="dark-top" />
           <div className="relative">
-            <div className="flex items-center bg-black justify-center pt-12"><div className='container'>{children}</div></div>
+            <div className="flex items-center bg-black justify-center pt-12">
+              <div className="container">{children}</div>
+            </div>
             <PageShape className="text-black z-10" position="dark-bottom" />
           </div>
         </div>
@@ -306,12 +311,14 @@ export const Section: React.FC<SectionProps> = ({ children, theme, style, neighb
 
   if (theme === 'light' && style === 'slide') {
     return (
-      <section id={id || "next-section"} className="sticky top-0 light pt-0 h-screen">
+      <section id={id || 'next-section'} className="sticky top-0 light pt-0 min-h-screen bg-white">
         {/* <div className="absolute w-full h-full bg-accent"></div> */}
         <div className="sticky top-0 light pt-0 h-screen">
           <PageShape className="z-10" position="light-top" />
           <div className="relative bg-white">
-            <div className="flex items-center bg-white justify-center pt-12"><div className='container'>{children}</div></div>
+            <div className="flex items-center bg-white justify-center pt-12">
+              <div className="container">{children}</div>
+            </div>
             <div className="h-[200px] bg-white"></div>
             {/* <PageShape className="text-black z-10" position="light-bottom" /> */}
           </div>
@@ -322,11 +329,13 @@ export const Section: React.FC<SectionProps> = ({ children, theme, style, neighb
 
   if (theme === 'first') {
     return (
-      <section id={id || "next-section"} className="">
+      <section id={id || 'next-section'} className="">
         {/* <div className="absolute w-full h-full bg-accent"></div> */}
         <div className="sticky top-0 light bg-background pt-6 min-h-[80vh]">
           <div className="relative">
-            <div className="flex items-center justify-center pt-12"><div className='container'>{children}</div></div>
+            <div className="flex items-center justify-center pt-12">
+              <div className="container">{children}</div>
+            </div>
             <PageShape className="text-black z-10" position="bottom-right" />
           </div>
         </div>
@@ -335,10 +344,12 @@ export const Section: React.FC<SectionProps> = ({ children, theme, style, neighb
   }
   if (theme === 'light') {
     return (
-      <section id={id || "next-section"} className="">
+      <section id={id || 'next-section'} className="">
         <div className="sticky top-0 light bg-background min-h-[50vh]">
           {/* <PageShape className="text-black z-10" position="top" /> */}
-          <div className="flex items-center justify-center"><div className='container'>{children}</div></div>
+          <div className="flex items-center justify-center">
+            <div className="container">{children}</div>
+          </div>
           {/* <PageShape className="text-black z-10" position="bottom-right" /> */}
         </div>
       </section>
@@ -346,12 +357,14 @@ export const Section: React.FC<SectionProps> = ({ children, theme, style, neighb
   }
   if (theme === 'dark') {
     return (
-      <section id={id || "next-section"} className="">
+      <section id={id || 'next-section'} className="">
         <div className="sticky top-0 dark min-h-[80vh] bg-white">
           {/* <BackgroundImage {...image} /> */}
           <PageShape className="text-black z-10" position="bottom-right" />
 
-          <div className="flex items-center justify-center pt-12 bg-black"><div className='container'>{children}</div></div>
+          <div className="flex items-center justify-center pt-12 bg-black">
+            <div className="container">{children}</div>
+          </div>
           <PageShape className="text-accent z-10" position="top" />
         </div>
       </section>
@@ -359,24 +372,25 @@ export const Section: React.FC<SectionProps> = ({ children, theme, style, neighb
   }
   if (theme === 'last') {
     return (
-      <section id={id || "next-section"} className="">
+      <section id={id || 'next-section'} className="">
         <div className="sticky top-0 dark min-h-[80vh] bg-white">
           {/* <BackgroundImage {...image} /> */}
           <PageShape className="text-black z-10" position="bottom-right" />
 
-          <div className="flex items-center justify-center pb-12 bg-black min-h-[80vh]"><div className='container'>{children}</div></div>
+          <div className="flex items-center justify-center pb-12 bg-black min-h-[80vh]">
+            <div className="container">{children}</div>
+          </div>
           {/* <PageShape className="text-accent z-10" position="top" /> */}
         </div>
       </section>
     )
   }
 
-  
- // style={{
-    //   backgroundImage: `url(${image?.src})`, // Use the src property from ImageProps
-    //   backgroundSize: 'cover',
-    //   backgroundPosition: 'center',
-    // }}
+  // style={{
+  //   backgroundImage: `url(${image?.src})`, // Use the src property from ImageProps
+  //   backgroundSize: 'cover',
+  //   backgroundPosition: 'center',
+  // }}
 
   //   return (
   //     <section className="relative">

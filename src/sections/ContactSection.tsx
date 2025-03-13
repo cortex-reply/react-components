@@ -72,14 +72,12 @@ export function ContactSection(contactSectionData: ContactSectionProps) {
 }
 export function LocationsSection(contactSectionData: ContactSectionProps) {
   return (
-    <div className="">
+    <div className="h-full">
       <div className="mx-auto max-w-7xl px-6 lg:px-8">
         <div className="mx-auto max-w-2xl space-y-16 divide-y divide-gray-100 lg:mx-0 lg:max-w-none">
           <div className="grid grid-cols-1 gap-10 pt-16 lg:grid-cols-3">
             <div>
-              <h2 className="text-pretty text-4xl text-primary">
-                Locations
-              </h2>
+              <h2 className="text-pretty text-4xl text-primary">Locations</h2>
               <p className="mt-4 text-base/7 text-foreground">
                 We have multiple locations across the UK.
               </p>

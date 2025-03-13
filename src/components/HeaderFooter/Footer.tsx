@@ -37,10 +37,7 @@ export interface FooterSectionProps {
     links: LinkProps[]
   }
   columnTwo: {
-    title: string
-    location: string
-    mails: string[]
-    phoneNumbers: string[]
+    contactUs: SocialLinkProps[]
   }
   columnThree: {
     title: string
@@ -52,12 +49,7 @@ export interface FooterSectionProps {
   }
 }
 
-const socialIconClasses = cn(
-  'text-base/[1.75] transition-transform duration-350 hover:-translate-y-1 block px-4',
-)
-const titleClasses = cn(
-  'text-gray-900 dark:text-white  text-md font-bold  leading-[1.25] md:text-lg mb-5 md:mb-[1.875rem]',
-)
+const titleClasses = cn('text-brand-green text-md leading-[1.25] md:text-lg mb-5 md:mb-[1.5rem]')
 const addressIconParentClasses = cn(
   'w-10 h-10 rounded-5 inline-grid place-items-center dark:bg-accent-700 border border-accent-800 dark:border-transparent text-accent flex-none',
 )
@@ -68,26 +60,23 @@ export function Footer({ className, footerData, logoLight, logoDark }: SectionPr
   const { about, columnOne, columnTwo, columnThree, footerBottom } = footerData
   return (
     <footer
-      className={cn(
-        'sticky z-2 flex flex-col dark bg-black overflow-hidden pt-12',
-        className,
-      )}
+      className={cn('sticky z-2 flex flex-col dark bg-black overflow-hidden pt-12', className)}
     >
       <div className="py-16 md:py-20">
         <div className="container">
-          <div className="grid gap-10 md:grid-cols-2  xl:grid-cols-4">
+          <BrandLogo logoDark={logoDark} logoLight={logoLight} />
+          <div className="mt-7 grid gap-10 md:grid-cols-2 xl:grid-cols-3">
             {/* About  */}
             <div data-aos="fade-up" data-aos-delay="200">
-              <BrandLogo logoDark={logoDark} logoLight={logoLight}/>
-              <p className="mb-7 mt-3">{about.description}</p>
+              <p className="mb-7 text-white max-w-[280px]">{about.description}</p>
               {about.socialLinks && about.socialLinks.length > 0 && (
                 <nav aria-label="social links">
-                  <ul className="inline-flex min-h-[50px] items-center divide-x rounded-5 bg-accent  text-white">
+                  <ul className="inline-flex min-h-[50px] items-center rounded-5 text-white gap-2">
                     {about.socialLinks.map((socialLink, index) => (
-                      <li key={index}>
+                      <li key={index} className="bg-brand-green rounded-full p-3">
                         <CustomLink
                           aria-label={socialLink.href}
-                          className={socialIconClasses}
+                          className={'text-2xl'}
                           href={socialLink.href}
                           openNewTab
                         >
@@ -105,19 +94,10 @@ export function Footer({ className, footerData, logoLight, logoDark }: SectionPr
               <h3 className={titleClasses}>{columnOne.title}</h3>
               {columnOne.links && columnOne.links.length > 0 && (
                 <nav aria-label="footer links navigation">
-                  <ul className="grid gap-2">
+                  <ul className="grid gap-4">
                     {columnOne.links.map((link) => (
-                      <li key={link.label} className="flex items-center gap-2.5">
-                        <span className="flex-none text-sm/[1] text-gray-900 dark:text-white">
-                          <FaChevronRight />
-                        </span>
-                        <CustomLink
-                          href={link.href}
-                          openNewTab={link.openNewTab}
-                          className={textColor}
-                        >
-                          {link.label}
-                        </CustomLink>
+                      <li key={link.label} className="flex items-center text-white gap-2.5">
+                        {link.label}
                       </li>
                     ))}
                   </ul>
@@ -127,98 +107,27 @@ export function Footer({ className, footerData, logoLight, logoDark }: SectionPr
 
             {/* Column Two  */}
             <div data-aos="fade-up" data-aos-delay="600">
-              <h3 className={titleClasses}>{columnTwo.title}</h3>
               <ul aria-label="addresses" className="grid gap-5">
-                <li className={addressItemClasses}>
-                  <span className={addressIconParentClasses}>
-                    <FaPaperPlane />
-                  </span>
-                  <address className="not-italic">{columnTwo.location}</address>
-                </li>
-                <li className={addressItemClasses}>
-                  <span className={addressIconParentClasses}>
-                    <FaEnvelope />
-                  </span>
-                  {columnTwo.mails && columnTwo.mails.length > 0 && (
-                    <div className="grid gap-1">
-                      {columnTwo.mails.map((mail, index) => (
-                        <a key={index} href={`mailto:${mail}`} className={textColor}>
-                          {mail}
-                        </a>
-                      ))}
-                    </div>
-                  )}
-                </li>
-                {columnTwo.phoneNumbers && columnTwo.phoneNumbers.length > 0 && (
-                  <li className={addressItemClasses}>
-                    <span className={addressIconParentClasses}>
-                      <FaPhone />
-                    </span>
-
-                    <div className="grid gap-1">
-                      {columnTwo.phoneNumbers.map((phoneNumber, index) => (
-                        <a
-                          key={index}
-                          href={`tel:${phoneNumber.split(' ').join('')}`}
-                          className={textColor}
-                        >
-                          {phoneNumber}
-                        </a>
-                      ))}
-                    </div>
-                  </li>
+                {columnTwo.contactUs && columnTwo.contactUs.length > 0 && (
+                  <ul className="grid gap-2">
+                    {columnTwo.contactUs.map((item, index) => (
+                      <li key={index} className="flex items-center text-white gap-3">
+                        <span key={index} className="bg-brand-green rounded-full p-3 text-2xl">
+                          {item.icon}
+                        </span>
+                        <span className="max-w-56">{item.href}</span>
+                      </li>
+                    ))}
+                  </ul>
                 )}
               </ul>
             </div>
-
-            {/* Column three  */}
-            {columnThree && (
-              <div data-aos="fade-up" data-aos-delay="800">
-                <h3 className={titleClasses}>{columnThree.title}</h3>
-                {columnThree.blogs && columnThree.blogs.length > 0 && (
-                  <div className="grid gap-6">
-                    {columnThree.blogs.map((blog, index) => (
-                      <article
-                        key={index}
-                        className="group flex items-center gap-4 text-accent-800  dark:text-white"
-                      >
-                        <div className="flex-none overflow-hidden rounded-5">
-                          <Image
-                            {...blog.image}
-                            alt={blog.image.alt}
-                            width={80}
-                            height={80}
-                            className="object-cover transition-transform duration-700 group-hover:scale-105"
-                          />
-                        </div>
-                        <div>
-                          <p className="flex items-center gap-2.5 dark:text-body">
-                            <span className="text-accent">
-                              <FaCalendarDays />
-                            </span>
-                            <span>{formatDateTimeStringCompact(blog.date)}</span>
-                          </p>
-                          <h4 className="text-md leading-normal">
-                            <CustomLink
-                              href={blog.slug}
-                              className="transition-colors duration-300 hover:text-accent"
-                            >
-                              {blog.title}
-                            </CustomLink>
-                          </h4>
-                        </div>
-                      </article>
-                    ))}
-                  </div>
-                )}
-              </div>
-            )}
           </div>
         </div>
       </div>
       <div className="flex min-h-[90px] items-center border-t border-accent-800 border-opacity-20 py-5 dark:border-body dark:border-opacity-20">
         <div className="container">
-          <div className="flex flex-wrap items-center text-xs justify-between gap-x-8 gap-y-4 md:gap-x-10">
+          <div className="flex flex-wrap items-center text-xs justify-between gap-x-8 gap-y-4 md:gap-x-10 text-gray-400">
             <p>{footerBottom.copyrightText}</p>
             {footerBottom.links && footerBottom.links.length > 0 && (
               <nav aria-label="footer bottom navigation">

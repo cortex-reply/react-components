@@ -1,12 +1,15 @@
 import { Post, Media } from '@/payload-types'
 import { formatDateTimeStringShort } from '@/lib/utils/formatDateTime'
-import { SectionHeading, type SectionHeadingWithoutStylingProps } from '@/components/HeaderFooter/SectionHeading'
+import {
+  SectionHeading,
+  type SectionHeadingWithoutStylingProps,
+} from '@/components/HeaderFooter/SectionHeading'
 import { Container } from '@/components/Other/Container'
 import { cn } from '@/lib/utils/cn'
 import { getStaggeredDelay } from '@/lib/utils/setStaggeredDelay'
 import { CustomLink } from '@/components/Other/CustomLink'
 import Image, { ImageProps } from 'next/image'
-import { FaArrowRight,  FaUser } from 'react-icons/fa6'
+import { FaArrowRight, FaUser } from 'react-icons/fa6'
 
 interface BlogProps {
   image: Omit<ImageProps, 'width' | 'height'>
@@ -26,39 +29,47 @@ export interface BlogSectionProps {
   base?: string // base path for the blogs
 }
 
-export function BlogList({ blogs,sectionHeading, base='insights'  }: BlogSectionProps) { 
+export function BlogList({ blogs, sectionHeading, base = 'insights' }: BlogSectionProps) {
   console.log(blogs)
   return (
-  
-      <Container>
-        <div className="">
-          { sectionHeading && (<div data-aos="fade-up" data-aos-delay="100">
+    <Container>
+      <div className="">
+        {sectionHeading && (
+          <div data-aos="fade-up" data-aos-delay="100">
             <SectionHeading {...sectionHeading} alignment="start" hasBottomSpacing />
-          </div>)
-}
-        </div>
-        {blogs && blogs.length > 0 && (
-          <div className="-mx-4 flex flex-wrap justify-start gap-y-4">
-            {blogs.map((blog, index) => (
-              <div
-                key={index}
-                data-aos="fade-up"
-                data-aos-delay={getStaggeredDelay([200, 400, 600], index)}
-                className="w-full h-full md:w-1/2 md:px-4 lg:w-1/3"
-              >
-                <BlogCard {...blog} base={base}/>
-              </div>
-            ))}
           </div>
         )}
-      </Container>
+      </div>
+      {blogs && blogs.length > 0 && (
+        <div className="-mx-4 flex flex-wrap justify-start gap-y-4">
+          {blogs.map((blog, index) => (
+            <div
+              key={index}
+              data-aos="fade-up"
+              data-aos-delay={getStaggeredDelay([200, 400, 600], index)}
+              className="w-full h-full md:w-1/2 md:px-4 lg:w-1/3"
+            >
+              <BlogCard {...blog} base={base} />
+            </div>
+          ))}
+        </div>
+      )}
+    </Container>
   )
 }
 
 const inlineFlexLayoutClasses = cn('inline-flex items-center gap-2 text-white')
 const iconClasses = cn('text-sm text-white')
 
-export function BlogCard({ slug, meta, authors, title, publishedAt: date, categories, base }: Partial<Post> & { base: string }) {
+export function BlogCard({
+  slug,
+  meta,
+  authors,
+  title,
+  publishedAt: date,
+  categories,
+  base,
+}: Partial<Post> & { base: string }) {
   return (
     <article className="group/blog relative z-1 flex h-full min-h-[452px] flex-col  overflow-hidden rounded-5 p-0">
       <span className="absolute inset-0 z-[2] "></span>
@@ -100,20 +111,17 @@ export function BlogCard({ slug, meta, authors, title, publishedAt: date, catego
         {date && (
           <div>
             <div className="inline-grid w-full items-center justify-center rounded-5 bg-background/40 px-4 py-3 text-center font-secondary text-md font-bold text-foreground transition-colors group-hover/blog:bg-accent group-hover/blog:text-accent-foreground md:text-lg">
-            <time dateTime={date} className="text-foreground">
-              <span className="block">
-                {formatDateTimeStringShort(date)}
-              </span>
-              {/* <span className="block">
+              <time dateTime={date} className="text-foreground">
+                <span className="block">{formatDateTimeStringShort(date)}</span>
+                {/* <span className="block">
                 {formatDateTimeStringCompact(date).split(' ')[1]} {formatDateTimeStringCompact(date).split(' ')[2]}
               </span> */}
-          </time>
+              </time>
             </div>
           </div>
         )}
         <div className="mt-auto space-y-2 text-white md:space-y-5">
           <div className="inline-flex flex-wrap items-center gap-x-5 gap-y-2">
-
             {/* {authors && authors.map((author, index) => (
             <div className="relative flex items-center gap-x-4" key={index}>
               {author.image ? (
