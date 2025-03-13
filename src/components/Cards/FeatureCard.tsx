@@ -19,6 +19,8 @@ interface FeatureCardProps extends Section {
   link?: Section['link'] & {
     label: string
   }
+  imageClassName?: string
+  contentClassName?: string
 }
 
 //   variant?: 'solid' | 'outline' | 'gradient' | 'radial' | 'light'
@@ -48,6 +50,8 @@ export function FeatureCard({
   link,
   // variant = 'outline',
   className,
+  imageClassName = '',
+  contentClassName = '',
   // icon,
   // iconSize = 'large',
   // width = 'auto',
@@ -74,14 +78,15 @@ export function FeatureCard({
     auto: 'w-full',
   }
 
-console.log('image', image)
+  console.log('image', sizes)
 
   return (
     <div
       className={cn(
         'min-w-56 max-w-xl h-full flex flex-col group',
         image ? 'p-0 md:p-0' : 'p-8 md:p-8',
-        settings && !image &&
+        settings &&
+          !image &&
           variants[
             settings?.card === 'default' ? 'solid' : (settings?.card as keyof typeof variants)
           ],
@@ -96,7 +101,7 @@ console.log('image', image)
     >
       {/* Image Section */}
       {image && (
-        <div className="relative h-64 w-full mb-0">
+        <div className={`relative h-64 w-full mb-0 ${imageClassName}`}>
           <Image
             src={image.url || '/placeholder.svg'}
             alt={image.alt || 'card header image'}
@@ -109,7 +114,13 @@ console.log('image', image)
 
       {/* Body */}
 
-      <div className={cn(image ? 'p-4 pb-8 md:px-12' : 'p-0 md:p-0', 'flex flex-col flex-grow')}>
+      <div
+        className={cn(
+          image ? 'p-4 pb-8 md:px-12' : 'p-0 md:p-0',
+          'flex flex-col flex-grow',
+          contentClassName,
+        )}
+      >
         {subtitle && <div className="mb-4 text-primary uppercase font-light">{subtitle}</div>}
 
         {/* Header Section */}
@@ -143,32 +154,28 @@ console.log('image', image)
 
         {/* Content Section */}
         {content && typeof content === 'object' && (
-            <RichText
-              enableGutter={false}
-              content={content}
-              enableProse={false}
-              className={
-                cn(
-                  'space-y-6',
-                  settings?.card === 'outline' || settings?.card === 'light'
-                    ? 'prose prose-headings:text-foreground prose-p:text-foreground'
-                    : 'prose prose-headings:text-white prose-p:text-gray-100',
-                    image && 'prose prose-headings:text-background prose-p:text-background')
-                
-              }
-            />
-        )}
-        {content && typeof content === 'string' && (
-          <div
-          className={
-            cn(
+          <RichText
+            enableGutter={false}
+            content={content}
+            enableProse={false}
+            className={cn(
               'space-y-6',
               settings?.card === 'outline' || settings?.card === 'light'
                 ? 'prose prose-headings:text-foreground prose-p:text-foreground'
                 : 'prose prose-headings:text-white prose-p:text-gray-100',
-                image && 'prose prose-headings:text-background prose-p:text-background')
-            
-          }
+              image && 'prose prose-headings:text-background prose-p:text-background',
+            )}
+          />
+        )}
+        {content && typeof content === 'string' && (
+          <div
+            className={cn(
+              'space-y-6',
+              settings?.card === 'outline' || settings?.card === 'light'
+                ? 'prose prose-headings:text-foreground prose-p:text-foreground'
+                : 'prose prose-headings:text-white prose-p:text-gray-100',
+              image && 'prose prose-headings:text-background prose-p:text-background',
+            )}
           >
             {content}
           </div>
@@ -225,7 +232,7 @@ const IconLocation = ({
           className={cn(
             'font-semibold',
             variant === 'outline' || variant === 'light' ? 'text-primary' : 'text-white',
-            iconSize === 'small' ? 'text-2xl' : 'text-3xl'
+            iconSize === 'small' ? 'text-2xl' : 'text-3xl',
           )}
         >
           {heading}
@@ -235,7 +242,7 @@ const IconLocation = ({
             className={cn(
               'rounded-full p-0 transform group-hover:scale-110 transition-transform duration-400',
               variant === 'outline' || variant === 'light' ? 'text-primary' : 'text-white',
-              iconSize === 'small' ? 'mt-2' : ''
+              iconSize === 'small' ? 'mt-2' : '',
             )}
           >
             <DynamicIcon type={icon.type} iconName={icon.iconName} size="2x" />

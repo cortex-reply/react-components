@@ -98,7 +98,6 @@ export const PageShape: React.FC<PageShapeProps> = ({ position, className = '' }
       </div>
     )
   }
-
   if (position === 'dark-bottom') {
     // bottom of a white section
     return (
