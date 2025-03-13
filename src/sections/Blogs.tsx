@@ -58,8 +58,8 @@ export const Blogs: React.FC<{
       </div>
       {blogs && blogs?.length > 0 && (
         <>
-          <div className="pt-4 md:pt-40 pr-12 flex flex-row justify-end items-center gap-2 mb-12 text-red ">
-            <div onClick={previous} className="cursor-pointer ">
+          <div className="pt-4 md:pt-40 pr-12 flex flex-row justify-end items-center gap-2 mb-12 !z-50 text-primary">
+            <div onClick={previous} className="cursor-pointer !z-50">
               <svg
                 width="50"
                 height="20"
@@ -76,7 +76,7 @@ export const Blogs: React.FC<{
                 />
               </svg>
             </div>
-            <div onClick={next} className="cursor-pointer ">
+            <div onClick={next} className="cursor-pointer !z-50">
               <svg
                 width="50"
                 height="20"
