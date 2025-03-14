@@ -63,5 +63,5 @@ export default meta
 type Story = StoryObj<typeof Blogs>
 
 export const Default: Story = {
-  render: (args) => <Blogs bgImage={BG} blogs={blogs} />,
+  render: (args) => <Blogs title="Latest News And Insights" bgImage={BG} blogs={blogs} />,
 }

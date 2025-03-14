@@ -46,13 +46,13 @@ export const OurClients: React.FC<{
     <AnimatePresence>
       {clients && clients?.length > 0 && (
         <Container className="w-full pt-16 pb-20 md:pb-12 intersect-once intersect:animate-flip-up opacity-0 intersect:opacity-100 intersect:animate-duration-500">
-          <h2 className="text-center text-3xl md:text-5xl text-primary mb-16 text-center w-full">
+          <h2 className="text-3xl md:text-5xl text-primary mb-16 text-center w-full">
             Our Clients
           </h2>
           <Slider {...settings}>
             {clients?.map(({ name, logo }) => (
               <div key={`clinet-${name}`} className="flex justify-center items-center">
-                <Image src={logo} alt={name} height={200} width={200} className="mx-auto" />
+                <Image src={logo} alt={name} className="!h-[80px] !w-[200px]" />
               </div>
             ))}
           </Slider>
