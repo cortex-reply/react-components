@@ -24,9 +24,9 @@ export const Blogs: React.FC<{
     autoplaySpeed: 5000,
     nextArrow: <></>,
     prevArrow: <></>,
-    rtl: true,
-    slidesToShow: 3.3, // Allows last slide to be partially visible,
+    slidesToShow: 3.3,
     Infinity: false,
+    rtl: true,
     dotsClass: 'slick-dots !text-left -left-px bottom-[-65px]',
     responsive: [
       {
@@ -95,7 +95,7 @@ export const Blogs: React.FC<{
               </svg>
             </div>
           </div>
-          <div className=" overflow-hidden md:ml-24 max-w-full ml-0 h-[80dvh]">
+          <div className=" overflow-hidden md:ml-24  max-w-full ml-0 h-[80dvh]">
             <Slider
               ref={(slider: any) => {
                 sliderRef = slider
@@ -109,7 +109,7 @@ export const Blogs: React.FC<{
                 >
                   <FeatureCard
                     imageClassName="!h-[150px]"
-                    className="bg-background prose-p:text-foreground md:min-h-[400px] min-h-[350px]"
+                    className="bg-background prose-p:text-foreground md:h-[450px] h-[400px]"
                     title={title}
                     image={image}
                     settings={{ card: 'outline' }}

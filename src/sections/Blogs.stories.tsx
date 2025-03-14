@@ -5,46 +5,46 @@ import BG from '../../.storybook/public/image-post1.webp'
 import { ImageTest, BlocksTest, HeroTest, RichTextTest } from '../tests/payload'
 const blogs = [
   {
-    title: 'INSIGHT',
+    title: 'INSIGHT6',
     content: 'Unleashing the Power of AI: Building Foundations for Success',
     link: { label: 'LEARN MORE', url: '#' },
     image: ImageTest.hero,
     name: '1',
   },
   {
-    title: 'NEWS',
+    title: 'NEWS5',
     content: 'Business Outcoes of an AI Centre of Excellence',
     link: { label: 'LEARN MORE', url: '#' },
     image: ImageTest.hero,
     name: '2',
   },
   {
-    title: 'INSIGHT',
+    title: 'INSIGHT4',
     content: 'Unleashing the Power of AI: Building Foundations for Success',
     link: { label: 'LEARN MORE', url: '#' },
     image: ImageTest.hero,
-    name: '1',
+    name: '3',
   },
   {
-    title: 'NEWS',
+    title: 'NEWS3',
     content: 'Business Outcoes of an AI Centre of Excellence',
     link: { label: 'LEARN MORE', url: '#' },
     image: ImageTest.hero,
-    name: '2',
+    name: '4',
   },
   {
-    title: 'INSIGHT',
+    title: 'INSIGHT2',
     content: 'Unleashing the Power of AI: Building Foundations for Success',
     link: { label: 'LEARN MORE', url: '#' },
     image: ImageTest.hero,
-    name: '1',
+    name: '5',
   },
   {
-    title: 'NEWS',
+    title: 'NEWS1',
     content: 'Business Outcoes of an AI Centre of Excellence',
     link: { label: 'LEARN MORE', url: '#' },
     image: ImageTest.hero,
-    name: '2',
+    name: '6',
   },
 ]
 

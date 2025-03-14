@@ -20,7 +20,7 @@ export const OurClients: React.FC<{
     infinite: true,
     speed: 500,
     slidesToShow: 4,
-    slidesToScroll: 4,
+    slidesToScroll: 1,
     autoplay: true,
     autoplaySpeed: 5000,
     nextArrow: <></>,
@@ -51,7 +51,7 @@ export const OurClients: React.FC<{
           </h2>
           <Slider {...settings}>
             {clients?.map(({ name, logo }) => (
-              <div key={`clinet-${name}`} className="flex justify-center ">
+              <div key={`clinet-${name}`} className="flex justify-center items-center">
                 <Image src={logo} alt={name} height={200} width={200} className="mx-auto" />
               </div>
             ))}
