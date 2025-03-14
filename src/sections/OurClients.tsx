@@ -2,7 +2,6 @@
 
 import React, { useState, useEffect, useCallback } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
-import { cn } from '@/lib/utils'
 import Slider from 'react-slick'
 import 'aos/dist/aos.css'
 import 'pagedjs'
@@ -30,7 +29,7 @@ export const OurClients: React.FC<{
         breakpoint: 768,
         settings: {
           slidesToShow: 2,
-          slidesToScroll: 2,
+          slidesToScroll: 1,
         },
       },
       {
@@ -51,8 +50,8 @@ export const OurClients: React.FC<{
           </h2>
           <Slider {...settings}>
             {clients?.map(({ name, logo }) => (
-              <div key={`clinet-${name}`} className="flex justify-center items-center">
-                <Image src={logo} alt={name} className="!h-[80px] !w-[200px]" />
+              <div key={`clinet-${name}`} className="flex justify-center items-center w-full">
+                <Image src={logo} alt={name} className="!h-[80px] !w-[200px] mx-auto" />
               </div>
             ))}
           </Slider>
