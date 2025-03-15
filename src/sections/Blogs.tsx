@@ -24,22 +24,24 @@ export const Blogs: React.FC<{
     autoplaySpeed: 5000,
     nextArrow: <></>,
     prevArrow: <></>,
-    slidesToShow: 3.3,
+    slidesToShow: 4,
     Infinity: false,
-    dotsClass: 'slick-dots !text-left -left-px bottom-[-65px]',
+    dotsClass: 'slick-dots !text-left left-[40px] bottom-[-65px]',
     responsive: [
       {
-        breakpoint: 950,
+        breakpoint: 1024,
         settings: {
           slidesToShow: 2,
-          slidesToScroll: 2,
+          slidesToScroll: 1,
+          dotsClass: 'slick-dots !text-center !left-[0px] bottom-[-65px] mx-auto',
         },
       },
       {
-        breakpoint: 500,
+        breakpoint: 600,
         settings: {
           slidesToShow: 1,
           slidesToScroll: 1,
+          dotsClass: 'slick-dots !text-center !left-[0px] bottom-[-65px] mx-auto',
         },
       },
     ],
@@ -63,9 +65,9 @@ export const Blogs: React.FC<{
       </div>
       {blogs && blogs?.length > 0 && (
         <div className="absolute top-3/4 sm:top-2/3 transform -translate-y-1/2 w-full ">
-          <div className="relative md:ml-24 ml-0 flex justify-between items-start md:mb-12 mb-10 flex-wrap gap-x-20 gap-y-4 ">
+          <div className="relative lg:ml-24 ml-0 flex justify-between items-start lg:mb-12 mb-10 flex-wrap gap-x-20 gap-y-4 ">
             <div className="text-primary text-2xl md:text-3xl !z-50">{title}</div>
-            <div className="  flex-row justify-end items-center gap-2 text-primary !z-50 md:flex hidden">
+            <div className="  flex-row justify-end items-center gap-2 text-primary !z-50 lg:flex hidden">
               <div onClick={previous} className="cursor-pointer !z-50">
                 <svg
                   width="50"
@@ -103,7 +105,7 @@ export const Blogs: React.FC<{
             </div>
           </div>
 
-          <div className=" overflow-hidden md:ml-24  max-w-full ml-0 h-[420px] md:h-[550px]">
+          <div className="blogs-list-silder overflow-hidden md:ml-12  max-w-full ml-0 h-[420px] md:h-[550px] right[-30px]">
             <Slider
               ref={(slider: any) => {
                 sliderRef = slider

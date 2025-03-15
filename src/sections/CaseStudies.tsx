@@ -4,11 +4,12 @@ import Slider from 'react-slick'
 import Image from 'next/image'
 import { Button, Container } from '../components'
 import Link from 'next/link'
+import { useState } from 'react'
 
 export const CaseStudies: React.FC<{
-  bgImage: string
-  caseStudies?: { title: string; content: string; link: string; name: string }[]
-}> = ({ bgImage, caseStudies = [] }) => {
+  caseStudies?: { title: string; content: string; link: string; name: string; image: string }[]
+}> = ({ caseStudies = [] }) => {
+  const [currentSlide, setCurrentSlide] = useState<number>(0)
   const settings = {
     dots: true,
     infinite: true,
@@ -19,13 +20,17 @@ export const CaseStudies: React.FC<{
     autoplaySpeed: 5000,
     nextArrow: <></>,
     prevArrow: <></>,
+    beforeChange: (current: number, next: number) => {
+      setCurrentSlide(next)
+      console.log(`Current slide: ${current}, Next slide: ${next}`)
+    },
   }
   return (
     <AnimatePresence>
       {CaseStudies && CaseStudies?.length > 0 && (
         <div>
           <Image
-            src={bgImage}
+            src={caseStudies[currentSlide]?.image}
             alt="case-studies-bg "
             sizes="100vw"
             fill

@@ -26,7 +26,7 @@ export const OurClients: React.FC<{
     prevArrow: <></>,
     responsive: [
       {
-        breakpoint: 768,
+        breakpoint: 900,
         settings: {
           slidesToShow: 2,
           slidesToScroll: 1,
@@ -51,7 +51,11 @@ export const OurClients: React.FC<{
           <Slider {...settings}>
             {clients?.map(({ name, logo }) => (
               <div key={`client-${name}`} className="flex justify-center items-center w-full ">
-                <Image src={logo} alt={name} className="!h-[80px] !w-[200px] m-auto" />
+                <Image
+                  src={logo}
+                  alt={name}
+                  className="!h-[80px] object-contain w-auto max-w-[150px] m-auto"
+                />
               </div>
             ))}
           </Slider>
