@@ -1,7 +1,6 @@
 import React from 'react'
 import type { Meta, StoryObj } from '@storybook/react'
 import { SvgGradient } from './SvgGradient'
-import BG from '../../../.storybook/public/image-post1.webp'
 
 const meta: Meta<typeof SvgGradient> = {
   title: 'Website Components/SvgGradient',
