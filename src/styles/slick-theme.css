@@ -184,3 +184,11 @@
   opacity: 0.75;
   @apply text-primary;
 }
+.blogs-list-silder .slick-list {
+  right: -60px !important;
+}
+@media (max-width: 950px) {
+  .blogs-list-silder .slick-list {
+    right: unset !important;
+  }
+}
