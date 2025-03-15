@@ -18,7 +18,7 @@ interface ImageEffectProps {
 
 export const ImageEffect = ({ className, effect = 'gradient', image }: ImageEffectProps) => {
   return (
-    <div className={`relative w-fit h-fit ${className}`}>
+    <div className={`relative w-fit h-fit overflow-hidden ${className}`}>
       <Image {...image} />
 
       {effect === 'gradient' && (
@@ -26,7 +26,9 @@ export const ImageEffect = ({ className, effect = 'gradient', image }: ImageEffe
       )}
 
       {effect === 'glow' && (
-        <div className="absolute right-10 bottom-4 inset-0 w-1/3 h-1/2 rounded-full bg-brand-plum opacity-70 blur-3xl" />
+        <div className="absolute inset-0 flex ">
+          <div className="w-1/3 h-1/2 rounded-full bg-brand-plum opacity-70 blur-3xl" />
+        </div>
       )}
     </div>
   )
