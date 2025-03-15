@@ -47,7 +47,7 @@ export const PageShape: React.FC<PageShapeProps> = ({ position, className = '' }
   if (position === 'top') {
     //top of a white section
     return (
-      <div className="w-full h-[70px] md:h-[332px] z-20 ">
+      <div className="w-full h-[100px] md:h-[332px] z-20 bg-white">
         <svg
           id="Layer_1"
           xmlns="http://www.w3.org/2000/svg"

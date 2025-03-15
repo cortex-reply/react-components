@@ -150,7 +150,7 @@ export default function Page({ ...args }) {
         <ServiceSection {...args.service} />
       </Section>
 
-      <Section theme="dark" style={style} image={args.service.services[0].image}>
+      <Section theme="dark" style={'scroll'} image={args.service.services[0].image}>
         <DummyContent />
       </Section>
       {/* <Section theme="light" style={style}>
@@ -168,7 +168,7 @@ export default function Page({ ...args }) {
       <Section theme="light" style={style}>
         <DummyContent />
       </Section>
-      <Section theme="dark" style={style}>
+      <Section theme="dark" style={'scroll'}>
         <ContactSection {...args.contact} />
       </Section>
       <div className="-mt-1">
@@ -358,7 +358,7 @@ export const Section: React.FC<SectionProps> = ({
   if (theme === 'dark') {
     return (
       <section id={id || 'next-section'} className="">
-        <div className="sticky top-0 dark min-h-[80vh] bg-white">
+        <div className="sticky top-0 dark min-h-[80vh] ">
           {/* <BackgroundImage {...image} /> */}
           <PageShape className="text-black z-10" position="bottom-right" />
 
