@@ -9,24 +9,7 @@ import HSBC_logo from '../images/our-clinets/HSBC_Logo.png'
 const clients = [
   { name: 'HSBC', logo: HSBC_logo },
   { name: 'UK Parliament', logo: UK_Parliament_logo },
-  {
-    name: 'Cheque & Credit Clearing Company',
-    logo: Cheque_and_Credit_logo,
-  },
-  { name: 'VocaLink', logo: VocaLink_logo },
-  { name: 'HSBC', logo: HSBC_logo },
-  { name: 'UK Parliament', logo: UK_Parliament_logo },
-  {
-    name: 'Cheque & Credit Clearing Company',
-    logo: Cheque_and_Credit_logo,
-  },
-  { name: 'VocaLink', logo: VocaLink_logo },
-  { name: 'HSBC', logo: HSBC_logo },
-  { name: 'UK Parliament', logo: UK_Parliament_logo },
-  {
-    name: 'Cheque & Credit Clearing Company',
-    logo: Cheque_and_Credit_logo,
-  },
+  { name: 'Cheque & Credit Clearing Company', logo: Cheque_and_Credit_logo },
   { name: 'VocaLink', logo: VocaLink_logo },
 ]
 
@@ -37,13 +20,22 @@ const meta: Meta<typeof OurClients> = {
     layout: 'fullscreen',
   },
   tags: ['autodocs'],
-  argTypes: {},
+  argTypes: {
+    clients: {
+      control: 'object',
+      description: 'List of clients with names and logos',
+      defaultValue: clients,
+    },
+  },
 }
 
 export default meta
 
 type Story = StoryObj<typeof OurClients>
 
+// Default Story
 export const Default: Story = {
-  render: (args) => <OurClients clients={clients} />,
+  args: {
+    clients,
+  },
 }

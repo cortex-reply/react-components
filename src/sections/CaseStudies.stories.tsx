@@ -6,6 +6,7 @@ import Case_Studies_BG from '../../.storybook/public/image-post1.webp'
 const caseStudies = [
   {
     title: 'Helping our clients harness the power of AI to drive operational excellence.',
+
     content:
       'The Cortex team consistently delivered and provided valuable input into shaping and implementing the ways of working and the delivery',
     link: '#',
@@ -13,6 +14,7 @@ const caseStudies = [
   },
   {
     title: 'Helping our clients harness the power of AI to drive operational excellence.',
+
     content:
       'The Cortex team consistently delivered and provided valuable input into shaping and implementing the ways of working and the delivery',
     link: '#',
@@ -20,6 +22,7 @@ const caseStudies = [
   },
   {
     title: 'Helping our clients harness the power of AI to drive operational excellence.',
+
     content:
       'The Cortex team consistently delivered and provided valuable input into shaping and implementing the ways of working and the delivery',
     link: '#',
@@ -34,7 +37,18 @@ const meta: Meta<typeof CaseStudies> = {
     layout: 'fullscreen',
   },
   tags: ['autodocs'],
-  argTypes: {},
+  argTypes: {
+    bgImage: {
+      control: 'text',
+      description: 'Background image URL for the section',
+      defaultValue: Case_Studies_BG,
+    },
+    caseStudies: {
+      control: 'object',
+      description: 'List of case studies to display',
+      defaultValue: caseStudies,
+    },
+  },
 }
 
 export default meta
@@ -42,5 +56,8 @@ export default meta
 type Story = StoryObj<typeof CaseStudies>
 
 export const Default: Story = {
-  render: (args) => <CaseStudies bgImage={Case_Studies_BG} caseStudies={caseStudies} />,
+  args: {
+    bgImage: Case_Studies_BG,
+    caseStudies,
+  },
 }

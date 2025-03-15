@@ -19,7 +19,6 @@ export const Blogs: React.FC<{
   const settings = {
     dots: true,
     speed: 500,
-    // slidesToShow: 4,
     slidesToScroll: 1,
     autoplay: true,
     autoplaySpeed: 5000,
@@ -134,79 +133,4 @@ export const Blogs: React.FC<{
       )}
     </div>
   )
-  // return (
-  //   <div className="relative h-screen w-full">
-  //     {/* Background Image */}
-  //     {/* <div className="absolute inset-0">
-  //       <Image src={bgImage} alt="Clipped Image" fill className="object-cover w-full h-full" />
-  //     </div> */}
-  //     <div className="clipped-image absolute inset-0">
-  //       <Image src={bgImage} alt="Clipped Image" fill className="bg-cover w-full !h-[110%] " />
-  //     </div>
-  //     {/* Navigation Buttons */}
-  //     {blogs && blogs.length > 0 && (
-  //       <>
-  //         <div className="absolute top-10 right-12 flex flex-row justify-end items-center gap-2 z-50 text-primary">
-  //           <div onClick={previous} className="cursor-pointer z-50">
-  //             <svg
-  //               width="50"
-  //               height="20"
-  //               viewBox="0 0 50 20"
-  //               fill="none"
-  //               xmlns="http://www.w3.org/2000/svg"
-  //             >
-  //               <line x1="50" y1="10" x2="5" y2="10" stroke="currentColor" strokeWidth="2" />
-  //               <polyline
-  //                 points="15,2 5,10 15,18"
-  //                 fill="none"
-  //                 stroke="currentColor"
-  //                 strokeWidth="2"
-  //               />
-  //             </svg>
-  //           </div>
-  //           <div onClick={next} className="cursor-pointer z-50">
-  //             <svg
-  //               width="50"
-  //               height="20"
-  //               viewBox="0 0 50 20"
-  //               fill="none"
-  //               xmlns="http://www.w3.org/2000/svg"
-  //             >
-  //               <line x1="0" y1="10" x2="45" y2="10" stroke="currentColor" strokeWidth="2" />
-  //               <polyline
-  //                 points="35,2 45,10 35,18"
-  //                 fill="none"
-  //                 stroke="currentColor"
-  //                 strokeWidth="2"
-  //               />
-  //             </svg>
-  //           </div>
-  //         </div>
-
-  //         {/* Slider (Centered in Middle of Background) */}
-  //         <div className="absolute top-1/2  md:left-4 transform -translate-x-1/2 -translate-y-1/2 w-full ">
-  //           <Slider
-  //             ref={(slider: any) => {
-  //               sliderRef = slider
-  //             }}
-  //             {...settings}
-  //           >
-  //             {blogs.map(({ image, content, link, name, title }, index) => (
-  //               <div className={`px-4 max-h-[650px] overflow-y-auto h-full`} key={`blogs-${name}`}>
-  //                 <FeatureCard
-  //                   className="bg-background prose-p:text-foreground"
-  //                   title={title}
-  //                   image={image}
-  //                   settings={{ card: 'outline' }}
-  //                   content={content}
-  //                   link={{ ...link, type: 'custom' }}
-  //                 />
-  //               </div>
-  //             ))}
-  //           </Slider>
-  //         </div>
-  //       </>
-  //     )}
-  //   </div>
-  // )
 }

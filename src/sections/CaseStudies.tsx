@@ -61,17 +61,3 @@ export const CaseStudies: React.FC<{
     </AnimatePresence>
   )
 }
-{
-  /* <div key={`case-study-${name}`} className="flex flex-col w-full ">
-<h3 className="w-full md:max-w-[65%] mx-auto text-center text-2xl sm:text-3xl md:text-5xl text-primary px-6 sm:px-8">
-  {title}
-</h3>
-<h3 className="pt-2 md:pt-8 w-full md:max-w-[85%] mx-auto text-center text-xl sm:text-2xl md:text-4xl text-destructive-foreground px-4 sm:px-8">
-  {content}
-</h3>
-<div className="flex justify-center"></div>
-<Button variant="outline" className="rounded-full border-accent bg-transparent">
-  READ THE FULL CASE STUDY
-</Button>
-</div> */
-}

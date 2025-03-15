@@ -50,8 +50,8 @@ export const OurClients: React.FC<{
           </h2>
           <Slider {...settings}>
             {clients?.map(({ name, logo }) => (
-              <div key={`clinet-${name}`} className="flex justify-center items-center w-full">
-                <Image src={logo} alt={name} className="!h-[80px] !w-[200px] mx-auto" />
+              <div key={`client-${name}`} className="flex justify-center items-center w-full ">
+                <Image src={logo} alt={name} className="!h-[80px] !w-[200px] m-auto" />
               </div>
             ))}
           </Slider>
