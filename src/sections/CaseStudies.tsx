@@ -35,7 +35,7 @@ export const CaseStudies: React.FC<{
         {caseStudies.map((study, index) => (
           <Image
             key={`bg-${index}`}
-            src={study.image}
+            src={study?.image}
             alt="case-studies-bg"
             fill
             sizes="100dvw"
