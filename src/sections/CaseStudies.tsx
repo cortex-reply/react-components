@@ -12,7 +12,7 @@ export const CaseStudies: React.FC<{
 }> = ({ caseStudies = [] }) => {
   const [currentSlide, setCurrentSlide] = useState<number>(0)
   const sectionRef = useRef(null)
-  const isInView = useInView(sectionRef) // Animation triggers when 20% visible
+  const isInView = useInView(sectionRef)
 
   const settings = {
     dots: true,
@@ -31,26 +31,29 @@ export const CaseStudies: React.FC<{
 
   return (
     <div ref={sectionRef} className="h-[100dvh] w-full relative overflow-hidden">
-      <div className="absolute inset-0 w-full h-full">
+      <div
+        className="absolute inset-0 w-full h-full flex transition-transform duration-500 ease-in-out"
+        style={{ transform: `translateX(-${currentSlide * 100}%)` }}
+      >
         {caseStudies.map((study, index) => (
-          <Image
-            key={`bg-${index}`}
-            src={study?.image}
-            alt="case-studies-bg"
-            fill
-            sizes="100dvw"
-            className={`object-cover w-full h-full absolute transition-opacity duration-1000 ease-in-out 
-              ${index === currentSlide ? 'opacity-100' : 'opacity-0'}
-            `}
-          />
+          <div key={`bg-${index}`} className="relative w-full h-full flex-shrink-0">
+            <Image
+              src={study?.image}
+              alt="case-studies-bg"
+              fill
+              sizes="100dvw"
+              className="object-cover w-full h-full"
+            />
+          </div>
         ))}
-        <div className="absolute inset-0 bg-black/50"></div> {/* Dark Overlay */}
       </div>
+      <div className="absolute inset-0 bg-black/50"></div> {/* Dark Overlay */}
+      {/* Content */}
       <motion.div
-        initial={{ opacity: 0, y: 50 }} // Start hidden & below
-        animate={isInView ? { opacity: 1, y: 0 } : {}} // Animate when in view
+        initial={{ opacity: 0, y: 50 }}
+        animate={isInView ? { opacity: 1, y: 0 } : {}}
         transition={{ duration: 0.8, ease: 'easeOut' }}
-        className="relative z-10 w-full  mx-auto text-center "
+        className="relative z-10 w-full mx-auto text-center"
       >
         <Slider {...settings}>
           {caseStudies.map(({ name, title, content, link }) => (
