@@ -54,85 +54,87 @@ export const Blogs: React.FC<{
     sliderRef.slickPrev()
   }
   return (
-    <div className="relative h-screen w-full ">
-      <div className="clipped-image absolute inset-0">
-        <Image
-          src={bgImage}
-          alt="Blogs Background Image"
-          fill
-          className="bg-cover w-full !h-[130%] min-h-[700px]"
-        />
-      </div>
-      {blogs && blogs?.length > 0 && (
-        <div className="absolute top-3/4 sm:top-2/3 transform -translate-y-1/2 w-full ">
-          <div className="relative lg:ml-24 ml-0 flex justify-between items-start lg:mb-12 mb-10 flex-wrap gap-x-20 gap-y-4 ">
-            <div className="text-primary text-2xl md:text-3xl !z-50">{title}</div>
-            <div className="  flex-row justify-end items-center gap-2 text-primary !z-50 lg:flex hidden">
-              <div onClick={previous} className="cursor-pointer !z-50">
-                <svg
-                  width="50"
-                  height="20"
-                  viewBox="0 0 50 20"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <line x1="50" y1="10" x2="5" y2="10" stroke="currentColor" stroke-width="2" />
-                  <polyline
-                    points="15,2 5,10 15,18"
+    <div className="w-full !h-[130dvh] min-h-[700px]">
+      <div className="relative h-screen w-full ">
+        <div className="clipped-image absolute inset-0 !h-[130dvh] min-h-[700px]">
+          <Image
+            src={bgImage}
+            alt="Blogs Background Image"
+            fill
+            className="bg-cover w-full !h-[130dvh] min-h-[700px]"
+          />
+        </div>
+        {blogs && blogs?.length > 0 && (
+          <div className="absolute top-3/4 sm:top-2/3 transform -translate-y-1/2 w-full ">
+            <div className="relative lg:ml-24 ml-0 flex justify-between items-start lg:mb-12 mb-10 flex-wrap gap-x-20 gap-y-4 ">
+              <div className="text-primary text-2xl md:text-3xl !z-50">{title}</div>
+              <div className="  flex-row justify-end items-center gap-2 text-primary !z-50 lg:flex hidden">
+                <div onClick={previous} className="cursor-pointer !z-50">
+                  <svg
+                    width="50"
+                    height="20"
+                    viewBox="0 0 50 20"
                     fill="none"
-                    stroke="currentColor"
-                    stroke-width="2"
-                  />
-                </svg>
-              </div>
-              <div onClick={next} className="cursor-pointer !z-50">
-                <svg
-                  width="50"
-                  height="20"
-                  viewBox="0 0 50 20"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <line x1="0" y1="10" x2="45" y2="10" stroke="currentColor" stroke-width="2" />
-                  <polyline
-                    points="35,2 45,10 35,18"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <line x1="50" y1="10" x2="5" y2="10" stroke="currentColor" stroke-width="2" />
+                    <polyline
+                      points="15,2 5,10 15,18"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                    />
+                  </svg>
+                </div>
+                <div onClick={next} className="cursor-pointer !z-50">
+                  <svg
+                    width="50"
+                    height="20"
+                    viewBox="0 0 50 20"
                     fill="none"
-                    stroke="currentColor"
-                    stroke-width="2"
-                  />
-                </svg>
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <line x1="0" y1="10" x2="45" y2="10" stroke="currentColor" stroke-width="2" />
+                    <polyline
+                      points="35,2 45,10 35,18"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                    />
+                  </svg>
+                </div>
               </div>
             </div>
-          </div>
 
-          <div className="blogs-list-silder overflow-hidden md:ml-12  max-w-full ml-0 h-[420px] md:h-[550px] right[-30px]">
-            <Slider
-              ref={(slider: any) => {
-                sliderRef = slider
-              }}
-              {...settings}
-            >
-              {blogs?.map(({ image, content, link, name, title }, index) => (
-                <div
-                  className={`pr-4 ${index === 0 ? 'pl-2' : 'pl-4'} overflow-hidden md:h-[450px]  h-[350px]`}
-                  key={`blogs-${name}`}
-                >
-                  <FeatureCard
-                    imageClassName="!h-[150px]"
-                    className="bg-background prose-p:text-foreground"
-                    title={title}
-                    image={image}
-                    settings={{ card: 'outline' }}
-                    content={content}
-                    link={{ ...link, type: 'custom' }}
-                    contentClassName="justify-between"
-                  />
-                </div>
-              ))}
-            </Slider>
+            <div className="blogs-list-silder overflow-hidden md:ml-12  max-w-full ml-0 h-[420px] md:h-[550px] right[-30px]">
+              <Slider
+                ref={(slider: any) => {
+                  sliderRef = slider
+                }}
+                {...settings}
+              >
+                {blogs?.map(({ image, content, link, name, title }, index) => (
+                  <div
+                    className={`pr-4 ${index === 0 ? 'pl-2' : 'pl-4'} overflow-hidden md:h-[450px]  h-[350px]`}
+                    key={`blogs-${name}`}
+                  >
+                    <FeatureCard
+                      imageClassName="!h-[150px]"
+                      className="bg-background prose-p:text-foreground"
+                      title={title}
+                      image={image}
+                      settings={{ card: 'outline' }}
+                      content={content}
+                      link={{ ...link, type: 'custom' }}
+                      contentClassName="justify-between"
+                    />
+                  </div>
+                ))}
+              </Slider>
+            </div>
           </div>
-        </div>
-      )}
+        )}
+      </div>
     </div>
   )
 }
