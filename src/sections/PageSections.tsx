@@ -149,37 +149,43 @@ export default function Page({ ...args }) {
       <Section theme="light" style={style}>
         <ServiceSection {...args.service} />
       </Section>
-
-      <Section theme="dark" style={'scroll'} image={args.service.services[0].image}>
-        <DummyContent />
-      </Section>
-      {/* <Section theme="light" style={style}>
+      <div className="bg-white z-50">
+        <Section theme="dark" style={style} image={args.service.services[0].image}>
+          <DummyContent />
+        </Section>
+        {/* <Section theme="light" style={style}>
         <DummyContent />
       </Section>
       <Section theme="dark" shape={['left', 'left']}>
         <DummyContent />
       </Section> */}
-      {/* <Section theme="light" style={style}>
+        {/* <Section theme="light" style={style}>
         <DummyContent />
       </Section>
       <Section theme="dark" style={style}>
         <DummyContent />
       </Section> */}
-      <Section theme="light" style={style}>
-        <DummyContent />
-      </Section>
-      <Section theme="dark" style={'scroll'}>
-        <ContactSection {...args.contact} />
-      </Section>
-      <div className="-mt-1">
-        <Section theme="light" style={'scroll'}>
-          <LocationsSection {...args.contact} />
+        <Section
+          theme="light"
+          style={style}
+          hasWhiteBackground={style === 'slide' && true}
+          className="top-[-280px]"
+        >
+          <DummyContent />
         </Section>
-      </div>
-      <div className="-mb-1">
-        <Section theme="last" style={style}>
-          <BlogList {...args.blog} />
+        <Section theme="dark" style={style}>
+          <ContactSection {...args.contact} />
         </Section>
+        <div className="-mt-1">
+          <Section theme="light" style={'scroll'} hasWhiteBackground={style === 'slide' && true}>
+            <LocationsSection {...args.contact} />
+          </Section>
+        </div>
+        <div className="-mb-1">
+          <Section theme="last" style={style}>
+            <BlogList {...args.blog} />
+          </Section>
+        </div>
       </div>
       {/* <div className="bottom-0"> */}
       <Footer {...args.footer} />
@@ -254,6 +260,8 @@ interface SectionProps {
   style?: 'scroll' | 'slide' // anything that is fixed
   image?: MediaType
   id?: string
+  hasWhiteBackground?: boolean
+  className?: string
 }
 
 export const Section: React.FC<SectionProps> = ({
@@ -264,6 +272,8 @@ export const Section: React.FC<SectionProps> = ({
   shape,
   image,
   id,
+  hasWhiteBackground,
+  className,
 }) => {
   // const actionType = action === 'slide' ? 'sticky' : 'relative'
   const BackgroundImage = (media: MediaType) => {
@@ -293,11 +303,11 @@ export const Section: React.FC<SectionProps> = ({
     return (
       <section
         id={id || 'next-section'}
-        className="sticky md:top-[-500px] min-h-screen bg-transparent"
+        className="sticky top-[-25px] md:top-[-300px] min-h-screen bg-transparent"
       >
         {/* <div className="absolute w-full h-full bg-accent"></div> */}
         <div className="dark pt-0 min-h-[80vh]">
-          <PageShape className="z-10" position="dark-top" />
+          <PageShape className="z-10" position="dark-top" style={style} />
           <div className="relative">
             <div className="flex items-center bg-black justify-center pt-12">
               <div className="container">{children}</div>
@@ -311,10 +321,14 @@ export const Section: React.FC<SectionProps> = ({
 
   if (theme === 'light' && style === 'slide') {
     return (
-      <section id={id || 'next-section'} className="sticky top-0 light pt-0 min-h-screen bg-white">
+      <section
+        id={id || 'next-section'}
+        className={cn('sticky top-0 light pt-0 h-full ', className)}
+      >
         {/* <div className="absolute w-full h-full bg-accent"></div> */}
-        <div className="sticky top-0 light pt-0 h-screen">
-          <PageShape className="z-10" position="light-top" />
+        {hasWhiteBackground && <div className="whiteBackground"></div>}
+        <div className=" top-0 light pt-0 h-screen bg-white">
+          <PageShape className="z-10" position="light-top" style={style} />
           <div className="relative bg-white">
             <div className="flex items-center bg-white justify-center pt-12">
               <div className="container">{children}</div>
@@ -345,7 +359,8 @@ export const Section: React.FC<SectionProps> = ({
   if (theme === 'light') {
     return (
       <section id={id || 'next-section'} className="">
-        <div className="sticky top-0 light bg-background min-h-[50vh]">
+        {hasWhiteBackground && <div className="whiteBackground"></div>}
+        <div className="sticky top-[-300px] light bg-background min-h-[50vh]">
           {/* <PageShape className="text-black z-10" position="top" /> */}
           <div className="flex items-center justify-center">
             <div className="container">{children}</div>
@@ -360,7 +375,7 @@ export const Section: React.FC<SectionProps> = ({
       <section id={id || 'next-section'} className="">
         <div className="sticky top-0 dark min-h-[80vh] ">
           {/* <BackgroundImage {...image} /> */}
-          <PageShape className="text-black z-10" position="bottom-right" />
+          <PageShape className="text-black z-10" position="bottom-right" style={style} />
 
           <div className="flex items-center justify-center pt-12 bg-black">
             <div className="container">{children}</div>

@@ -224,6 +224,42 @@
   }
 }
 
+.whiteBackground {
+  height: 300px;
+  clip-path: polygon(
+    0 65%,
+    0 41%,
+    30% 63%,
+    100% 40%,
+    100% 61%,
+    100% 68%,
+    100% 100%,
+    0 100%,
+    0 100%,
+    0 41%,
+    0 45%
+  );
+  background-color: white;
+}
+
+@screen md {
+  .whiteBackground {
+    clip-path: polygon(
+      0 13%,
+      0 0,
+      35% 93%,
+      100% 38%,
+      100% 73%,
+      100% 84%,
+      100% 100%,
+      0 100%,
+      0 75%,
+      0 41%,
+      0 24%
+    );
+  }
+}
+
 /* adds padding around every section */
 .section-padding-primary {
   @apply py-[3.75rem] md:py-[6.25rem] xl:py-[7.5rem];

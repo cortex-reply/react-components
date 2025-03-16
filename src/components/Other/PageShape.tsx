@@ -10,9 +10,10 @@ interface PageShapeProps {
     | 'dark-bottom'
     | 'light-bottom'
     | 'light-top'
+  style?: 'scroll' | 'slide'
 }
 
-export const PageShape: React.FC<PageShapeProps> = ({ position, className = '' }) => {
+export const PageShape: React.FC<PageShapeProps> = ({ position, className = '', style }) => {
   const transforms = ['', 'scale(-1, 1)', 'scale(1, -1)', 'scale(-1, -1)'] // 0 normal, 1 flip horizontal, 2 flip vertical, 3 flip both
   const randomTransform = transforms[Math.floor(Math.random() * transforms.length)]
 
@@ -159,7 +160,9 @@ export const PageShape: React.FC<PageShapeProps> = ({ position, className = '' }
   if (position === 'bottom-left' || position === 'bottom-right') {
     // bottom of a white section
     return (
-      <div className="w-full min-h-[70px] md:min-h-[350px] z-20 content-end block overflow-hidden mb-[-1px]">
+      <div
+        className={`w-full min-h-[70px] md:min-h-[350px] z-20 content-end block overflow-hidden mb-[-1px] ${style === 'scroll' ? 'bg-white' : ''}`}
+      >
         <svg
           id="Layer_1"
           xmlns="http://www.w3.org/2000/svg"
