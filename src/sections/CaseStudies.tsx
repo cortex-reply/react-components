@@ -12,7 +12,7 @@ export const CaseStudies: React.FC<{
 }> = ({ caseStudies = [] }) => {
   const [currentSlide, setCurrentSlide] = useState<number>(0)
   const sectionRef = useRef(null)
-  const isInView = useInView(sectionRef, { triggerOnce: true, threshold: 0.2 }) // Animation triggers when 20% visible
+  const isInView = useInView(sectionRef) // Animation triggers when 20% visible
 
   const settings = {
     dots: true,
