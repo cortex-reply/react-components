@@ -51,9 +51,7 @@
   background: transparent;
 }
 .slick-prev:hover:before,
-.slick-prev:focus:before,
-.slick-next:hover:before,
-.slick-next:focus:before {
+.slick-next:hover:before {
   @apply text-primary;
   opacity: 1;
 }
@@ -155,8 +153,7 @@
 .slick-dots li button:focus {
   outline: none;
 }
-.slick-dots li button:hover:before,
-.slick-dots li button:focus:before {
+.slick-dots li button:hover:before {
   @apply text-primary;
   opacity: 1;
 }
