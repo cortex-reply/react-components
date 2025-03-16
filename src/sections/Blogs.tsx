@@ -65,7 +65,7 @@ export const Blogs: React.FC<{
           />
         </div>
         {blogs && blogs?.length > 0 && (
-          <div className="absolute top-3/4 sm:top-2/3 transform -translate-y-1/2 w-full ">
+          <div className="absolute top-2/3 transform -translate-y-1/2 w-full ">
             <div className="relative lg:ml-24 ml-0 flex justify-between items-start lg:mb-12 mb-10 flex-wrap gap-x-20 gap-y-4 ">
               <div className="text-primary text-2xl md:text-3xl !z-50">{title}</div>
               <div className="  flex-row justify-end items-center gap-2 text-primary !z-50 lg:flex hidden">
