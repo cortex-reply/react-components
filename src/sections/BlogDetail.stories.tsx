@@ -42,9 +42,9 @@ Default.args = {
   categoryList: {
     title: 'Categories',
     links: [
-      { label: 'Category 1', href: 1 },
-      { label: 'Category 2', href: 2 },
-      { label: 'Category 3', href: 3 },
+      { label: 'Category 1', href: 1, link: 'https://www.google.com' },
+      { label: 'Category 2', href: 2, link: 'https://www.google.com' },
+      { label: 'Category 3', href: 3, link: 'https://www.google.com' },
     ],
   },
   page: {
@@ -189,7 +189,18 @@ Default.args = {
         id: 1,
         name: 'Rob',
         jobRole: null,
-        profilePicture: null,
+        profilePicture: {
+          id: 1,
+          name: 'Rob Ellison',
+          src: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Nina',
+          alt: 'Rob Ellison',
+          prefix: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Nina',
+          sizes: {
+            square: {
+              url: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Nina',
+            },
+          },
+        },
         workHistory: [],
         certifications: [],
         areasOfExpertise: [],
@@ -203,6 +214,27 @@ Default.args = {
         apiKey: null,
         email: 'rob@sdsdd.com',
         loginAttempts: 0,
+        linkedIn: 'https://www.linkedin.com/in/robellison/',
+      },
+      {
+        id: 2,
+        name: 'Rob Ellison',
+        jobRole: 'Software Engineer',
+        profilePicture: {
+          id: 1,
+          name: 'Rob Ellison',
+          src: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Nina',
+          alt: 'Rob Ellison',
+          sizes: {
+            square: {
+              url: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Nina',
+            },
+          },
+          prefix: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Nina',
+          updatedAt: '2025-01-06T20:16:54.416Z',
+          createdAt: '2025-01-06T20:16:54.416Z',
+        },
+        linkedIn: 'https://www.linkedin.com/in/robellison/',
       },
     ],
     populatedAuthors: [{ id: 1, name: 'Rob Ellison' }],
