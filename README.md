@@ -1,6 +1,6 @@
 # Cortex Reply React Component library
 
-Reusable components for use internally and externally.
+Reusable components for use internally and externally
 
 ✅ Fully TypeScript Supported
 
