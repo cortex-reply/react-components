@@ -27,7 +27,8 @@
         "GitHub.copilot",
         "bradlc.vscode-tailwindcss",
         "mutantdino.resourcemonitor",
-        "GitHub.vscode-pull-request-github"
+        "GitHub.vscode-pull-request-github",
+        "GitHub.copilot-chat"
       ]
     }
   }

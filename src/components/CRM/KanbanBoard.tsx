@@ -9,7 +9,7 @@ import {
   type DropResult,
 } from '@atlaskit/pragmatic-drag-and-drop-react-beautiful-dnd-migration'
 
-const statuses: CRMStatus[] = ['Cold', 'Qualified', 'Proposal Made', 'SoW Submitted', 'Won', 'Lost']
+const statuses: CRMStatus[] = ['Cold', 'Qualified', 'Proposal Made', 'SoW Submitted', 'Won', 'Lost', 'Dormant']
 
 type KanbanBoardProps = {
   initialData: BoardData
@@ -41,11 +41,12 @@ export function CRMKanbanBoard({
   const calculateWeightedValue = (deals: Deal[], status: CRMStatus | gecoStatus ) => {
     const weightMap = {
       Cold: 0,
-      Qualified: 0.2,
-      'Proposal Made': 0.5,
+      Qualified: 0.1,
+      'Proposal Made': 0.25,
       'SoW Submitted': 0.8,
       Won: 1,
       Lost: 0,
+      Dormant: 0,
     }
     return deals.reduce((sum, deal) => sum + (deal.value || 0) * weightMap[status as CRMStatus], 0)
   }
