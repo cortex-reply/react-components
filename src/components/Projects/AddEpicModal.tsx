@@ -1,24 +1,31 @@
-
-import React, { useState } from 'react';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
-import { Label } from '@/components/ui/label';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Epic } from '../DigitalColleagues/types';
+import React, { useState } from 'react'
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from '@/components/ui/dialog'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Textarea } from '@/components/ui/textarea'
+import { Label } from '@/components/ui/label'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
+import { Epic } from '../DigitalColleagues/types'
 
 interface AddEpicModalProps {
-  isOpen: boolean;
-  onClose: () => void;
-  onAddEpic: (epic: Omit<Epic, 'id'>) => void;
+  isOpen: boolean
+  onClose: () => void
+  onAddEpic: (epic: Omit<Epic, 'id'>) => void
 }
 
-export const AddEpicModal: React.FC<AddEpicModalProps> = ({
-  isOpen,
-  onClose,
-  onAddEpic,
-}) => {
+export const AddEpicModal: React.FC<AddEpicModalProps> = ({ isOpen, onClose, onAddEpic }) => {
   const [formData, setFormData] = useState({
     name: '',
     description: '',
@@ -28,7 +35,7 @@ export const AddEpicModal: React.FC<AddEpicModalProps> = ({
     startDate: new Date().toISOString().split('T')[0],
     endDate: new Date().toISOString().split('T')[0],
     progress: 0,
-  });
+  })
 
   const colorOptions = [
     'bg-blue-500',
@@ -39,23 +46,23 @@ export const AddEpicModal: React.FC<AddEpicModalProps> = ({
     'bg-yellow-500',
     'bg-pink-500',
     'bg-indigo-500',
-  ];
+  ]
 
   const confidenceOptions = [
     { value: 'low', label: 'Low' },
     { value: 'medium', label: 'Medium' },
     { value: 'high', label: 'High' },
-  ];
+  ]
 
   const phaseOptions = [
     { value: 1, label: 'Planning' },
     { value: 2, label: 'Development' },
     { value: 3, label: 'Testing' },
     { value: 4, label: 'Done' },
-  ];
+  ]
 
   const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
+    e.preventDefault()
     if (formData.name.trim()) {
       onAddEpic({
         name: formData.name.trim(),
@@ -67,7 +74,7 @@ export const AddEpicModal: React.FC<AddEpicModalProps> = ({
         endDate: new Date(formData.endDate),
         progress: formData.progress,
         isSelected: true,
-      });
+      })
       setFormData({
         name: '',
         description: '',
@@ -77,14 +84,14 @@ export const AddEpicModal: React.FC<AddEpicModalProps> = ({
         startDate: new Date().toISOString().split('T')[0],
         endDate: new Date().toISOString().split('T')[0],
         progress: 0,
-      });
-      onClose();
+      })
+      onClose()
     }
-  };
+  }
 
   const handleChange = (field: string, value: any) => {
-    setFormData(prev => ({ ...prev, [field]: value }));
-  };
+    setFormData((prev) => ({ ...prev, [field]: value }))
+  }
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
@@ -92,7 +99,7 @@ export const AddEpicModal: React.FC<AddEpicModalProps> = ({
         <DialogHeader>
           <DialogTitle>Add New Epic</DialogTitle>
         </DialogHeader>
-        
+
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-2">
             <Label htmlFor="name">Epic Name</Label>
@@ -104,7 +111,7 @@ export const AddEpicModal: React.FC<AddEpicModalProps> = ({
               required
             />
           </div>
-          
+
           <div className="space-y-2">
             <Label htmlFor="description">Description</Label>
             <Textarea
@@ -115,11 +122,11 @@ export const AddEpicModal: React.FC<AddEpicModalProps> = ({
               rows={3}
             />
           </div>
-          
+
           <div className="space-y-2">
             <Label>Color</Label>
             <div className="flex gap-2 flex-wrap">
-              {colorOptions.map(color => (
+              {colorOptions.map((color) => (
                 <button
                   key={color}
                   type="button"
@@ -135,12 +142,17 @@ export const AddEpicModal: React.FC<AddEpicModalProps> = ({
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label>Confidence</Label>
-              <Select value={formData.confidence} onValueChange={(value: 'low' | 'medium' | 'high') => handleChange('confidence', value)}>
+              <Select
+                value={formData.confidence}
+                onValueChange={(value: 'low' | 'medium' | 'high') =>
+                  handleChange('confidence', value)
+                }
+              >
                 <SelectTrigger>
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  {confidenceOptions.map(option => (
+                  {confidenceOptions.map((option) => (
                     <SelectItem key={option.value} value={option.value}>
                       {option.label}
                     </SelectItem>
@@ -151,12 +163,15 @@ export const AddEpicModal: React.FC<AddEpicModalProps> = ({
 
             <div className="space-y-2">
               <Label>Phase</Label>
-              <Select value={formData.phase.toString()} onValueChange={(value) => handleChange('phase', parseInt(value))}>
+              <Select
+                value={formData.phase.toString()}
+                onValueChange={(value) => handleChange('phase', parseInt(value))}
+              >
                 <SelectTrigger>
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  {phaseOptions.map(option => (
+                  {phaseOptions.map((option) => (
                     <SelectItem key={option.value} value={option.value.toString()}>
                       {option.label}
                     </SelectItem>
@@ -196,7 +211,7 @@ export const AddEpicModal: React.FC<AddEpicModalProps> = ({
               onChange={(e) => handleChange('progress', parseInt(e.target.value) || 0)}
             />
           </div>
-          
+
           <DialogFooter>
             <Button type="button" variant="outline" onClick={onClose}>
               Cancel
@@ -208,5 +223,5 @@ export const AddEpicModal: React.FC<AddEpicModalProps> = ({
         </form>
       </DialogContent>
     </Dialog>
-  );
-};
+  )
+}
