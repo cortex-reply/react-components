@@ -1,4 +1,4 @@
-import type React from "react"
+import type React from 'react'
 
 export interface User {
   id: string
@@ -15,23 +15,23 @@ export interface User {
 }
 
 export interface Reminder {
-  id: string;
-  title: string;
-  description: string;
-  dueDate: Date;
-  dueTime?: string;
-  colleague: DigitalColleague;
-  isCompleted: boolean;
-  isRecurring: boolean;
-  recurrencePattern?: 'daily' | 'weekly' | 'monthly' | 'yearly';
-  recurrenceInterval?: number; // e.g., every 2 weeks
-  recurrenceEndDate?: Date;
-  priority: 'low' | 'medium' | 'high';
-  reminderEnabled: boolean;
-  reminderMinutes?: number; // minutes before due time
-  createdAt: Date;
-  completedAt?: Date;
-  tags?: string[];
+  id: string
+  title: string
+  description: string
+  dueDate: Date
+  dueTime?: string
+  colleague: DigitalColleague
+  isCompleted: boolean
+  isRecurring: boolean
+  recurrencePattern?: 'daily' | 'weekly' | 'monthly' | 'yearly'
+  recurrenceInterval?: number // e.g., every 2 weeks
+  recurrenceEndDate?: Date
+  priority: 'low' | 'medium' | 'high'
+  reminderEnabled: boolean
+  reminderMinutes?: number // minutes before due time
+  createdAt: Date
+  completedAt?: Date
+  tags?: string[]
 }
 
 export interface BusinessUnit {
@@ -44,47 +44,47 @@ export interface BusinessUnit {
 }
 
 export interface Project {
-  id: string;
-  name: string;
-  description?: string;
-  isSelected?: boolean;
+  id: string
+  name: string
+  description?: string
+  isSelected?: boolean
 }
 
 export interface Epic {
-  id: string;
-  name: string;
-  color: string;
-  description?: string;
-  confidence: 'low' | 'medium' | 'high';
-  phase: number; // 1-9
-  startDate: Date;
-  endDate: Date;
-  progress: number; // 0-100
-  isSelected?: boolean;
+  id: string
+  name: string
+  color: string
+  description?: string
+  confidence: 'low' | 'medium' | 'high'
+  phase: number // 1-9
+  startDate: Date
+  endDate: Date
+  progress: number // 0-100
+  isSelected?: boolean
 }
 
 export interface Sprint {
-  id: string;
-  name: string;
-  description?: string;
-  startDate: Date;
-  endDate: Date;
-  isActive: boolean;
-  isSelected?: boolean;
+  id: string
+  name: string
+  description?: string
+  startDate: Date
+  endDate: Date
+  isActive: boolean
+  isSelected?: boolean
 }
 
 export interface Task {
-  id: string;
-  title: string;
-  description: string;
-  status: 'todo' | 'in-progress' | 'review' | 'done';
-  priority: 'low' | 'medium' | 'high';
-  type: 'story' | 'task' | 'bug' | 'spike';
-  points: number; // Story points
-  epicId: string;
-  sprintId?: string;
-  assignee: string;
-  createdAt: Date;
+  id: string
+  title: string
+  description: string
+  status: 'todo' | 'in-progress' | 'review' | 'done'
+  priority: 'low' | 'medium' | 'high'
+  type: 'story' | 'task' | 'bug' | 'spike'
+  points: number // Story points
+  epicId: string
+  sprintId?: string
+  assignee: string
+  createdAt: Date
 }
 
 export interface App {
@@ -105,6 +105,23 @@ export interface RecentFile {
   shared: boolean
   size: string
   collaborators: number
+}
+
+export interface FileType {
+  id: string
+  name: string
+  app?: string
+  modified?: string
+  icon?: React.ReactNode
+  shared?: boolean
+  size?: string
+  collaborators?: number
+  filename: string
+  filesize: number
+  createdAt: Date | string
+  url: string
+  mimeType: string
+  thumbnailURL?: string | null
 }
 
 export interface ProjectSummary {
@@ -157,7 +174,7 @@ export interface Notification {
   description: string
   time: string
   read: boolean
-  type: "info" | "success" | "warning" | "error"
+  type: 'info' | 'success' | 'warning' | 'error'
   actionLabel?: string
   onAction?: () => void
 }
@@ -173,25 +190,25 @@ export interface AIAssistantType {
 }
 
 export interface ProjectFormData {
-  name: string;
-  objectives: string;
-  workInstructions: string;
-  plan: boolean;
+  name: string
+  objectives: string
+  workInstructions: string
+  plan: boolean
 }
 
 export interface ProjectCreationData extends ProjectFormData {
-  description?: string;
+  description?: string
 }
 export interface BaseColleague {
   id: string
   name: string
-  status: "active" | "inactive"
+  status: 'active' | 'inactive'
   joinedDate: Date
   lastActive?: Date
 }
 
 export interface HumanColleague extends BaseColleague {
-  type: "human"
+  type: 'human'
   email: string
   role: string
   department: string
@@ -241,7 +258,7 @@ export interface KnowledgeContext {
 }
 
 export interface DigitalColleague extends BaseColleague {
-  type: "digital"
+  type: 'digital'
   description?: string
   jobDescription: string
   workInstructions: string

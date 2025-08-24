@@ -3,13 +3,13 @@
 import { motion } from 'framer-motion'
 import { MoreHorizontal, Trash2, Edit } from 'lucide-react'
 import { Button } from '@/components/ui/button'
-import type { RecentFile } from '../DigitalColleagues/types'
+import { FileType } from '../DigitalColleagues/types'
 
 interface FileListProps {
-  files: RecentFile[]
-  onFileClick?: (file: RecentFile) => void
-  onFileEdit?: (file: RecentFile) => void
-  onFileDelete?: (file: RecentFile) => void
+  files: FileType[]
+  onFileClick?: (file: FileType) => void
+  onFileEdit?: (file: FileType) => void
+  onFileDelete?: (file: FileType) => void
   showHeader?: boolean
   className?: string
 }
@@ -41,15 +41,19 @@ export function FileList({
           >
             <div className="col-span-6 flex items-center gap-3 w-full md:w-auto">
               <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-muted">
-                {file.icon}
+                {/* {file.icon} */}
               </div>
               <div>
                 <p className="font-medium">{file.name}</p>
               </div>
             </div>
-            <div className="col-span-2 text-sm md:text-base">{file.size}</div>
+            <div className="col-span-2 text-sm md:text-base">{file.filesize}</div>
             <div className="col-span-2 flex items-center justify-between w-full md:w-auto">
-              <span className="text-sm md:text-base">{file.modified}</span>
+              <span className="text-sm md:text-base">
+                {typeof file.createdAt === 'string'
+                  ? file.createdAt
+                  : file.createdAt.toLocaleDateString()}
+              </span>
               <div className="flex gap-1">
                 {/* <Button
                   variant="ghost"

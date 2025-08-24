@@ -63,6 +63,7 @@ export const AddEpicModal: React.FC<AddEpicModalProps> = ({ isOpen, onClose, onA
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
+
     if (formData.name.trim()) {
       onAddEpic({
         name: formData.name.trim(),

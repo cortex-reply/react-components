@@ -273,7 +273,6 @@ export const AddTaskModal: React.FC<AddTaskModalProps> = ({
               value={formData.assignee}
               onChange={(e) => handleChange('assignee', e.target.value)}
               placeholder="Enter assignee name"
-              required
             />
           </div>
 

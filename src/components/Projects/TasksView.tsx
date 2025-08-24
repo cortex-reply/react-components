@@ -842,7 +842,7 @@ export const TasksView: React.FC<TasksViewProps> = ({
       case 'overdue':
         return !reminder.isCompleted && isOverdue(reminder.dueDate, reminder.dueTime)
       case 'today':
-        return isToday(reminder.dueDate)
+        return isToday(new Date(reminder.dueDate))
       default:
         return true
     }
@@ -869,7 +869,7 @@ export const TasksView: React.FC<TasksViewProps> = ({
     pending: reminders.filter((r) => r && !r.isCompleted).length,
     completed: reminders.filter((r) => r && r.isCompleted).length,
     overdue: reminders.filter((r) => r && !r.isCompleted && isOverdue(r.dueDate, r.dueTime)).length,
-    today: reminders.filter((r) => r && isToday(r.dueDate)).length,
+    today: reminders.filter((r) => r && isToday(new Date(r.dueDate))).length,
   }
 
   // Ensure we have at least one valid colleague for the default reminder

@@ -10,8 +10,7 @@ import { DashboardHero } from '../Heros/DashboardHero/DashboardHero'
 import { AddTaskModal } from './AddTaskModal'
 import { AddEpicModal } from './AddEpicModal'
 import { TaskDetailsModal } from './TaskDetailsModal'
-import type { Reminder, DigitalColleague } from '../DigitalColleagues/types'
-import type { RecentFile } from '@/components/DigitalColleagues/types'
+import type { Reminder, DigitalColleague, FileType } from '../DigitalColleagues/types'
 // import { Epic, Sprint, Project, Task } from "@/components/DigitalColleagues/KanbanBoard"
 import { useRouter } from 'next/navigation'
 
@@ -59,6 +58,8 @@ export interface Task {
   createdAt: Date
 }
 
+type View = 'kanban' | 'planning' | 'tasks' | 'files' | 'epics'
+
 interface Props {
   title?: string
   initialTasks?: Task[]
@@ -67,7 +68,8 @@ interface Props {
   initialProjects?: Project[]
   initialReminders?: Reminder[]
   initialColleagues?: DigitalColleague[]
-  initialFiles?: RecentFile[]
+  initialFiles?: FileType[]
+  initialView?: View
   // Task handlers
   onAddTask?: (newTask: Omit<Task, 'id' | 'createdAt'>) => void
   onUpdateTask?: (taskId: string, updates: Partial<Task>) => void
@@ -88,15 +90,15 @@ interface Props {
   onDeleteProject?: (projectId: string) => void
   // File handlers
   onFileAdd?: () => void
-  onFileEdit?: (file: RecentFile) => void
+  onFileEdit?: (file: FileType) => void
   onFileDelete?: (fileId: string) => void
-  onFileClick?: (file: RecentFile) => void
+  onFileClick?: (file: FileType) => void
   // Reminder handlers
   onAddReminder?: (reminder: Omit<Reminder, 'id' | 'createdAt'>) => void
   onUpdateReminder?: (reminderId: string, updates: Partial<Reminder>) => void
   onDeleteReminder?: (reminderId: string) => void
   // View handlers
-  onViewChange?: (view: 'kanban' | 'planning' | 'tasks' | 'files' | 'epics') => void
+  onViewChange?: (view: View) => void
   onToggleMobileMenu?: () => void
   // Team handlers
   onTeamClick?: (teamId: string) => void
@@ -114,6 +116,7 @@ export default function ProjectView({
   initialReminders = [],
   initialColleagues = [],
   initialFiles = [],
+  initialView = 'kanban',
   // Task handlers
   onAddTask,
   onUpdateTask,
@@ -155,15 +158,13 @@ export default function ProjectView({
   const [projects, setProjects] = useState<Project[]>(initialProjects)
   const [reminders, setReminders] = useState<Reminder[]>(initialReminders)
   const [colleagues, setColleagues] = useState<DigitalColleague[]>(initialColleagues)
-  const [files, setFiles] = useState<RecentFile[]>(initialFiles)
+  const [files, setFiles] = useState<FileType[]>(initialFiles)
   const [isAddTaskModalOpen, setIsAddTaskModalOpen] = useState(false)
   const [isAddEpicModalOpen, setIsAddEpicModalOpen] = useState(false)
   const [selectedTask, setSelectedTask] = useState<Task | null>(null)
   const [selectedEpicForTask, setSelectedEpicForTask] = useState<string | null>(null)
   const [draggedTask, setDraggedTask] = useState<Task | null>(null)
-  const [currentView, setCurrentView] = useState<
-    'kanban' | 'planning' | 'tasks' | 'files' | 'epics'
-  >('kanban')
+  const [currentView, setCurrentView] = useState<View>(initialView || 'kanban')
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const router = useRouter()
 
@@ -191,6 +192,10 @@ export default function ProjectView({
   useEffect(() => {
     setReminders(initialReminders)
   }, [initialReminders])
+
+  useEffect(() => {
+    setCurrentView(initialView)
+  }, [initialView])
 
   const selectedEpics = epics.filter((epic) => epic.isSelected).map((epic) => epic.id)
   const selectedSprint = sprints.find((sprint) => sprint.isSelected)
@@ -352,7 +357,7 @@ export default function ProjectView({
     setSelectedTask(task)
   }
 
-  const handleViewChange = (view: 'kanban' | 'planning' | 'tasks' | 'files' | 'epics') => {
+  const handleViewChange = (view: View) => {
     // Hide planning view on mobile
     if (view === 'planning' && window.innerWidth < 768) {
       return
@@ -419,7 +424,7 @@ export default function ProjectView({
     onFileAdd?.()
   }
 
-  const handleFileEdit = (file: RecentFile) => {
+  const handleFileEdit = (file: FileType) => {
     onFileEdit?.(file)
   }
 
@@ -428,7 +433,7 @@ export default function ProjectView({
     onFileDelete?.(fileId)
   }
 
-  const handleFileClick = (file: RecentFile) => {
+  const handleFileClick = (file: FileType) => {
     onFileClick?.(file)
   }
 
@@ -508,7 +513,7 @@ export default function ProjectView({
             onDeleteTask={handleDeleteTask}
             onTaskClick={handleTaskClick}
             // Epic handlers
-            onAddEpic={handleAddEpicClick}
+            onAddEpic={handleAddEpic}
           />
         </div>
       )}

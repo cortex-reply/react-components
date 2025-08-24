@@ -49,6 +49,8 @@ export const KanbanBoardView: React.FC<KanbanBoardProps> = ({
   const selectedEpics = epics.filter((epic) => true).map((epic) => epic.id)
   const selectedSprint = sprints.find((sprint) => sprint.isSelected)
 
+  selectedEpics.push('no-epic')
+
   useEffect(() => {
     setTasks(initialTasks)
   }, [initialTasks])
@@ -63,7 +65,7 @@ export const KanbanBoardView: React.FC<KanbanBoardProps> = ({
 
   // Filter tasks by selected epics and sprint
   const filteredTasks = tasks.filter((task) => {
-    const isEpicSelected = selectedEpics.includes(task.epicId)
+    const isEpicSelected = selectedEpics.includes(task.epicId) || !task.epicId
     if (!selectedSprint) return isEpicSelected
     if (selectedSprint.id === 'all-tasks') return isEpicSelected
     if (selectedSprint.id === 'backlog') return isEpicSelected && !task.sprintId
@@ -79,6 +81,7 @@ export const KanbanBoardView: React.FC<KanbanBoardProps> = ({
     epics.forEach((epic) => {
       tasksByEpic[epic.id] = tasks.filter((task) => task.epicId === epic.id)
     })
+    tasksByEpic['no-epic'] = tasks.filter((task) => !task.epicId)
     return tasksByEpic
   }
 
@@ -182,7 +185,7 @@ export const KanbanBoardView: React.FC<KanbanBoardProps> = ({
                         <div className="flex items-center gap-2 mb-3">
                           <div className={`w-3 h-3 rounded-full ${epic?.color}`}></div>
                           <span className="text-sm font-medium text-muted-foreground select-none-important">
-                            {epic?.name}
+                            {epic?.name || 'No Epic'}
                           </span>
                           <Badge variant="secondary" className="text-xs">
                             {epicTasks.length}

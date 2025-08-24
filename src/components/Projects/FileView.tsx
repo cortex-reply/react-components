@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Plus, Search, File, Filter, Download, Upload } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
@@ -15,15 +15,15 @@ import {
 import { NavigationTabs } from '../AdvancedComponents/navigation-tabs'
 import { FileList } from './file-list'
 import { DashboardHero } from '../Heros/DashboardHero/DashboardHero'
-import { type RecentFile } from '../DigitalColleagues/types'
+import { FileType, type RecentFile } from '../DigitalColleagues/types'
 import { motion, AnimatePresence } from 'framer-motion'
 
 interface FileViewProps {
-  initialFiles?: RecentFile[]
+  initialFiles?: FileType[]
   onFileAdd?: () => void
-  onFileEdit?: (file: RecentFile) => void
+  onFileEdit?: (file: FileType) => void
   onFileDelete?: (fileId: string) => void
-  onFileClick?: (file: RecentFile) => void
+  onFileClick?: (file: FileType) => void
   compactView?: boolean
   className?: string
 }
@@ -37,38 +37,43 @@ export default function FileView({
   compactView = false,
   className,
 }: FileViewProps) {
-  const [files, setFiles] = useState<RecentFile[]>(initialFiles)
+  const [files, setFiles] = useState<FileType[]>(initialFiles)
   const [searchTerm, setSearchTerm] = useState('')
   const [appFilter, setAppFilter] = useState<string>('all')
   const [activeTab, setActiveTab] = useState('all')
 
+  useEffect(() => {
+    setFiles(initialFiles)
+  }, [initialFiles])
+
   // Get unique apps for filter
-  const uniqueApps = Array.from(new Set(files.map((file) => file.app)))
+  const uniqueApps = Array.from(new Set(files.map((file) => file.mimeType)))
 
   const filteredFiles = files.filter((file) => {
     const matchesSearch = file.name.toLowerCase().includes(searchTerm.toLowerCase())
-    const matchesApp = appFilter === 'all' || file.app === appFilter
+    const matchesApp = appFilter === 'all' || file.mimeType === appFilter
     return matchesSearch && matchesApp
   })
 
   const recentFiles = filteredFiles.slice(0, 10) // Show 10 most recent
-  const sharedFiles = filteredFiles.filter((file) => file.shared)
+  const sharedFiles = filteredFiles.filter(Boolean)
 
   const handleAddFile = () => {
     // This would typically open a file upload dialog
     onFileAdd?.()
   }
 
-  const handleEditFile = (file: RecentFile) => {
+  const handleEditFile = (file: FileType) => {
     onFileEdit?.(file)
   }
 
-  const handleDeleteFile = (file: RecentFile) => {
+  const handleDeleteFile = (file: FileType) => {
+    console.log('deleting file', file)
     setFiles((prev) => prev.filter((f) => f.name !== file.name))
-    onFileDelete?.(file.name)
+    onFileDelete?.(file.id)
   }
 
-  const handleFileClick = (file: RecentFile) => {
+  const handleFileClick = (file: FileType) => {
     onFileClick?.(file)
   }
 
