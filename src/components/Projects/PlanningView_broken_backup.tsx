@@ -5,7 +5,18 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import { Task, Epic, Sprint } from '../DigitalColleagues/types'
-import { Calendar, User, Plus, CalendarDays, Edit2, Trash2, Check, X, ChevronDown, ChevronUp } from 'lucide-react'
+import {
+  Calendar,
+  User,
+  Plus,
+  CalendarDays,
+  Edit2,
+  Trash2,
+  Check,
+  X,
+  ChevronDown,
+  ChevronUp,
+} from 'lucide-react'
 import { AddSprintModal } from './AddSprintModal'
 import { DashboardHero } from '../Heros/DashboardHero/DashboardHero'
 
@@ -46,7 +57,7 @@ export const PlanningView: React.FC<PlanningViewProps> = ({
   const [sprintFilter, setSprintFilter] = useState<'all' | 'active' | 'upcoming'>('upcoming')
   const [isSprintSelectorOpen, setIsSprintSelectorOpen] = useState(false)
   const [heroHeight, setHeroHeight] = useState(0)
-  
+
   const heroRef = useRef<HTMLDivElement>(null)
   const containerRef = useRef<HTMLDivElement>(null)
 
@@ -108,38 +119,36 @@ export const PlanningView: React.FC<PlanningViewProps> = ({
   const availableSprints = sprints
     .filter((s) => s.id !== 'backlog' && s.id !== 'all-tasks')
     .sort((a, b) => a.startDate.getTime() - b.startDate.getTime())
-  
+
   // Auto-select active and upcoming sprints on initial load
   useEffect(() => {
     if (selectedSprintIds.length === 0 && availableSprints.length > 0) {
       const activeSprintIds = availableSprints
-        .filter(sprint => sprint.isActive)
+        .filter((sprint) => sprint.isActive)
         .slice(0, 3)
-        .map(sprint => sprint.id)
-      
+        .map((sprint) => sprint.id)
+
       if (activeSprintIds.length > 0) {
         setSelectedSprintIds(activeSprintIds)
       } else {
         // If no active sprints, select the next 3 upcoming sprints
         const now = new Date()
         const upcomingSprintIds = availableSprints
-          .filter(sprint => sprint.startDate >= now)
+          .filter((sprint) => sprint.startDate >= now)
           .slice(0, 3)
-          .map(sprint => sprint.id)
-        
+          .map((sprint) => sprint.id)
+
         if (upcomingSprintIds.length > 0) {
           setSelectedSprintIds(upcomingSprintIds)
         } else {
           // Fallback to the 3 most recent sprints
-          const recentSprintIds = availableSprints
-            .slice(-3)
-            .map(sprint => sprint.id)
+          const recentSprintIds = availableSprints.slice(-3).map((sprint) => sprint.id)
           setSelectedSprintIds(recentSprintIds)
         }
       }
     }
   }, [availableSprints.length]) // Only run when sprints are loaded
-  
+
   // Filter sprints based on selected filter
   const filteredSprints = availableSprints.filter((sprint) => {
     switch (sprintFilter) {
@@ -156,10 +165,9 @@ export const PlanningView: React.FC<PlanningViewProps> = ({
   })
 
   // For upcoming filter, limit to next 3 sprints
-  const displayedSprints = sprintFilter === 'upcoming' 
-    ? filteredSprints.slice(0, 3)
-    : filteredSprints
-  
+  const displayedSprints =
+    sprintFilter === 'upcoming' ? filteredSprints.slice(0, 3) : filteredSprints
+
   // Limit to 3 visible sprints
   const visibleSprints = selectedSprintIds
     .map((id) => availableSprints.find((s) => s.id === id))
@@ -174,7 +182,7 @@ export const PlanningView: React.FC<PlanningViewProps> = ({
     const tasksByEpic: { [epicId: string]: Task[] } = {}
     const unassignedTasks: Task[] = []
 
-    tasks.forEach(task => {
+    tasks.forEach((task) => {
       if (task.epicId) {
         if (!tasksByEpic[task.epicId]) {
           tasksByEpic[task.epicId] = []
@@ -392,10 +400,10 @@ export const PlanningView: React.FC<PlanningViewProps> = ({
         />
       </div>
       <div className="flex-1 min-h-0 mt-8">
-        <div 
+        <div
           className="h-full"
           style={{
-            height: heroHeight > 0 ? `calc(100vh - ${heroHeight + 120}px)` : 'calc(100vh - 12rem)'
+            height: heroHeight > 0 ? `calc(100vh - ${heroHeight + 120}px)` : 'calc(100vh - 12rem)',
           }}
         >
           {/* Sprint Selector Bar - Above the main grid */}
@@ -409,7 +417,7 @@ export const PlanningView: React.FC<PlanningViewProps> = ({
                       {selectedSprintIds.length}/3 selected
                     </p>
                   </div>
-                  
+
                   {/* Current Selection - Always Visible */}
                   {selectedSprintIds.length > 0 && (
                     <div className="flex items-center gap-2">
@@ -434,7 +442,7 @@ export const PlanningView: React.FC<PlanningViewProps> = ({
                     </div>
                   )}
                 </div>
-                
+
                 <div className="flex items-center gap-2">
                   <Button
                     onClick={() => setIsAddSprintModalOpen(true)}
@@ -459,7 +467,7 @@ export const PlanningView: React.FC<PlanningViewProps> = ({
 
             {/* Backdrop Overlay */}
             {isSprintSelectorOpen && (
-              <div 
+              <div
                 className="fixed inset-0 bg-black/20 z-[5]"
                 onClick={() => setIsSprintSelectorOpen(false)}
               />
@@ -496,8 +504,16 @@ export const PlanningView: React.FC<PlanningViewProps> = ({
                   <div className="flex gap-1 mb-4 bg-muted p-1 rounded-lg">
                     {[
                       { key: 'all', label: 'All', count: sprints.length },
-                      { key: 'active', label: 'Active', count: sprints.filter(s => s.isActive).length },
-                      { key: 'upcoming', label: 'Upcoming', count: sprints.filter(s => !s.isActive).length }
+                      {
+                        key: 'active',
+                        label: 'Active',
+                        count: sprints.filter((s) => s.isActive).length,
+                      },
+                      {
+                        key: 'upcoming',
+                        label: 'Upcoming',
+                        count: sprints.filter((s) => !s.isActive).length,
+                      },
                     ].map((filter) => (
                       <Button
                         key={filter.key}
@@ -516,15 +532,15 @@ export const PlanningView: React.FC<PlanningViewProps> = ({
                     {displayedSprints.length > 0 ? (
                       displayedSprints.map((sprint) => {
                         const isSelected = selectedSprintIds.includes(sprint.id)
-                        const taskCount = tasks.filter(task => task.sprintId === sprint.id).length
+                        const taskCount = tasks.filter((task) => task.sprintId === sprint.id).length
                         const canSelect = !isSelected && selectedSprintIds.length < 3
 
                         return (
                           <div
                             key={sprint.id}
                             className={`p-3 rounded-lg border transition-all ${
-                              isSelected 
-                                ? 'bg-primary/10 border-primary/30' 
+                              isSelected
+                                ? 'bg-primary/10 border-primary/30'
                                 : canSelect
                                 ? 'bg-card border-border hover:border-primary/50'
                                 : 'bg-muted/30 border-border/30 opacity-60'
@@ -534,13 +550,20 @@ export const PlanningView: React.FC<PlanningViewProps> = ({
                               <div className="space-y-3">
                                 <Input
                                   value={sprintEditForm.name}
-                                  onChange={(e) => setSprintEditForm(prev => ({ ...prev, name: e.target.value }))}
+                                  onChange={(e) =>
+                                    setSprintEditForm((prev) => ({ ...prev, name: e.target.value }))
+                                  }
                                   className="text-sm"
                                   placeholder="Sprint name"
                                 />
                                 <Textarea
                                   value={sprintEditForm.description}
-                                  onChange={(e) => setSprintEditForm(prev => ({ ...prev, description: e.target.value }))}
+                                  onChange={(e) =>
+                                    setSprintEditForm((prev) => ({
+                                      ...prev,
+                                      description: e.target.value,
+                                    }))
+                                  }
                                   className="text-sm min-h-[60px]"
                                   placeholder="Sprint description"
                                 />
@@ -569,9 +592,14 @@ export const PlanningView: React.FC<PlanningViewProps> = ({
                                 <div className="flex items-start justify-between">
                                   <div className="flex-1 min-w-0">
                                     <div className="flex items-center gap-2 mb-1">
-                                      <h4 className="font-medium text-sm text-foreground truncate">{sprint.name}</h4>
+                                      <h4 className="font-medium text-sm text-foreground truncate">
+                                        {sprint.name}
+                                      </h4>
                                       {sprint.isActive && (
-                                        <Badge variant="default" className="text-xs bg-green-100 text-green-800 border-green-200">
+                                        <Badge
+                                          variant="default"
+                                          className="text-xs bg-green-100 text-green-800 border-green-200"
+                                        >
                                           Active
                                         </Badge>
                                       )}
@@ -613,14 +641,18 @@ export const PlanningView: React.FC<PlanningViewProps> = ({
                                 </div>
                                 <div className="flex items-center justify-between mt-2">
                                   <Button
-                                    variant={isSelected ? "default" : "outline"}
+                                    variant={isSelected ? 'default' : 'outline'}
                                     size="sm"
                                     className="text-xs w-full h-8 flex items-center justify-center cursor-pointer"
                                     onClick={() => toggleSprintView(sprint.id)}
                                     disabled={!isSelected && selectedSprintIds.length >= 3}
                                   >
                                     <span className="pointer-events-none select-none">
-                                      {isSelected ? "Deselect" : selectedSprintIds.length >= 3 ? "Limit Reached" : "Select"}
+                                      {isSelected
+                                        ? 'Deselect'
+                                        : selectedSprintIds.length >= 3
+                                        ? 'Limit Reached'
+                                        : 'Select'}
                                     </span>
                                   </Button>
                                 </div>
@@ -649,7 +681,9 @@ export const PlanningView: React.FC<PlanningViewProps> = ({
                     <div className="mt-4 p-4 bg-muted/50 rounded-lg border-2 border-dashed border-border">
                       <div className="text-center">
                         <Calendar className="h-6 w-6 mx-auto mb-2 text-muted-foreground" />
-                        <p className="text-sm text-muted-foreground font-medium">Select sprints to start planning</p>
+                        <p className="text-sm text-muted-foreground font-medium">
+                          Select sprints to start planning
+                        </p>
                         <p className="text-xs text-muted-foreground mt-1">
                           Choose up to 3 sprints to view alongside your backlog
                         </p>
@@ -671,7 +705,10 @@ export const PlanningView: React.FC<PlanningViewProps> = ({
                 onDragEnter={() => handleDragEnter('backlog')}
                 onDragLeave={handleDragLeave}
                 onDrop={(e) => handleDrop(e, 'backlog')}
-                style={{ height: heroHeight > 0 ? `calc(100vh - ${heroHeight + 200}px)` : 'calc(100vh - 16rem)' }}
+                style={{
+                  height:
+                    heroHeight > 0 ? `calc(100vh - ${heroHeight + 200}px)` : 'calc(100vh - 16rem)',
+                }}
               >
                 <div className="flex items-center justify-between mb-4 flex-shrink-0">
                   <h3 className="font-semibold text-foreground select-none text-lg">Backlog</h3>
@@ -687,7 +724,7 @@ export const PlanningView: React.FC<PlanningViewProps> = ({
                 >
                   {(() => {
                     const { tasksByEpic, unassignedTasks } = getTasksByEpic(backlogTasks)
-                    
+
                     return (
                       <>
                         {/* Epic Groups */}
@@ -698,12 +735,14 @@ export const PlanningView: React.FC<PlanningViewProps> = ({
 
                           return (
                             <div key={epicId} className="space-y-2">
-                              <div 
+                              <div
                                 className="flex items-center gap-2 px-2 py-1 bg-muted/50 rounded text-xs cursor-pointer hover:bg-muted/70 transition-colors"
                                 onClick={() => toggleEpicCollapse(epicId)}
                               >
                                 <div className={`w-3 h-3 rounded-full ${epic.color}`} />
-                                <span className="font-medium text-muted-foreground">{epic.name}</span>
+                                <span className="font-medium text-muted-foreground">
+                                  {epic.name}
+                                </span>
                                 <span className="text-muted-foreground">({epicTasks.length})</span>
                                 <div className="ml-auto">
                                   {isCollapsed ? (
@@ -725,35 +764,38 @@ export const PlanningView: React.FC<PlanningViewProps> = ({
                         })}
 
                         {/* Unassigned Tasks */}
-                        {unassignedTasks.length > 0 && (() => {
-                          const isCollapsed = collapsedEpics.has('no-epic')
-                          return (
-                            <div className="space-y-2">
-                              <div 
-                                className="flex items-center gap-2 px-2 py-1 bg-muted/50 rounded text-xs cursor-pointer hover:bg-muted/70 transition-colors"
-                                onClick={() => toggleEpicCollapse('no-epic')}
-                              >
-                                <div className="w-3 h-3 rounded-full bg-gray-400" />
-                                <span className="font-medium text-muted-foreground">No Epic</span>
-                                <span className="text-muted-foreground">({unassignedTasks.length})</span>
-                                <div className="ml-auto">
-                                  {isCollapsed ? (
-                                    <ChevronDown className="h-3 w-3 text-muted-foreground" />
-                                  ) : (
-                                    <ChevronUp className="h-3 w-3 text-muted-foreground" />
-                                  )}
+                        {unassignedTasks.length > 0 &&
+                          (() => {
+                            const isCollapsed = collapsedEpics.has('no-epic')
+                            return (
+                              <div className="space-y-2">
+                                <div
+                                  className="flex items-center gap-2 px-2 py-1 bg-muted/50 rounded text-xs cursor-pointer hover:bg-muted/70 transition-colors"
+                                  onClick={() => toggleEpicCollapse('no-epic')}
+                                >
+                                  <div className="w-3 h-3 rounded-full bg-gray-400" />
+                                  <span className="font-medium text-muted-foreground">No Epic</span>
+                                  <span className="text-muted-foreground">
+                                    ({unassignedTasks.length})
+                                  </span>
+                                  <div className="ml-auto">
+                                    {isCollapsed ? (
+                                      <ChevronDown className="h-3 w-3 text-muted-foreground" />
+                                    ) : (
+                                      <ChevronUp className="h-3 w-3 text-muted-foreground" />
+                                    )}
+                                  </div>
                                 </div>
+                                {!isCollapsed && (
+                                  <div className="space-y-2 pl-2">
+                                    {unassignedTasks.map((task) => (
+                                      <CompactTaskCard key={task.id} task={task} />
+                                    ))}
+                                  </div>
+                                )}
                               </div>
-                              {!isCollapsed && (
-                                <div className="space-y-2 pl-2">
-                                  {unassignedTasks.map((task) => (
-                                    <CompactTaskCard key={task.id} task={task} />
-                                  ))}
-                                </div>
-                              )}
-                            </div>
-                          )
-                        })()}
+                            )
+                          })()}
 
                         {backlogTasks.length === 0 && (
                           <div className="flex items-center justify-center h-32 text-muted-foreground text-sm select-none">
@@ -769,9 +811,7 @@ export const PlanningView: React.FC<PlanningViewProps> = ({
 
             {/* Sprint Columns - Now at same level as backlog */}
             {visibleSprints.map((sprint) => {
-              const sprintTasksFiltered = tasks.filter(
-                (task) => task.sprintId === sprint.id,
-              )
+              const sprintTasksFiltered = tasks.filter((task) => task.sprintId === sprint.id)
 
               return (
                 <Card
@@ -781,7 +821,12 @@ export const PlanningView: React.FC<PlanningViewProps> = ({
                   onDragEnter={() => handleDragEnter(sprint.id)}
                   onDragLeave={handleDragLeave}
                   onDrop={(e) => handleDrop(e, sprint.id)}
-                  style={{ height: heroHeight > 0 ? `calc(100vh - ${heroHeight + 200}px)` : 'calc(100vh - 16rem)' }}
+                  style={{
+                    height:
+                      heroHeight > 0
+                        ? `calc(100vh - ${heroHeight + 200}px)`
+                        : 'calc(100vh - 16rem)',
+                  }}
                 >
                   <div className="flex items-center justify-between mb-4 flex-shrink-0">
                     <div>
@@ -822,7 +867,7 @@ export const PlanningView: React.FC<PlanningViewProps> = ({
                   <div className="flex-1 overflow-y-auto space-y-3 min-h-0">
                     {(() => {
                       const { tasksByEpic, unassignedTasks } = getTasksByEpic(sprintTasksFiltered)
-                      
+
                       return (
                         <>
                           {/* Epic Groups */}
@@ -833,13 +878,17 @@ export const PlanningView: React.FC<PlanningViewProps> = ({
 
                             return (
                               <div key={epicId} className="space-y-2">
-                                <div 
+                                <div
                                   className="flex items-center gap-2 px-2 py-1 bg-muted/50 rounded text-xs cursor-pointer hover:bg-muted/70 transition-colors"
                                   onClick={() => toggleEpicCollapse(epicId)}
                                 >
                                   <div className={`w-3 h-3 rounded-full ${epic.color}`} />
-                                  <span className="font-medium text-muted-foreground">{epic.name}</span>
-                                  <span className="text-muted-foreground">({epicTasks.length})</span>
+                                  <span className="font-medium text-muted-foreground">
+                                    {epic.name}
+                                  </span>
+                                  <span className="text-muted-foreground">
+                                    ({epicTasks.length})
+                                  </span>
                                   <div className="ml-auto">
                                     {isCollapsed ? (
                                       <ChevronDown className="h-3 w-3 text-muted-foreground" />
@@ -860,35 +909,40 @@ export const PlanningView: React.FC<PlanningViewProps> = ({
                           })}
 
                           {/* Unassigned Tasks */}
-                          {unassignedTasks.length > 0 && (() => {
-                            const isCollapsed = collapsedEpics.has('no-epic')
-                            return (
-                              <div className="space-y-2">
-                                <div 
-                                  className="flex items-center gap-2 px-2 py-1 bg-muted/50 rounded text-xs cursor-pointer hover:bg-muted/70 transition-colors"
-                                  onClick={() => toggleEpicCollapse('no-epic')}
-                                >
-                                  <div className="w-3 h-3 rounded-full bg-gray-400" />
-                                  <span className="font-medium text-muted-foreground">No Epic</span>
-                                  <span className="text-muted-foreground">({unassignedTasks.length})</span>
-                                  <div className="ml-auto">
-                                    {isCollapsed ? (
-                                      <ChevronDown className="h-3 w-3 text-muted-foreground" />
-                                    ) : (
-                                      <ChevronUp className="h-3 w-3 text-muted-foreground" />
-                                    )}
+                          {unassignedTasks.length > 0 &&
+                            (() => {
+                              const isCollapsed = collapsedEpics.has('no-epic')
+                              return (
+                                <div className="space-y-2">
+                                  <div
+                                    className="flex items-center gap-2 px-2 py-1 bg-muted/50 rounded text-xs cursor-pointer hover:bg-muted/70 transition-colors"
+                                    onClick={() => toggleEpicCollapse('no-epic')}
+                                  >
+                                    <div className="w-3 h-3 rounded-full bg-gray-400" />
+                                    <span className="font-medium text-muted-foreground">
+                                      No Epic
+                                    </span>
+                                    <span className="text-muted-foreground">
+                                      ({unassignedTasks.length})
+                                    </span>
+                                    <div className="ml-auto">
+                                      {isCollapsed ? (
+                                        <ChevronDown className="h-3 w-3 text-muted-foreground" />
+                                      ) : (
+                                        <ChevronUp className="h-3 w-3 text-muted-foreground" />
+                                      )}
+                                    </div>
                                   </div>
+                                  {!isCollapsed && (
+                                    <div className="space-y-2 pl-2">
+                                      {unassignedTasks.map((task) => (
+                                        <CompactTaskCard key={task.id} task={task} />
+                                      ))}
+                                    </div>
+                                  )}
                                 </div>
-                                {!isCollapsed && (
-                                  <div className="space-y-2 pl-2">
-                                    {unassignedTasks.map((task) => (
-                                      <CompactTaskCard key={task.id} task={task} />
-                                    ))}
-                                  </div>
-                                )}
-                              </div>
-                            )
-                          })()}
+                              )
+                            })()}
 
                           {sprintTasksFiltered.length === 0 && (
                             <div className="flex items-center justify-center h-32 text-muted-foreground text-sm select-none">
@@ -902,372 +956,6 @@ export const PlanningView: React.FC<PlanningViewProps> = ({
                 </Card>
               )
             })}
-                          className="bg-primary hover:bg-primary/90 text-primary-foreground gap-1"
-                          size="sm"
-                        >
-                          <Plus className="h-3 w-3" />
-                          Add
-                        </Button>
-                        <Button
-                          onClick={() => setIsSprintSelectorOpen(!isSprintSelectorOpen)}
-                          variant="outline"
-                          size="sm"
-                          className="gap-1"
-                        >
-                          <Calendar className="h-3 w-3" />
-                          {isSprintSelectorOpen ? 'Close' : 'Select'}
-                        </Button>
-                      </div>
-                    </div>
-                  </Card>
-
-                  {/* Backdrop Overlay */}
-                  {isSprintSelectorOpen && (
-                    <div 
-                      className="fixed inset-0 bg-black/20 z-[5]"
-                      onClick={() => setIsSprintSelectorOpen(false)}
-                    />
-                  )}
-
-                  {/* Sliding Sprint Selector Panel */}
-                  <div
-                    className={`fixed top-0 right-0 h-full w-80 bg-background border-l shadow-xl z-10 transition-all duration-300 ease-in-out ${
-                      isSprintSelectorOpen
-                        ? 'translate-x-0 opacity-100 visible'
-                        : 'translate-x-full opacity-0 invisible'
-                    }`}
-                  >
-                    <Card className="p-4 bg-card shadow-lg border-0 rounded-none h-full">
-                      <div className="flex items-center justify-between mb-4">
-                        <div>
-                          <h3 className="font-semibold text-foreground text-base">Select Sprints</h3>
-                          <p className="text-sm text-muted-foreground">
-                            Choose up to 3 sprints • {selectedSprintIds.length}/3 selected
-                          </p>
-                        </div>
-                        
-                        <Button
-                          onClick={() => setIsSprintSelectorOpen(false)}
-                          variant="ghost"
-                          size="sm"
-                          className="h-8 w-8 p-0"
-                        >
-                          <X className="h-4 w-4" />
-                        </Button>
-                      </div>
-
-                      {/* Sprint Filter Tabs */}
-                      <div className="flex gap-1 mb-4">
-                        {[
-                          { key: 'upcoming', label: 'Upcoming', count: availableSprints.filter(s => s.startDate >= new Date()).slice(0, 3).length },
-                          { key: 'active', label: 'Active', count: availableSprints.filter(s => s.isActive).length },
-                          { key: 'all', label: 'All', count: availableSprints.length }
-                        ].map((filter) => (
-                          <Button
-                            key={filter.key}
-                            variant={sprintFilter === filter.key ? 'default' : 'outline'}
-                            size="sm"
-                            onClick={() => setSprintFilter(filter.key as 'all' | 'active' | 'upcoming')}
-                            className="text-xs h-8 px-3 flex-1"
-                          >
-                            {filter.label} ({filter.count})
-                          </Button>
-                        ))}
-                      </div>
-
-                      {/* Sprint List */}
-                      <div className="space-y-2 flex-1 overflow-y-auto">
-                        {displayedSprints.length > 0 ? (
-                          displayedSprints.map((sprint) => {
-                            const isSelected = selectedSprintIds.includes(sprint.id)
-                            const taskCount = tasks.filter(task => task.sprintId === sprint.id).length
-                            const canSelect = !isSelected && selectedSprintIds.length < 3
-
-                            return (
-                              <div
-                                key={sprint.id}
-                                className={`p-3 rounded-lg border transition-all ${
-                                  isSelected 
-                                    ? 'bg-primary/10 border-primary/30' 
-                                    : canSelect
-                                    ? 'bg-card border-border hover:border-primary/50'
-                                    : 'bg-muted/30 border-border/30 opacity-60'
-                                }`}
-                              >
-                                {editingSprintId === sprint.id ? (
-                                  /* Inline Edit Form */
-                                  <div className="space-y-3" onClick={(e) => e.stopPropagation()}>
-                                    <Input
-                                      value={sprintEditForm.name}
-                                      onChange={(e) => setSprintEditForm(prev => ({ ...prev, name: e.target.value }))}
-                                      placeholder="Sprint name"
-                                      className="text-sm"
-                                    />
-                                    <div className="grid grid-cols-2 gap-2">
-                                      <Input
-                                        type="date"
-                                        value={sprintEditForm.startDate}
-                                        onChange={(e) => setSprintEditForm(prev => ({ ...prev, startDate: e.target.value }))}
-                                        className="text-xs"
-                                      />
-                                      <Input
-                                        type="date"
-                                        value={sprintEditForm.endDate}
-                                        onChange={(e) => setSprintEditForm(prev => ({ ...prev, endDate: e.target.value }))}
-                                        className="text-xs"
-                                      />
-                                    </div>
-                                    <div className="flex items-center gap-2">
-                                      <input
-                                        type="checkbox"
-                                        checked={sprintEditForm.isActive}
-                                        onChange={(e) => setSprintEditForm(prev => ({ ...prev, isActive: e.target.checked }))}
-                                        className="w-4 h-4"
-                                      />
-                                      <span className="text-sm">Active Sprint</span>
-                                    </div>
-                                    <div className="flex gap-2">
-                                      <Button size="sm" onClick={handleSprintEditSave} className="text-xs flex-1">Save</Button>
-                                      <Button size="sm" variant="outline" onClick={handleSprintEditCancel} className="text-xs flex-1">Cancel</Button>
-                                    </div>
-                                  </div>
-                                ) : (
-                                  /* Normal Display */
-                                  <div className="space-y-2">
-                                    <div className="flex items-center justify-between">
-                                      <div className="flex items-center gap-2">
-                                        <div className={`w-2 h-2 rounded-full ${sprint.isActive ? 'bg-success' : 'bg-muted-foreground/30'}`} />
-                                        <span className="font-medium text-sm">{sprint.name}</span>
-                                        {sprint.isActive && (
-                                          <Badge variant="secondary" className="text-xs bg-success/20 text-success">
-                                            Active
-                                          </Badge>
-                                        )}
-                                      </div>
-                                      <div className="flex items-center gap-1">
-                                        <Button
-                                          size="sm"
-                                          variant="ghost"
-                                          onClick={(e) => {
-                                            e.stopPropagation()
-                                            handleSprintEditStart(sprint)
-                                          }}
-                                          className="h-6 w-6 p-0"
-                                        >
-                                          <Edit2 className="h-3 w-3" />
-                                        </Button>
-                                        <Button
-                                          size="sm"
-                                          variant="ghost"
-                                          onClick={(e) => {
-                                            e.stopPropagation()
-                                            onDeleteSprint(sprint.id)
-                                          }}
-                                          className="h-6 w-6 p-0 text-destructive hover:text-destructive"
-                                        >
-                                          <Trash2 className="h-3 w-3" />
-                                        </Button>
-                                      </div>
-                                    </div>
-                                    <div className="text-xs text-muted-foreground">
-                                      {sprint.startDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })} - {sprint.endDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
-                                    </div>
-                                    <div className="text-xs text-muted-foreground">
-                                      {taskCount} tasks
-                                    </div>
-                                    <div className="flex items-center justify-between mt-2">
-                                      <Button
-                                        variant={isSelected ? "default" : "outline"}
-                                        size="sm"
-                                        className="text-xs w-full h-8 flex items-center justify-center cursor-pointer"
-                                        onClick={() => toggleSprintView(sprint.id)}
-                                        disabled={!isSelected && selectedSprintIds.length >= 3}
-                                      >
-                                        <span className="pointer-events-none select-none">
-                                          {isSelected ? "Deselect" : selectedSprintIds.length >= 3 ? "Limit Reached" : "Select"}
-                                        </span>
-                                      </Button>
-                                    </div>
-                                  </div>
-                                )}
-                              </div>
-                            )
-                          })
-                        ) : (
-                          <div className="text-center py-8 text-muted-foreground">
-                            <Calendar className="h-8 w-8 mx-auto mb-2 opacity-50" />
-                            <p className="text-sm">No sprints found for "{sprintFilter}" filter</p>
-                            <Button
-                              variant="link"
-                              size="sm"
-                              onClick={() => setSprintFilter('all')}
-                              className="text-xs"
-                            >
-                              Show all sprints
-                            </Button>
-                          </div>
-                        )}
-                      </div>
-
-                      {selectedSprintIds.length === 0 && (
-                        <div className="mt-4 p-4 bg-muted/50 rounded-lg border-2 border-dashed border-border">
-                          <div className="text-center">
-                            <Calendar className="h-6 w-6 mx-auto mb-2 text-muted-foreground" />
-                            <p className="text-sm text-muted-foreground font-medium">Select sprints to start planning</p>
-                            <p className="text-xs text-muted-foreground mt-1">
-                              Choose up to 3 sprints to view alongside your backlog
-                            </p>
-                          </div>
-                        </div>
-                      )}
-                    </Card>
-                  </div>
-                </div>
-                {/* Sprint Columns */}
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                  {visibleSprints.map((sprint) => {
-                    const sprintTasksFiltered = tasks.filter(
-                      (task) => task.sprintId === sprint.id,
-                    )
-
-                      return (
-                        <Card
-                          key={sprint.id}
-                          className="p-4 bg-card border-l-4 border-l-blue-500 shadow-sm hover:shadow-md transition-shadow duration-200 flex flex-col h-full"
-                          onDragOver={handleDragOver}
-                          onDragEnter={() => handleDragEnter(sprint.id)}
-                          onDragLeave={handleDragLeave}
-                          onDrop={(e) => handleDrop(e, sprint.id)}
-                        >
-                          <div className="flex items-center justify-between mb-4 flex-shrink-0">
-                            <div>
-                              <h3 className="font-semibold text-foreground select-none text-lg">
-                                {sprint.name}
-                              </h3>
-                              {sprint.isActive && (
-                                <span className="text-xs text-success font-medium select-none">
-                                  Active Sprint
-                                </span>
-                              )}
-                            </div>
-                            <div className="flex items-center gap-2">
-                              <Badge variant="secondary" className="bg-muted text-muted-foreground">
-                                {sprintTasksFiltered.length}
-                              </Badge>
-                              <Button
-                                size="sm"
-                                variant="ghost"
-                                onClick={() => handleSprintEditStart(sprint)}
-                                className="h-6 px-2"
-                              >
-                                <Edit2 className="h-3 w-3" />
-                              </Button>
-                              {sprint.id !== 'backlog' && sprint.id !== 'all-tasks' && (
-                                <Button
-                                  size="sm"
-                                  variant="ghost"
-                                  onClick={() => onDeleteSprint(sprint.id)}
-                                  className="h-6 px-2 text-destructive hover:text-destructive"
-                                >
-                                  <Trash2 className="h-3 w-3" />
-                                </Button>
-                              )}
-                            </div>
-                          </div>
-
-                          <div
-                            className={`flex-1 overflow-y-auto space-y-3 min-h-0 p-3 rounded transition-colors ${
-                              dragOverTarget === sprint.id
-                                ? 'bg-primary/10'
-                                : ''
-                            }`}
-                          >
-                            {(() => {
-                              const { tasksByEpic, unassignedTasks } = getTasksByEpic(sprintTasksFiltered)
-                              
-                              return (
-                                <>
-                                  {/* Epic Groups */}
-                                  {Object.entries(tasksByEpic).map(([epicId, epicTasks]) => {
-                                    const epic = getEpicById(epicId)
-                                    if (!epic) return null
-                                    const isCollapsed = collapsedEpics.has(epicId)
-
-                                    return (
-                                      <div key={epicId} className="space-y-2">
-                                        <div 
-                                          className="flex items-center gap-2 px-2 py-1 bg-muted/50 rounded text-xs cursor-pointer hover:bg-muted/70 transition-colors"
-                                          onClick={() => toggleEpicCollapse(epicId)}
-                                        >
-                                          <div className={`w-3 h-3 rounded-full ${epic.color}`} />
-                                          <span className="font-medium text-muted-foreground">{epic.name}</span>
-                                          <span className="text-muted-foreground">({epicTasks.length})</span>
-                                          <div className="ml-auto">
-                                            {isCollapsed ? (
-                                              <ChevronDown className="h-3 w-3 text-muted-foreground" />
-                                            ) : (
-                                              <ChevronUp className="h-3 w-3 text-muted-foreground" />
-                                            )}
-                                          </div>
-                                        </div>
-                                        {!isCollapsed && (
-                                          <div className="space-y-2 pl-2">
-                                            {epicTasks.map((task) => (
-                                              <CompactTaskCard key={task.id} task={task} />
-                                            ))}
-                                          </div>
-                                        )}
-                                      </div>
-                                    )
-                                  })}
-
-                                  {/* Unassigned Tasks */}
-                                  {unassignedTasks.length > 0 && (() => {
-                                    const isCollapsed = collapsedEpics.has('no-epic')
-                                    return (
-                                      <div className="space-y-2">
-                                        <div 
-                                          className="flex items-center gap-2 px-2 py-1 bg-muted/50 rounded text-xs cursor-pointer hover:bg-muted/70 transition-colors"
-                                          onClick={() => toggleEpicCollapse('no-epic')}
-                                        >
-                                          <div className="w-3 h-3 rounded-full bg-gray-400" />
-                                          <span className="font-medium text-muted-foreground">No Epic</span>
-                                          <span className="text-muted-foreground">({unassignedTasks.length})</span>
-                                          <div className="ml-auto">
-                                            {isCollapsed ? (
-                                              <ChevronDown className="h-3 w-3 text-muted-foreground" />
-                                            ) : (
-                                              <ChevronUp className="h-3 w-3 text-muted-foreground" />
-                                            )}
-                                          </div>
-                                        </div>
-                                        {!isCollapsed && (
-                                          <div className="space-y-2 pl-2">
-                                            {unassignedTasks.map((task) => (
-                                              <CompactTaskCard key={task.id} task={task} />
-                                            ))}
-                                          </div>
-                                        )}
-                                      </div>
-                                    )
-                                  })()}
-
-                                  {sprintTasksFiltered.length === 0 && (
-                                    <div className="flex items-center justify-center h-32 text-muted-foreground text-sm select-none">
-                                      Drop tasks here
-                                    </div>
-                                  )}
-                                </>
-                              )
-                            })()}
-                          </div>
-                        </Card>
-                      )
-                    })}
-                </div>
-                
-              </div>
-            </div>
           </div>
 
           <AddSprintModal

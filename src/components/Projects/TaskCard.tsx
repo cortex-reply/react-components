@@ -131,7 +131,7 @@ export const TaskCard: React.FC<TaskCardProps> = ({
       <div className="flex items-center justify-between text-sm text-muted-foreground">
         <div className="flex items-center gap-1">
           <User className="h-4 w-4" />
-          <span>{task.assignee}</span>
+          <span>{(task.assignee as any)?.value?.name}</span>
         </div>
         {/* <div className="flex items-center gap-1">
           <Calendar className="h-4 w-4" />
