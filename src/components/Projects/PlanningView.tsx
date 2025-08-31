@@ -92,7 +92,7 @@ export const PlanningView: React.FC<PlanningViewProps> = ({
     }
     const firstName = parts[0]
     const lastInitial = parts[parts.length - 1][0].toUpperCase()
-    return `${firstName} ${lastInitial}.`
+    return `${firstName} ${lastInitial}`
   }
 
   // Get tasks by epic for grouping
@@ -286,7 +286,7 @@ export const PlanningView: React.FC<PlanningViewProps> = ({
               <span className="text-muted-foreground truncate">{epic?.name}</span>
             </div>
             {/* <span className="text-muted-foreground">{getDisplayName(task.assignee)}</span> */}
-            <span className="text-muted-foreground">{task.assignee}</span>
+            <span className="text-muted-foreground">{getDisplayName((task.assignee as any)?.value?.name)}</span>
           </div>
 
           {showSprint && sprint && (
