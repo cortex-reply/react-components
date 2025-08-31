@@ -2,6 +2,7 @@ import type { Meta, StoryObj } from "@storybook/react"
 import { DigitalColleageusLayout } from "./DigitalColleageusLayout"
 import { mockSidebarItems, mockNotifications } from "./test-data"
 import { businessUnits } from "./test-data"
+import { action } from "@storybook/addon-actions"
 
 const meta: Meta<typeof DigitalColleageusLayout> = {
   title: "Digital Colleagues/DigitalColleageusLayout",
@@ -24,6 +25,9 @@ export const Default: Story = {
     sidebarItems: mockSidebarItems,
     title: "Digital Colleagues",
     notifications: mockNotifications,
+    onTabChange: action('onTabChange'),
+    activeTab: 'Home',
+    showTabs: true,
     businessUnits,
     children: (
       <div className="space-y-6">

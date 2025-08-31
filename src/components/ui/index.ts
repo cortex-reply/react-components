@@ -89,7 +89,7 @@ export { ScrollArea, ScrollBar } from './scroll-area'
 export { Popover, PopoverTrigger, PopoverContent, PopoverAnchor } from './popover'
 export { Label } from './label'
 export { HoverCard, HoverCardTrigger, HoverCardContent } from './hover-card'
-
+export * from './card';
 export {
   Dialog,
   DialogPortal,
