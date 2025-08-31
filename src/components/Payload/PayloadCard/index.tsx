@@ -8,7 +8,7 @@ import type { Post } from '@/payload-types'
 
 import { Media } from '../Media'
 
-export const Card: React.FC<{
+export const PayloadCard: React.FC<{
   alignItems?: 'center'
   className?: string
   doc?: Post

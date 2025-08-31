@@ -1,4 +1,4 @@
-export * from "./Card";
+export * from "./PayloadCard";
 export * from "./CollectionArchive";
 export * from "./Link";
 export * from "./Logo";
