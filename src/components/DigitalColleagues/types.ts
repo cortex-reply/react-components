@@ -83,18 +83,68 @@ export interface Comment {
 }
 
 export interface Task {
-  id: string
-  name: string
-  description: string
-  status: 'todo' | 'in-progress' | 'review' | 'done'
-  priority: 'low' | 'medium' | 'high'
-  type: 'story' | 'task' | 'bug' | 'spike'
-  points: number // Story points
-  epicId: string
-  sprintId?: string
-  assignee: string
-  comments?: Comment[]
-  createdAt: Date
+  id: number;
+  name?: string | null;
+  description?: string | null;
+  assignee?:
+    | ({
+        relationTo: 'digital-colleagues';
+        value: number | DigitalColleague;
+      } | null)
+    | ({
+        relationTo: 'users';
+        value: string | User;
+      } | null);
+  status: 'backlog' | 'todo' | 'in-progress' | 'review' | 'done' | 'cancelled';
+  project?: (number | null) | Project;
+  epic?: (number | null) | Epic;
+  /**
+   * Estimate of effort required to complete this task, in story points.
+   */
+  storyPoints?: number | null;
+  /**
+   * The sprint this task is assigned to, if applicable.
+   */
+  sprint?: (number | null) | Sprint;
+  /**
+   * The type of task. This helps categorize the task for better organization.
+   */
+  type?: ('story' | 'bug' | 'task' | 'spike') | null;
+  /**
+   * The priority of this task. This helps in determining the order of work.
+   */
+  priority?: ('low' | 'medium' | 'high' | 'critical') | null;
+  parents?: (number | Task)[] | null;
+  metadata?:
+    | {
+        [k: string]: unknown;
+      }
+    | unknown[]
+    | string
+    | number
+    | boolean
+    | null;
+  dateLogged: string;
+  closureDate?: string | null;
+  index: number;
+  comments?:
+    | {
+        text: string;
+        author:
+          | {
+              relationTo: 'users';
+              value: string | User;
+            }
+          | {
+              relationTo: 'digital-colleagues';
+              value: number | DigitalColleague;
+            };
+        timestamp: string;
+        id?: string | null;
+      }[]
+    | null;
+  updatedAt: string;
+  createdAt: string;
 }
 
 export interface App {
