@@ -285,7 +285,8 @@ export const PlanningView: React.FC<PlanningViewProps> = ({
               {epic && <div className={`w-2 h-2 rounded-full ${epic.color}`}></div>}
               <span className="text-muted-foreground truncate">{epic?.name}</span>
             </div>
-            <span className="text-muted-foreground">{getDisplayName(task.assignee.value.name)}</span>
+            {/* <span className="text-muted-foreground">{getDisplayName(task.assignee)}</span> */}
+            <span className="text-muted-foreground">{task.assignee}</span>
           </div>
 
           {showSprint && sprint && (
