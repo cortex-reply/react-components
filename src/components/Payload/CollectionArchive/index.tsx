@@ -3,7 +3,7 @@ import React from 'react'
 
 import type { Post } from '@/payload-types'
 
-import { Card } from '../PayloadCard'
+import { PayloadCard } from '@/components/Payload/PayloadCard'
 
 export type Props = {
   posts: Post[]
@@ -20,7 +20,7 @@ export const CollectionArchive: React.FC<Props> = (props) => {
             if (typeof result === 'object' && result !== null) {
               return (
                 <div className="col-span-4" key={index}>
-                  <Card className="h-full" doc={result} relationTo="posts" showCategories />
+                  <PayloadCard className="h-full" doc={result} relationTo="posts" showCategories />
                 </div>
               )
             }

@@ -4,7 +4,7 @@ import { RichText } from '@/components/Payload/RichText'
 
 import type { Post } from '@/payload-types'
 
-import { Card } from '@/components/Payload/PayloadCard'
+import { PayloadCard } from '@/components/Payload/PayloadCard'
 
 export type RelatedPostsProps = {
   className?: string
@@ -23,7 +23,7 @@ export const RelatedPosts: React.FC<RelatedPostsProps> = (props) => {
         {docs?.map((doc, index) => {
           if (typeof doc === 'string') return null
 
-          return <Card key={index} doc={doc} relationTo="posts" showCategories />
+          return <PayloadCard key={index} doc={doc} relationTo="posts" showCategories />
         })}
       </div>
     </div>
