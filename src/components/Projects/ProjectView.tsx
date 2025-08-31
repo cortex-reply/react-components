@@ -502,19 +502,8 @@ export default function ProjectView({
 
   return (
     <ManagementSidebar
-      projects={projects}
-      epics={epics}
-      sprints={sprints}
       currentView={currentView}
-      onUpdateProject={handleUpdateProject}
-      onDeleteProject={handleDeleteProject}
-      onAddProject={handleAddProject}
-      onUpdateEpic={handleUpdateEpic}
-      onDeleteEpic={handleDeleteEpic}
-      onAddEpic={handleAddEpicClick}
       onViewChange={handleViewChange}
-      mobileMenuOpen={mobileMenuOpen}
-      onToggleMobileMenu={handleToggleMobileMenu}
     >
       {currentView === 'kanban' && (
         <div className="h-full overflow-hidden">
