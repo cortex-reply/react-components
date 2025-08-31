@@ -32,7 +32,7 @@ interface ColleaguesViewProps {
   initialColleagues?: Colleague[]
   onColleagueAdd?: (colleague: Colleague) => void
   onColleagueEdit?: (colleague: Colleague) => void
-  onColleagueDelete?: (colleagueId: string) => void
+  onColleagueDelete?: (colleague: string, type: 'user' | 'digital') => void
   compactView?: boolean
   departments?: string[]
   className?: string
@@ -204,9 +204,11 @@ export default function ColleaguesView({
   }
 
   const handleDeleteColleague = (colleagueId: string) => {
-    console.log('handling delete colleague', colleagueId)
+    onColleagueDelete?.(
+      colleagueId,
+      (colleagues.find((c) => c.id === colleagueId) as Colleague).type as 'user' | 'digital',
+    )
     setColleagues((prev) => prev.filter((c) => c.id !== colleagueId))
-    onColleagueDelete?.(colleagueId)
   }
 
   const clearFilters = () => {

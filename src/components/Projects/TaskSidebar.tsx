@@ -324,10 +324,12 @@ export const TaskSidebar: React.FC<TaskSidebarProps> = ({
           <Label className="text-xs text-muted-foreground">Assignee</Label>
           <SearchableSelect
             label=""
-            value={task.assignee}
+            value={(task.assignee as any)?.value?.name}
             onValueChange={(value) => onUpdateTask('assignee', value)}
             options={teamMembers.map((member) => ({
-              value: member.id,
+              value: `${
+                typeof (member as any).email === 'string' ? 'users' : 'digital-colleagues'
+              }:${member.id}`,
               label: member?.name,
             }))}
             placeholder="Search team members..."

@@ -532,6 +532,7 @@ export default function ProjectView({
             onTaskClick={handleTaskClick}
             // Epic handlers
             onAddEpic={handleAddEpic}
+            onAddComment={handleAddComment}
           />
         </div>
       )}

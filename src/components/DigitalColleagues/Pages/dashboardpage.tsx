@@ -51,7 +51,7 @@ interface HomeProps {
   users: User[]
   onColleagueAdd: (colleague: Colleague) => void
   onColleagueEdit: (colleague: Colleague) => void
-  onColleagueDelete: (colleagueId: string) => void
+  onColleagueDelete: (colleague: string, type: 'user' | 'digital') => void
 }
 
 export default function Home({

@@ -25,6 +25,7 @@ export interface KanbanBoardProps {
   onTaskClick?: (task: Task) => void
   // Epic handlers
   onAddEpic?: (newEpic: Omit<Epic, 'id'>) => void
+  onAddComment?: ({ content, taskId }: { taskId: string; content: string }) => Promise<Task>
 }
 
 export const KanbanBoardView: React.FC<KanbanBoardProps> = ({
@@ -41,6 +42,7 @@ export const KanbanBoardView: React.FC<KanbanBoardProps> = ({
   onTaskClick,
   // Epic handlers
   onAddEpic,
+  onAddComment,
 }) => {
   const [tasks, setTasks] = useState<Task[]>(initialTasks)
   const [epics, setEpics] = useState<Epic[]>(initialEpics)
@@ -52,7 +54,7 @@ export const KanbanBoardView: React.FC<KanbanBoardProps> = ({
   const [users, setUsers] = useState<User[]>(initialUsers)
   const [colleagues, setColleagues] = useState<DigitalColleague[]>(initialColleagues)
   const [heroHeight, setHeroHeight] = useState(0)
-  
+
   const heroRef = useRef<HTMLDivElement>(null)
   const containerRef = useRef<HTMLDivElement>(null)
 
@@ -157,11 +159,16 @@ export const KanbanBoardView: React.FC<KanbanBoardProps> = ({
     onAddTask?.(newTask)
   }
 
-  const handleUpdateTask = async (taskId: string, updates: Partial<Task>): Promise<void> => {
+  const handleUpdateTask = async (taskId: string, updates: Partial<Task>): Promise<Task> => {
     setTasks((prev) => prev.map((task) => (task.id === taskId ? { ...task, ...updates } : task)))
     if (onUpdateTask) {
       await onUpdateTask(taskId, updates)
     }
+    const task = tasks.find((task) => task.id === taskId)
+    if (!task) {
+      throw new Error('Task not found')
+    }
+    return { ...task, ...updates }
   }
 
   const handleDeleteTask = async (taskId: string): Promise<void> => {
@@ -193,7 +200,8 @@ export const KanbanBoardView: React.FC<KanbanBoardProps> = ({
   ]
 
   // Calculate the height to pass to columns
-  const calculatedHeight = heroHeight > 0 ? `calc(100vh - ${heroHeight + 120}px)` : 'calc(100vh - 12rem)'
+  const calculatedHeight =
+    heroHeight > 0 ? `calc(100vh - ${heroHeight + 120}px)` : 'calc(100vh - 12rem)'
 
   return (
     <div ref={containerRef} className="h-full flex flex-col px-2 md:px-4 py-4">
@@ -213,10 +221,10 @@ export const KanbanBoardView: React.FC<KanbanBoardProps> = ({
         />
       </div>
       <div className="flex-1 min-h-0 mt-8">
-        <div 
+        <div
           className="h-full"
           style={{
-            height: heroHeight > 0 ? `calc(100vh - ${heroHeight + 120}px)` : 'calc(100vh - 12rem)'
+            height: heroHeight > 0 ? `calc(100vh - ${heroHeight + 120}px)` : 'calc(100vh - 12rem)',
           }}
         >
           <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 h-full">
@@ -284,7 +292,7 @@ export const KanbanBoardView: React.FC<KanbanBoardProps> = ({
       />
 
       <AddEpicModal
-              isOpen={isAddEpicModalOpen}
+        isOpen={isAddEpicModalOpen}
         onClose={() => setIsAddEpicModalOpen(false)}
         onAddEpic={handleAddEpic}
       />
