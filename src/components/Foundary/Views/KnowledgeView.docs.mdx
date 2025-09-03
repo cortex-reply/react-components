@@ -1,0 +1,307 @@
+import { Meta } from '@storybook/blocks'
+
+<Meta title="Digital Colleagues/Views/KnowledgeView/Documentation" />
+
+# KnowledgeView Component Documentation
+
+The **KnowledgeView** component is a comprehensive knowledge management interface that provides organized access to documentation and knowledge resources.
+
+## Overview
+
+This component serves as the primary interface for browsing, searching, and managing organizational knowledge. It supports multiple organizational contexts, document filtering, and various interaction patterns.
+
+## Key Features
+
+### 🔄 Context-based Navigation
+Switch between different organizational views:
+- **All Documentation**: Browse all documents by category and type
+- **Services**: Organize by service and team
+- **Architecture**: View by component and layer  
+- **Teams**: Group by team and project
+- **Security**: Filter security documentation
+
+### 📚 Document Browser
+- **Hierarchical organization** with expandable categories
+- **Search functionality** across all document content
+- **Document metadata** display (author, date, tags)
+- **Quick preview** capabilities
+
+### 🎯 Interactive Features
+- **Document selection** with visual feedback
+- **Sharing capabilities** for collaboration
+- **Cross-context document selection** for comparison
+- **Preview panels** for quick content review
+
+### ⚡ Performance Optimizations
+- **Lazy content loading** for large document sets
+- **Virtual scrolling** for massive lists
+- **Optimistic updates** for better UX
+- **Caching strategies** for repeated access
+
+## Architecture
+
+### Component Structure
+```
+KnowledgeView
+├── Context Selector (dropdown)
+├── Search Bar
+├── Document Tree
+│   ├── Category Nodes
+│   ├── Document Items
+│   └── Loading States
+└── Action Buttons
+    ├── Share
+    ├── Preview
+    └── Custom Actions
+```
+
+### Props Interface
+```typescript
+interface KnowledgeViewProps {
+  contexts: KnowledgeContext[]
+  selectedDocuments?: KnowledgeDocument[]
+  onDocumentSelect?: (documents: KnowledgeDocument[]) => void
+  onShare?: (documents: KnowledgeDocument[]) => void
+  onLoadDocumentContent?: (document: KnowledgeDocument) => Promise<string>
+  className?: string
+}
+```
+
+### Context System
+The component uses a context-based organization system where each context represents a different way to organize and view the same underlying documents:
+
+```typescript
+interface KnowledgeContext {
+  id: string
+  name: string
+  description: string
+  icon: React.ReactNode
+  categories: KnowledgeCategory[]
+}
+```
+
+## Usage Patterns
+
+### Basic Usage
+```tsx
+import { KnowledgeView } from '@/components/DigitalColleagues/Views'
+import { defaultContexts } from './KnowledgeView.stories'
+
+const MyComponent = () => {
+  return (
+    <KnowledgeView 
+      contexts={defaultContexts}
+      onDocumentSelect={(docs) => console.log('Selected:', docs)}
+    />
+  )
+}
+```
+
+### With Custom Content Loading
+```tsx
+const MyComponent = () => {
+  const handleLoadContent = async (document: KnowledgeDocument) => {
+    // Fetch content lazily for performance
+    const response = await fetch(`/api/documents/${document.id}/content`)
+    return response.text()
+  }
+
+  return (
+    <KnowledgeView 
+      contexts={contexts}
+      onLoadDocumentContent={handleLoadContent}
+    />
+  )
+}
+```
+
+### With Sharing Integration
+```tsx
+const MyComponent = () => {
+  const handleShare = (documents: KnowledgeDocument[]) => {
+    const urls = documents.map(doc => doc.url).join('\n')
+    navigator.clipboard.writeText(urls)
+    toast.success('Document links copied to clipboard!')
+  }
+
+  return (
+    <KnowledgeView 
+      contexts={contexts}
+      onShare={handleShare}
+    />
+  )
+}
+```
+
+## Context Design Guidelines
+
+### Creating Effective Contexts
+1. **Purpose-driven**: Each context should serve a specific user need
+2. **Comprehensive**: Include all relevant documents for that context
+3. **Intuitive organization**: Use familiar categorization schemes
+4. **Balanced depth**: Avoid overly deep or flat hierarchies
+
+### Best Practices
+- **Limit context count**: 3-7 contexts work best for cognitive load
+- **Clear naming**: Use descriptive, action-oriented names
+- **Consistent structure**: Maintain similar organization patterns
+- **Regular review**: Update contexts as organizational needs evolve
+
+## Performance Considerations
+
+### Large Document Sets
+- Use `onLoadDocumentContent` for lazy loading
+- Implement virtual scrolling for 1000+ documents
+- Consider pagination for very large sets
+- Cache frequently accessed content
+
+### Memory Management
+- Unload content when switching contexts
+- Implement cleanup in useEffect hooks
+- Monitor memory usage in production
+- Use React.memo for expensive renders
+
+### Network Optimization
+- Batch API requests when possible
+- Implement request debouncing for search
+- Use service workers for offline support
+- Compress document metadata
+
+## Accessibility Features
+
+### Keyboard Navigation
+- **Tab**: Navigate through interactive elements
+- **Arrow keys**: Navigate tree structure
+- **Space/Enter**: Select/expand items
+- **Escape**: Close modals/dropdowns
+
+### Screen Reader Support
+- Semantic HTML structure
+- ARIA labels and descriptions
+- Focus management
+- Status announcements
+
+### Visual Accessibility
+- High contrast mode support
+- Respects `prefers-reduced-motion`
+- Scalable text and icons
+- Clear focus indicators
+
+## Testing Strategies
+
+### Unit Tests
+- Test document selection logic
+- Verify context switching
+- Mock API interactions
+- Test keyboard navigation
+
+### Integration Tests
+- Test with real data sets
+- Verify performance thresholds
+- Test error boundary behavior
+- Cross-browser compatibility
+
+### User Experience Tests
+- Usability testing with real users
+- Performance testing with large datasets
+- Accessibility audit compliance
+- Mobile responsiveness testing
+
+## Troubleshooting
+
+### Common Issues
+
+**Documents not loading**
+- Check context data structure
+- Verify document URLs are accessible
+- Check network connectivity
+- Review console for errors
+
+**Performance issues**
+- Implement lazy loading
+- Reduce initial data load
+- Check for memory leaks
+- Profile React components
+
+**Accessibility problems**
+- Run automated accessibility tests
+- Test with screen readers
+- Verify keyboard navigation
+- Check color contrast ratios
+
+### Debug Mode
+Enable debug logging by setting:
+```typescript
+window.__KNOWLEDGE_VIEW_DEBUG__ = true
+```
+
+This will log:
+- Context switching events
+- Document selection changes
+- API request timing
+- Performance metrics
+
+## API Integration
+
+### Expected Data Format
+```typescript
+// Sample API response structure
+{
+  "contexts": [
+    {
+      "id": "all-docs",
+      "name": "All Documentation",
+      "categories": [
+        {
+          "id": "guides",
+          "name": "User Guides",
+          "documents": [
+            {
+              "id": "user-onboarding",
+              "title": "User Onboarding Guide",
+              "url": "/docs/onboarding",
+              "author": "John Doe",
+              "lastModified": "2025-01-15T10:30:00Z",
+              "tags": ["onboarding", "users"]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
+```
+
+### Error Handling
+The component handles various error states:
+- Network failures
+- Invalid data structures
+- Missing documents
+- Permission errors
+
+Implement proper error boundaries and user feedback for production use.
+
+## Future Enhancements
+
+### Planned Features
+- **Advanced search**: Full-text search with filters
+- **Document versioning**: Track and compare versions
+- **Collaborative features**: Comments and annotations
+- **Analytics integration**: Usage tracking and insights
+
+### Extension Points
+- **Custom renderers**: For different document types
+- **Plugin system**: For third-party integrations
+- **Theme customization**: Beyond basic styling
+- **Workflow integration**: Connect to approval processes
+
+---
+
+## Related Components
+
+- **DocumentPreview**: For detailed document viewing
+- **SearchInterface**: Advanced search capabilities  
+- **DocumentEditor**: For content creation/editing
+- **AnalyticsDashboard**: Usage insights and metrics
+
+For interactive examples and component variations, see the **Stories** tab.
