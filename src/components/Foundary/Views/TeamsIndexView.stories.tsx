@@ -1,16 +1,16 @@
-import type { Meta, StoryObj } from "@storybook/react"
-import TeamsIndexView from "./TeamsIndexView"
-import { mockTeamSummary } from "../../DigitalColleagues/test-data"
+import type { Meta, StoryObj } from '@storybook/react'
+import TeamsIndexView from './TeamsIndexView'
+import { mockTeamSummary } from '../../DigitalColleagues/test-data'
 
 const meta: Meta<typeof TeamsIndexView> = {
-  title: "Digital Colleagues/Views/TeamsIndexView",
+  title: 'Foundary/Views/TeamsIndexView',
   component: TeamsIndexView,
   parameters: {
-    layout: "fullscreen",
+    layout: 'fullscreen',
   },
   argTypes: {
-    onCreateTeam: { action: "create-team" },
-    onTeamOpen: { action: "team-open" },
+    onCreateTeam: { action: 'create-team' },
+    onTeamOpen: { action: 'team-open' },
   },
 }
 

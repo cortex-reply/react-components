@@ -1,9 +1,9 @@
-import type { Meta, StoryObj } from '@storybook/react';
-import { action } from '@storybook/addon-actions';
-import { ManagementSidebar } from './ManagementSidebar';
+import type { Meta, StoryObj } from '@storybook/react'
+import { action } from '@storybook/addon-actions'
+import { ManagementSidebar } from './ManagementSidebar'
 
 const meta: Meta<typeof ManagementSidebar> = {
-  title: 'Digital Colleagues/ManagementSidebar',
+  title: 'Foundary/ManagementSidebar',
   component: ManagementSidebar,
   parameters: {
     layout: 'fullscreen',
@@ -14,10 +14,10 @@ const meta: Meta<typeof ManagementSidebar> = {
       options: ['kanban', 'planning', 'tasks', 'files', 'epics'],
     },
   },
-};
+}
 
-export default meta;
-type Story = StoryObj<typeof ManagementSidebar>;
+export default meta
+type Story = StoryObj<typeof ManagementSidebar>
 
 export const KanbanView: Story = {
   args: {
@@ -32,7 +32,7 @@ export const KanbanView: Story = {
       </div>
     ),
   },
-};
+}
 
 export const PlanningView: Story = {
   args: {
@@ -47,7 +47,7 @@ export const PlanningView: Story = {
       </div>
     ),
   },
-};
+}
 
 export const TasksView: Story = {
   args: {
@@ -62,7 +62,7 @@ export const TasksView: Story = {
       </div>
     ),
   },
-};
+}
 
 export const FilesView: Story = {
   args: {
@@ -77,7 +77,7 @@ export const FilesView: Story = {
       </div>
     ),
   },
-};
+}
 
 export const EpicsView: Story = {
   args: {
@@ -92,7 +92,7 @@ export const EpicsView: Story = {
       </div>
     ),
   },
-};
+}
 
 export const InteractiveDemo: Story = {
   args: {
@@ -104,24 +104,24 @@ export const InteractiveDemo: Story = {
           <h1 className="text-3xl font-bold mb-2">Project Management Dashboard</h1>
           <p className="text-gray-600">Switch between different views using the sidebar</p>
         </div>
-        
+
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           <div className="bg-white p-6 rounded-lg shadow-sm border">
             <h3 className="font-semibold mb-2">Active Tasks</h3>
             <div className="text-2xl font-bold text-blue-600">23</div>
           </div>
-          
+
           <div className="bg-white p-6 rounded-lg shadow-sm border">
             <h3 className="font-semibold mb-2">Completed</h3>
             <div className="text-2xl font-bold text-green-600">142</div>
           </div>
-          
+
           <div className="bg-white p-6 rounded-lg shadow-sm border">
             <h3 className="font-semibold mb-2">In Progress</h3>
             <div className="text-2xl font-bold text-orange-600">8</div>
           </div>
         </div>
-        
+
         <div className="mt-8 bg-white p-6 rounded-lg shadow-sm border">
           <h3 className="font-semibold mb-4">Recent Activity</h3>
           <div className="space-y-3">
@@ -142,4 +142,4 @@ export const InteractiveDemo: Story = {
       </div>
     ),
   },
-};
+}

@@ -1,19 +1,19 @@
-import React from "react";
-import { ColleagueTypeSelection } from "./colleague-type-selection";
-import { action } from '@storybook/addon-actions';
-import type { Meta, StoryObj } from "@storybook/react";
+import React from 'react'
+import { ColleagueTypeSelection } from './colleague-type-selection'
+import { action } from '@storybook/addon-actions'
+import type { Meta, StoryObj } from '@storybook/react'
 
 const meta: Meta<typeof ColleagueTypeSelection> = {
-  title: "Digital Colleagues/ColleagueTypeSelection",
+  title: 'Foundary/ColleagueTypeSelection',
   component: ColleagueTypeSelection,
   parameters: {
-    layout: "fullscreen",
+    layout: 'fullscreen',
   },
-};
+}
 
-export default meta;
+export default meta
 
-type Story = StoryObj<typeof ColleagueTypeSelection>;
+type Story = StoryObj<typeof ColleagueTypeSelection>
 
 export const Default: Story = {
   args: {
@@ -21,4 +21,4 @@ export const Default: Story = {
     onSelectDigital: action('onSelectDigital'),
     onCancel: action('onCancel'),
   },
-};
+}

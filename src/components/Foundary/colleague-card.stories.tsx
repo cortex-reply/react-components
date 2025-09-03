@@ -1,48 +1,49 @@
-import type { Meta, StoryObj } from "@storybook/react"
-import { action } from "@storybook/addon-actions"
-import { ColleagueCard } from "./colleague-card"
-import { mockColleagues } from "./test-data"
+import type { Meta, StoryObj } from '@storybook/react'
+import { action } from '@storybook/addon-actions'
+import { ColleagueCard } from './colleague-card'
+import { mockColleagues } from './test-data'
 
 const meta: Meta<typeof ColleagueCard> = {
-  title: "Digital Colleagues/ColleagueCard",
+  title: 'Foundary/ColleagueCard',
   component: ColleagueCard,
   parameters: {
-    layout: "centered",
+    layout: 'centered',
     docs: {
       description: {
-        component: "A card component for displaying colleague information with actions and status indicators.",
+        component:
+          'A card component for displaying colleague information with actions and status indicators.',
       },
     },
   },
   argTypes: {
     colleague: {
-      description: "The colleague data to display",
+      description: 'The colleague data to display',
     },
     onEdit: {
-      description: "Callback when edit action is triggered",
-      action: "edit",
+      description: 'Callback when edit action is triggered',
+      action: 'edit',
     },
     onDelete: {
-      description: "Callback when delete action is triggered",
-      action: "delete",
+      description: 'Callback when delete action is triggered',
+      action: 'delete',
     },
     onViewDetails: {
-      description: "Callback when view details action is triggered",
-      action: "viewDetails",
+      description: 'Callback when view details action is triggered',
+      action: 'viewDetails',
     },
     showActions: {
-      description: "Whether to show the actions dropdown",
-      control: "boolean",
+      description: 'Whether to show the actions dropdown',
+      control: 'boolean',
     },
     compact: {
-      description: "Whether to show a compact version of the card",
-      control: "boolean",
+      description: 'Whether to show a compact version of the card',
+      control: 'boolean',
     },
   },
   args: {
-    onEdit: action("edit"),
-    onDelete: action("delete"),
-    onViewDetails: action("viewDetails"),
+    onEdit: action('edit'),
+    onDelete: action('delete'),
+    onViewDetails: action('viewDetails'),
     showActions: true,
     compact: false,
   },
@@ -132,14 +133,16 @@ export const DigitalWithManyCapabilities: Story = {
 export const MinimalData: Story = {
   args: {
     colleague: {
-      id: "minimal",
-      type: "human",
-      name: "John Doe",
-      email: "john.doe@company.com",
-      role: "Developer",
-      department: "Engineering",
-      status: "active",
-      joinedDate: new Date(),
+      id: 'minimal',
+      type: 'human',
+      name: 'John Doe',
+      email: 'john.doe@company.com',
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+      // role: 'Developer',
+      // department: 'Engineering',
+      // status: 'active',
+      // joinedDate: new Date(),
     },
   },
 }
@@ -148,7 +151,7 @@ export const LongNames: Story = {
   args: {
     colleague: {
       ...mockColleagues[0],
-      name: "Sarah Elizabeth Johnson-Smith",
+      name: 'Sarah Elizabeth Johnson-Smith',
       // role: "Senior Principal UX/UI Designer and Researcher",
       // department: "Design and User Experience",
     },
@@ -162,15 +165,15 @@ export const Grid: Story = {
         <ColleagueCard
           key={colleague.id}
           colleague={colleague}
-          onEdit={action("edit")}
-          onDelete={action("delete")}
-          onViewDetails={action("viewDetails")}
+          onEdit={action('edit')}
+          onDelete={action('delete')}
+          onViewDetails={action('viewDetails')}
         />
       ))}
     </div>
   ),
   parameters: {
-    layout: "padded",
+    layout: 'padded',
   },
 }
 
@@ -182,14 +185,14 @@ export const CompactGrid: Story = {
           key={colleague.id}
           colleague={colleague}
           compact={true}
-          onEdit={action("edit")}
-          onDelete={action("delete")}
-          onViewDetails={action("viewDetails")}
+          onEdit={action('edit')}
+          onDelete={action('delete')}
+          onViewDetails={action('viewDetails')}
         />
       ))}
     </div>
   ),
   parameters: {
-    layout: "padded",
+    layout: 'padded',
   },
 }

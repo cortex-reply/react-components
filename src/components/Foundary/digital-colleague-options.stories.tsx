@@ -1,19 +1,19 @@
-import React from "react";
-import { DigitalColleagueOptions } from "./digital-colleague-options";
-import { action } from '@storybook/addon-actions';
-import type { Meta, StoryObj } from "@storybook/react";
+import React from 'react'
+import { DigitalColleagueOptions } from './digital-colleague-options'
+import { action } from '@storybook/addon-actions'
+import type { Meta, StoryObj } from '@storybook/react'
 
 const meta: Meta<typeof DigitalColleagueOptions> = {
-  title: "Digital Colleagues/DigitalColleagueOptions",
+  title: 'Foundary/DigitalColleagueOptions',
   component: DigitalColleagueOptions,
   parameters: {
-    layout: "fullscreen",
+    layout: 'fullscreen',
   },
-};
+}
 
-export default meta;
+export default meta
 
-type Story = StoryObj<typeof DigitalColleagueOptions>;
+type Story = StoryObj<typeof DigitalColleagueOptions>
 
 export const Default: Story = {
   args: {
@@ -21,4 +21,4 @@ export const Default: Story = {
     onCreateNew: action('onCreateNew'),
     onCancel: action('onCancel'),
   },
-};
+}

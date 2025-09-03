@@ -1,6 +1,6 @@
 import { Meta } from '@storybook/blocks'
 
-<Meta title="Digital Colleagues/Views/KnowledgeView/Documentation" />
+<Meta title="Foundary/Views/KnowledgeView/Documentation" />
 
 # KnowledgeView Component Documentation
 
@@ -13,26 +13,31 @@ This component serves as the primary interface for browsing, searching, and mana
 ## Key Features
 
 ### 🔄 Context-based Navigation
+
 Switch between different organizational views:
+
 - **All Documentation**: Browse all documents by category and type
 - **Services**: Organize by service and team
-- **Architecture**: View by component and layer  
+- **Architecture**: View by component and layer
 - **Teams**: Group by team and project
 - **Security**: Filter security documentation
 
 ### 📚 Document Browser
+
 - **Hierarchical organization** with expandable categories
 - **Search functionality** across all document content
 - **Document metadata** display (author, date, tags)
 - **Quick preview** capabilities
 
 ### 🎯 Interactive Features
+
 - **Document selection** with visual feedback
 - **Sharing capabilities** for collaboration
 - **Cross-context document selection** for comparison
 - **Preview panels** for quick content review
 
 ### ⚡ Performance Optimizations
+
 - **Lazy content loading** for large document sets
 - **Virtual scrolling** for massive lists
 - **Optimistic updates** for better UX
@@ -41,6 +46,7 @@ Switch between different organizational views:
 ## Architecture
 
 ### Component Structure
+
 ```
 KnowledgeView
 ├── Context Selector (dropdown)
@@ -56,6 +62,7 @@ KnowledgeView
 ```
 
 ### Props Interface
+
 ```typescript
 interface KnowledgeViewProps {
   contexts: KnowledgeContext[]
@@ -68,6 +75,7 @@ interface KnowledgeViewProps {
 ```
 
 ### Context System
+
 The component uses a context-based organization system where each context represents a different way to organize and view the same underlying documents:
 
 ```typescript
@@ -83,13 +91,14 @@ interface KnowledgeContext {
 ## Usage Patterns
 
 ### Basic Usage
+
 ```tsx
 import { KnowledgeView } from '@/components/DigitalColleagues/Views'
 import { defaultContexts } from './KnowledgeView.stories'
 
 const MyComponent = () => {
   return (
-    <KnowledgeView 
+    <KnowledgeView
       contexts={defaultContexts}
       onDocumentSelect={(docs) => console.log('Selected:', docs)}
     />
@@ -98,6 +107,7 @@ const MyComponent = () => {
 ```
 
 ### With Custom Content Loading
+
 ```tsx
 const MyComponent = () => {
   const handleLoadContent = async (document: KnowledgeDocument) => {
@@ -106,42 +116,35 @@ const MyComponent = () => {
     return response.text()
   }
 
-  return (
-    <KnowledgeView 
-      contexts={contexts}
-      onLoadDocumentContent={handleLoadContent}
-    />
-  )
+  return <KnowledgeView contexts={contexts} onLoadDocumentContent={handleLoadContent} />
 }
 ```
 
 ### With Sharing Integration
+
 ```tsx
 const MyComponent = () => {
   const handleShare = (documents: KnowledgeDocument[]) => {
-    const urls = documents.map(doc => doc.url).join('\n')
+    const urls = documents.map((doc) => doc.url).join('\n')
     navigator.clipboard.writeText(urls)
     toast.success('Document links copied to clipboard!')
   }
 
-  return (
-    <KnowledgeView 
-      contexts={contexts}
-      onShare={handleShare}
-    />
-  )
+  return <KnowledgeView contexts={contexts} onShare={handleShare} />
 }
 ```
 
 ## Context Design Guidelines
 
 ### Creating Effective Contexts
+
 1. **Purpose-driven**: Each context should serve a specific user need
 2. **Comprehensive**: Include all relevant documents for that context
 3. **Intuitive organization**: Use familiar categorization schemes
 4. **Balanced depth**: Avoid overly deep or flat hierarchies
 
 ### Best Practices
+
 - **Limit context count**: 3-7 contexts work best for cognitive load
 - **Clear naming**: Use descriptive, action-oriented names
 - **Consistent structure**: Maintain similar organization patterns
@@ -150,18 +153,21 @@ const MyComponent = () => {
 ## Performance Considerations
 
 ### Large Document Sets
+
 - Use `onLoadDocumentContent` for lazy loading
 - Implement virtual scrolling for 1000+ documents
 - Consider pagination for very large sets
 - Cache frequently accessed content
 
 ### Memory Management
+
 - Unload content when switching contexts
 - Implement cleanup in useEffect hooks
 - Monitor memory usage in production
 - Use React.memo for expensive renders
 
 ### Network Optimization
+
 - Batch API requests when possible
 - Implement request debouncing for search
 - Use service workers for offline support
@@ -170,18 +176,21 @@ const MyComponent = () => {
 ## Accessibility Features
 
 ### Keyboard Navigation
+
 - **Tab**: Navigate through interactive elements
 - **Arrow keys**: Navigate tree structure
 - **Space/Enter**: Select/expand items
 - **Escape**: Close modals/dropdowns
 
 ### Screen Reader Support
+
 - Semantic HTML structure
 - ARIA labels and descriptions
 - Focus management
 - Status announcements
 
 ### Visual Accessibility
+
 - High contrast mode support
 - Respects `prefers-reduced-motion`
 - Scalable text and icons
@@ -190,18 +199,21 @@ const MyComponent = () => {
 ## Testing Strategies
 
 ### Unit Tests
+
 - Test document selection logic
 - Verify context switching
 - Mock API interactions
 - Test keyboard navigation
 
 ### Integration Tests
+
 - Test with real data sets
 - Verify performance thresholds
 - Test error boundary behavior
 - Cross-browser compatibility
 
 ### User Experience Tests
+
 - Usability testing with real users
 - Performance testing with large datasets
 - Accessibility audit compliance
@@ -212,30 +224,36 @@ const MyComponent = () => {
 ### Common Issues
 
 **Documents not loading**
+
 - Check context data structure
 - Verify document URLs are accessible
 - Check network connectivity
 - Review console for errors
 
 **Performance issues**
+
 - Implement lazy loading
 - Reduce initial data load
 - Check for memory leaks
 - Profile React components
 
 **Accessibility problems**
+
 - Run automated accessibility tests
 - Test with screen readers
 - Verify keyboard navigation
 - Check color contrast ratios
 
 ### Debug Mode
+
 Enable debug logging by setting:
+
 ```typescript
 window.__KNOWLEDGE_VIEW_DEBUG__ = true
 ```
 
 This will log:
+
 - Context switching events
 - Document selection changes
 - API request timing
@@ -244,6 +262,7 @@ This will log:
 ## API Integration
 
 ### Expected Data Format
+
 ```typescript
 // Sample API response structure
 {
@@ -273,7 +292,9 @@ This will log:
 ```
 
 ### Error Handling
+
 The component handles various error states:
+
 - Network failures
 - Invalid data structures
 - Missing documents
@@ -284,12 +305,14 @@ Implement proper error boundaries and user feedback for production use.
 ## Future Enhancements
 
 ### Planned Features
+
 - **Advanced search**: Full-text search with filters
 - **Document versioning**: Track and compare versions
 - **Collaborative features**: Comments and annotations
 - **Analytics integration**: Usage tracking and insights
 
 ### Extension Points
+
 - **Custom renderers**: For different document types
 - **Plugin system**: For third-party integrations
 - **Theme customization**: Beyond basic styling
@@ -300,7 +323,7 @@ Implement proper error boundaries and user feedback for production use.
 ## Related Components
 
 - **DocumentPreview**: For detailed document viewing
-- **SearchInterface**: Advanced search capabilities  
+- **SearchInterface**: Advanced search capabilities
 - **DocumentEditor**: For content creation/editing
 - **AnalyticsDashboard**: Usage insights and metrics
 

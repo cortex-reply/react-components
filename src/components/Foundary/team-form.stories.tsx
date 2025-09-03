@@ -17,13 +17,14 @@ const mockExistingTeam: Team = {
 }
 
 const meta = {
-  title: 'Digital Colleagues/TeamForm',
+  title: 'Foundary/TeamForm',
   component: TeamForm,
   parameters: {
     layout: 'fullscreen',
     docs: {
       description: {
-        component: 'A simplified form for creating and editing teams with basic configuration options.',
+        component:
+          'A simplified form for creating and editing teams with basic configuration options.',
       },
     },
   },
@@ -83,19 +84,19 @@ export const CreateNewTeam: Story = {
   },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement)
-    
+
     // Test form title
     await expect(canvas.getByText('Create New Team')).toBeInTheDocument()
-    
+
     // Test form fields are present and editable
     const nameInput = canvas.getByLabelText('Team Name *')
     await expect(nameInput).toBeInTheDocument()
     await expect(nameInput).not.toBeDisabled()
-    
+
     const descriptionTextarea = canvas.getByLabelText('Description')
     await expect(descriptionTextarea).toBeInTheDocument()
     await expect(descriptionTextarea).not.toBeDisabled()
-    
+
     // Test submit button is present but disabled without name
     const submitButton = canvas.getByRole('button', { name: 'Create Team' })
     await expect(submitButton).toBeInTheDocument()
@@ -113,21 +114,23 @@ export const EditExistingTeam: Story = {
   },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement)
-    
+
     // Test form is populated with existing data
     await expect(canvas.getByDisplayValue('Product Development Team')).toBeInTheDocument()
-    await expect(canvas.getByDisplayValue('Cross-functional team focused on developing innovative products.')).toBeInTheDocument()
-    
+    await expect(
+      canvas.getByDisplayValue('Cross-functional team focused on developing innovative products.'),
+    ).toBeInTheDocument()
+
     // Test that enabled switches are checked
     const projectsSwitch = canvas.getByRole('switch', { name: 'Enable Projects' })
     await expect(projectsSwitch).toBeChecked()
-    
+
     const knowledgeSwitch = canvas.getByRole('switch', { name: 'Enable Knowledge Base' })
     await expect(knowledgeSwitch).toBeChecked()
-    
+
     const chatSwitch = canvas.getByRole('switch', { name: 'Enable Team Chat' })
     await expect(chatSwitch).toBeChecked()
-    
+
     // Test that disabled switch is unchecked
     const filesSwitch = canvas.getByRole('switch', { name: 'Enable File Management' })
     await expect(filesSwitch).not.toBeChecked()
@@ -143,18 +146,18 @@ export const ReadOnlyView: Story = {
   },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement)
-    
+
     // Test form title shows view mode
     await expect(canvas.getByText('View Team')).toBeInTheDocument()
-    
+
     // Test form fields are disabled
     const nameInput = canvas.getByDisplayValue('Product Development Team')
     await expect(nameInput).toBeDisabled()
-    
+
     // Test edit button is present
     const editButton = canvas.getByRole('button', { name: 'Edit' })
     await expect(editButton).toBeInTheDocument()
-    
+
     // Test close button instead of cancel
     const closeButton = canvas.getByRole('button', { name: 'Close' })
     await expect(closeButton).toBeInTheDocument()
@@ -169,11 +172,11 @@ export const LoadingState: Story = {
   },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement)
-    
+
     // Test form fields are disabled during loading
     const nameInput = canvas.getByLabelText('Team Name *')
     await expect(nameInput).toBeDisabled()
-    
+
     // Test buttons show loading state
     await expect(canvas.getByText('Saving...')).toBeInTheDocument()
   },
@@ -189,40 +192,42 @@ export const InteractiveFormTest: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement)
     const user = userEvent.setup()
-    
+
     // Fill in team name
     const nameInput = canvas.getByLabelText('Team Name *')
     await user.clear(nameInput)
     await user.type(nameInput, 'Test Team')
     await expect(nameInput).toHaveValue('Test Team')
-    
+
     // Fill in description
     const descriptionTextarea = canvas.getByLabelText('Description')
     await user.type(descriptionTextarea, 'This is a test team for demonstration purposes.')
     await expect(descriptionTextarea).toHaveValue('This is a test team for demonstration purposes.')
-    
+
     // Fill in ways of working
     const systemMsgTextarea = canvas.getByLabelText('Ways of working')
     await user.type(systemMsgTextarea, 'Follow best practices and collaborate effectively.')
-    await expect(systemMsgTextarea).toHaveValue('Follow best practices and collaborate effectively.')
-    
+    await expect(systemMsgTextarea).toHaveValue(
+      'Follow best practices and collaborate effectively.',
+    )
+
     // Toggle all configuration switches
     const projectsSwitch = canvas.getByRole('switch', { name: 'Enable Projects' })
     await user.click(projectsSwitch)
     await expect(projectsSwitch).toBeChecked()
-    
+
     const knowledgeSwitch = canvas.getByRole('switch', { name: 'Enable Knowledge Base' })
     await user.click(knowledgeSwitch)
     await expect(knowledgeSwitch).toBeChecked()
-    
+
     const filesSwitch = canvas.getByRole('switch', { name: 'Enable File Management' })
     await user.click(filesSwitch)
     await expect(filesSwitch).toBeChecked()
-    
+
     const chatSwitch = canvas.getByRole('switch', { name: 'Enable Team Chat' })
     await user.click(chatSwitch)
     await expect(chatSwitch).toBeChecked()
-    
+
     // Test that submit button is now enabled
     const submitButton = canvas.getByRole('button', { name: 'Create Team' })
     await expect(submitButton).not.toBeDisabled()
@@ -238,11 +243,11 @@ export const ConfigurationTogglesTest: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement)
     const user = userEvent.setup()
-    
+
     // Add team name first to enable submit
     const nameInput = canvas.getByLabelText('Team Name *')
     await user.type(nameInput, 'Configuration Test Team')
-    
+
     // Test all configuration toggles
     const toggles = [
       { name: 'Enable Projects', initialState: false },
@@ -250,7 +255,7 @@ export const ConfigurationTogglesTest: Story = {
       { name: 'Enable File Management', initialState: false },
       { name: 'Enable Team Chat', initialState: false },
     ]
-    
+
     // Test initial states (all should be unchecked for new team)
     for (const toggle of toggles) {
       const switchElement = canvas.getByRole('switch', { name: toggle.name })
@@ -260,13 +265,13 @@ export const ConfigurationTogglesTest: Story = {
         await expect(switchElement).not.toBeChecked()
       }
     }
-    
+
     // Toggle each switch and verify state change
     for (const toggle of toggles) {
       const switchElement = canvas.getByRole('switch', { name: toggle.name })
       await user.click(switchElement)
       await expect(switchElement).toBeChecked()
-      
+
       // Toggle back
       await user.click(switchElement)
       await expect(switchElement).not.toBeChecked()
@@ -282,20 +287,20 @@ export const FormValidationTest: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement)
     const user = userEvent.setup()
-    
+
     // Test that submit button is disabled when name is empty
     const submitButton = canvas.getByRole('button', { name: 'Create Team' })
     await expect(submitButton).toBeDisabled()
-    
+
     // Add team name
     const nameInput = canvas.getByLabelText('Team Name *')
     await user.type(nameInput, 'Valid Team Name')
-    
+
     // Test that submit button is now enabled
     await waitFor(() => {
       expect(submitButton).not.toBeDisabled()
     })
-    
+
     // Clear the name and verify button is disabled again
     await user.clear(nameInput)
     await waitFor(() => {
@@ -314,20 +319,20 @@ export const EditModeToggleTest: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement)
     const user = userEvent.setup()
-    
+
     // Test initial read-only state
     const nameInput = canvas.getByDisplayValue('Product Development Team')
     await expect(nameInput).toBeDisabled()
-    
+
     // Click edit button
     const editButton = canvas.getByRole('button', { name: 'Edit' })
     await user.click(editButton)
-    
+
     // Test that form is now editable
     await waitFor(() => {
       expect(nameInput).not.toBeDisabled()
     })
-    
+
     // Test that submit button is now visible
     await expect(canvas.getByRole('button', { name: 'Update Team' })).toBeInTheDocument()
   },
@@ -342,18 +347,18 @@ export const CancelFunctionalityTest: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement)
     const user = userEvent.setup()
-    
+
     // Make some changes to the form
     const nameInput = canvas.getByLabelText('Team Name *')
     await user.type(nameInput, 'Changed Team Name')
-    
+
     const descriptionTextarea = canvas.getByLabelText('Description')
     await user.type(descriptionTextarea, 'Changed description')
-    
+
     // Click cancel button
     const cancelButton = canvas.getByRole('button', { name: 'Cancel' })
     await user.click(cancelButton)
-    
+
     // The onCancel action should be triggered (visible in Actions tab)
   },
 }

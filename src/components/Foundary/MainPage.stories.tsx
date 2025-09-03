@@ -32,7 +32,7 @@ import { fn } from '@storybook/test'
 import { PhoneIcon, PlayCircleIcon, RectangleGroupIcon } from '@heroicons/react/20/solid'
 import { ChartPieIcon, CursorArrowRaysIcon, FingerPrintIcon } from '@heroicons/react/24/outline'
 import { DynamicIcon } from '@/components/Images'
-import { StoryObj } from '@storybook/react';
+import { StoryObj } from '@storybook/react'
 
 const GithubIcon = () => (
   // <FontAwesomeIcon icon={faGithub} size="10x" />
@@ -52,7 +52,7 @@ const ServiceIcon = () => <DynamicIcon iconName="cloud-network-sharing" size="4x
 const ProductIcon = () => <DynamicIcon iconName="development" size="4x" type="kit" />
 
 export default {
-  title: 'Digital Colleagues/Main Page',
+  title: 'Foundary/Main Page',
   component: MainPage,
   decorators: [
     (Story: React.FC) => (
@@ -141,8 +141,6 @@ export const Default: StoryObj = {
             },
           ],
         },
-   
-       
       ],
       mainNav: [
         {
@@ -162,7 +160,7 @@ export const Default: StoryObj = {
           url: '#',
           icon: Squad,
           isActive: true,
-        },  
+        },
       ],
       secondaryNav: [
         {
