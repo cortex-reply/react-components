@@ -1,10 +1,9 @@
-
-import type { Meta, StoryObj } from '@storybook/react';
-import { action } from '@storybook/addon-actions';
-import { DashboardHeader } from './DashboardHeader';
+import type { Meta, StoryObj } from '@storybook/react'
+import { action } from '@storybook/addon-actions'
+import { DashboardHeader } from './DashboardHeader'
 
 const meta: Meta<typeof DashboardHeader> = {
-  title: 'Digital Colleagues/DashboardHeader',
+  title: 'Foundary/DashboardHeader',
   component: DashboardHeader,
   parameters: {
     layout: 'fullscreen',
@@ -19,21 +18,21 @@ const meta: Meta<typeof DashboardHeader> = {
       description: 'Function called when sidebar toggle is clicked',
     },
   },
-};
+}
 
-export default meta;
-type Story = StoryObj<typeof DashboardHeader>;
+export default meta
+type Story = StoryObj<typeof DashboardHeader>
 
 export const Default: Story = {
   args: {
     isRightSidebarOpen: false,
     onToggleRightSidebar: action('onToggleRightSidebar'),
   },
-};
+}
 
 export const SidebarOpen: Story = {
   args: {
     isRightSidebarOpen: true,
     onToggleRightSidebar: action('onToggleRightSidebar'),
   },
-};
+}

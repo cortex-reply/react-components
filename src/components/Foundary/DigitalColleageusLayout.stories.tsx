@@ -1,18 +1,18 @@
-import type { Meta, StoryObj } from "@storybook/react"
-import { DigitalColleageusLayout } from "./DigitalColleageusLayout"
-import { mockSidebarItems, mockNotifications } from "./test-data"
-import { businessUnits } from "./test-data"
-import { action } from "@storybook/addon-actions"
+import type { Meta, StoryObj } from '@storybook/react'
+import { DigitalColleageusLayout } from './DigitalColleageusLayout'
+import { mockSidebarItems, mockNotifications } from './test-data'
+import { businessUnits } from './test-data'
+import { action } from '@storybook/addon-actions'
 
 const meta: Meta<typeof DigitalColleageusLayout> = {
-  title: "Digital Colleagues/DigitalColleageusLayout",
+  title: 'Foundary/DigitalColleageusLayout',
   component: DigitalColleageusLayout,
   parameters: {
-    layout: "fullscreen",
+    layout: 'fullscreen',
   },
   argTypes: {
     notifications: {
-      control: { type: "number", min: 0, max: 99 },
+      control: { type: 'number', min: 0, max: 99 },
     },
   },
 }
@@ -23,7 +23,7 @@ type Story = StoryObj<typeof DigitalColleageusLayout>
 export const Default: Story = {
   args: {
     sidebarItems: mockSidebarItems,
-    title: "Digital Colleagues",
+    title: 'Digital Colleagues',
     notifications: mockNotifications,
     onTabChange: action('onTabChange'),
     activeTab: 'Home',
@@ -39,7 +39,9 @@ export const Default: Story = {
           {[1, 2, 3, 4, 5, 6].map((i) => (
             <div key={i} className="rounded-2xl border p-6">
               <h3 className="font-semibold mb-2">Sample Card {i}</h3>
-              <p className="text-muted-foreground">This is sample content for demonstration purposes.</p>
+              <p className="text-muted-foreground">
+                This is sample content for demonstration purposes.
+              </p>
             </div>
           ))}
         </div>
@@ -51,7 +53,7 @@ export const Default: Story = {
 export const NoNotifications: Story = {
   args: {
     sidebarItems: mockSidebarItems,
-    title: "Digital Colleagues",
+    title: 'Digital Colleagues',
     notifications: mockNotifications,
     businessUnits,
     children: (

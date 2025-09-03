@@ -5,7 +5,7 @@ import type { KnowledgeDocument } from './types'
 import { mockKnowledgeDocuments } from '../../../tests/mockKnowledgeDocuments'
 
 const meta: Meta<typeof KnowledgeSearch> = {
-  title: 'Digital Colleagues/KnowledgeSearch',
+  title: 'Foundary/KnowledgeSearch',
   component: KnowledgeSearch,
   parameters: {
     layout: 'centered',
@@ -29,7 +29,7 @@ type Story = StoryObj<typeof meta>
 
 const KnowledgeSearchWrapper = (args: any) => {
   const [selectedDocuments, setSelectedDocuments] = useState<KnowledgeDocument[]>([])
-  
+
   return (
     <div className="max-w-2xl">
       <KnowledgeSearch
@@ -73,7 +73,7 @@ const PreSelectedWrapper = (args: any) => {
     mockKnowledgeDocuments[0], // React Development Best Practices
     mockKnowledgeDocuments[1], // TypeScript Advanced Types
   ])
-  
+
   return (
     <div className="max-w-2xl">
       <KnowledgeSearch

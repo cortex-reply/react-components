@@ -1,19 +1,16 @@
-import { dirname, join } from "path";
-import { StorybookConfig } from '@storybook/nextjs';
+import { dirname, join } from 'path'
+import { StorybookConfig } from '@storybook/nextjs'
 const path = require('path')
 
 const config: StorybookConfig = {
-  stories: [
-    '../src/**/*.stories.@(js|jsx|mjs|ts|tsx)', 
-    '../src/**/*.docs.mdx'
-  ],
+  stories: ['../src/**/*.stories.@(js|jsx|mjs|ts|tsx)', '../src/**/*.docs.mdx'],
   addons: [
-    getAbsolutePath("@storybook/addon-onboarding"),
-    getAbsolutePath("@storybook/addon-links"),
-    getAbsolutePath("@storybook/addon-essentials"),
+    getAbsolutePath('@storybook/addon-onboarding'),
+    getAbsolutePath('@storybook/addon-links'),
+    getAbsolutePath('@storybook/addon-essentials'),
     // getAbsolutePath("@storybook/addon-docs"),
-    getAbsolutePath("@storybook/addon-interactions"),
-    getAbsolutePath("@storybook/addon-themes"),
+    getAbsolutePath('@storybook/addon-interactions'),
+    getAbsolutePath('@storybook/addon-themes'),
     {
       name: '@storybook/addon-styling-webpack',
 
@@ -43,10 +40,13 @@ const config: StorybookConfig = {
     },
   ],
   framework: {
-    name: getAbsolutePath("@storybook/nextjs"),
+    name: getAbsolutePath('@storybook/nextjs'),
     options: {},
   },
   staticDirs: ['./public', './msw', '../src/images'],
+  core: {
+    disableTelemetry: true,
+  },
   // webpackFinal: async (config) => {
   //   config.resolve.alias.push({
   //     '@/components': path.resolve(__dirname, '../src/components'),
@@ -78,5 +78,5 @@ const config: StorybookConfig = {
 export default config
 
 function getAbsolutePath(value: string): any {
-  return dirname(require.resolve(join(value, "package.json")));
+  return dirname(require.resolve(join(value, 'package.json')))
 }

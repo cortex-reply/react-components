@@ -4,38 +4,39 @@ import { DocumentEdit } from './document-edit'
 import type { KnowledgeDocument, KnowledgeContext } from './types'
 
 const meta: Meta<typeof DocumentEdit> = {
-  title: 'Digital Colleagues/DocumentEdit',
+  title: 'Foundary/DocumentEdit',
   component: DocumentEdit,
   parameters: {
     layout: 'fullscreen',
     docs: {
       description: {
-        component: 'A document editing interface that allows users to modify knowledge document properties and content.'
-      }
-    }
+        component:
+          'A document editing interface that allows users to modify knowledge document properties and content.',
+      },
+    },
   },
   tags: ['autodocs'],
   argTypes: {
     document: {
       control: false,
-      description: 'The knowledge document to edit'
+      description: 'The knowledge document to edit',
     },
     onSave: {
       action: 'document-saved',
-      description: 'Callback fired when the document is saved'
+      description: 'Callback fired when the document is saved',
     },
     onCancel: {
       action: 'edit-cancelled',
-      description: 'Callback fired when editing is cancelled'
+      description: 'Callback fired when editing is cancelled',
     },
     availableDocuments: {
       control: false,
-      description: 'Array of available documents to suggest metadata values from'
+      description: 'Array of available documents to suggest metadata values from',
     },
     knowledgeContexts: {
       control: false,
-      description: 'Array of knowledge contexts to suggest metadata keys from'
-    }
+      description: 'Array of knowledge contexts to suggest metadata keys from',
+    },
   },
 }
 
@@ -53,8 +54,8 @@ const sampleKnowledgeContexts: KnowledgeContext[] = [
       groupBy: ['category', 'type'],
       sortBy: 'title',
       sortOrder: 'asc',
-      showDocumentCount: true
-    }
+      showDocumentCount: true,
+    },
   },
   {
     id: 'development',
@@ -65,8 +66,8 @@ const sampleKnowledgeContexts: KnowledgeContext[] = [
       groupBy: ['team', 'difficulty'],
       sortBy: 'updatedAt',
       sortOrder: 'desc',
-      showDocumentCount: true
-    }
+      showDocumentCount: true,
+    },
   },
   {
     id: 'teams',
@@ -77,9 +78,9 @@ const sampleKnowledgeContexts: KnowledgeContext[] = [
       groupBy: ['team', 'project'],
       sortBy: 'updatedAt',
       sortOrder: 'desc',
-      showDocumentCount: true
-    }
-  }
+      showDocumentCount: true,
+    },
+  },
 ]
 
 // Sample documents to provide metadata suggestions
@@ -95,7 +96,7 @@ const sampleAvailableDocuments: KnowledgeDocument[] = [
       team: 'Backend',
       difficulty: 'Intermediate',
       project: 'Auth System',
-      priority: 'High'
+      priority: 'High',
     },
     createdAt: new Date('2024-01-10'),
   },
@@ -110,7 +111,7 @@ const sampleAvailableDocuments: KnowledgeDocument[] = [
       team: 'Frontend',
       difficulty: 'Beginner',
       project: 'Design System',
-      priority: 'Medium'
+      priority: 'Medium',
     },
     createdAt: new Date('2024-02-15'),
   },
@@ -125,10 +126,10 @@ const sampleAvailableDocuments: KnowledgeDocument[] = [
       team: 'Backend',
       difficulty: 'Advanced',
       project: 'Database Migration',
-      priority: 'High'
+      priority: 'High',
     },
     createdAt: new Date('2024-03-01'),
-  }
+  },
 ]
 
 // Sample documents for stories
@@ -137,13 +138,13 @@ const sampleMarkdownDocument: KnowledgeDocument = {
   title: 'React Development Best Practices',
   description: 'Comprehensive guide to React development patterns and practices',
   format: 'markdown',
-  metadata: { 
-    category: 'Development', 
+  metadata: {
+    category: 'Development',
     difficulty: 'Intermediate',
     author: 'Dev Team',
     lastReviewed: '2024-06-01',
     team: 'Frontend',
-    type: 'Guide'
+    type: 'Guide',
   },
   createdAt: new Date('2024-01-15'),
   updatedAt: new Date('2024-06-20'),
@@ -213,7 +214,7 @@ export default UserProfile;
 
 ## Conclusion
 
-Following these best practices will help you build robust React applications that are easy to maintain and scale.`
+Following these best practices will help you build robust React applications that are easy to maintain and scale.`,
 }
 
 const sampleRichTextDocument: KnowledgeDocument = {
@@ -221,12 +222,12 @@ const sampleRichTextDocument: KnowledgeDocument = {
   title: 'Team Communication Guidelines',
   description: 'Essential guidelines for effective team communication',
   format: 'richtext',
-  metadata: { 
-    category: 'Management', 
+  metadata: {
+    category: 'Management',
     difficulty: 'Beginner',
     department: 'HR',
     type: 'Guidelines',
-    team: 'HR'
+    team: 'HR',
   },
   createdAt: new Date('2024-02-10'),
   updatedAt: new Date('2024-05-15'),
@@ -252,7 +253,7 @@ Digital Communication:
 • Use threads to keep conversations organized
 • Respond within 24 hours during business days
 
-Remember: Good communication builds trust and improves team productivity.`
+Remember: Good communication builds trust and improves team productivity.`,
 }
 
 const emptyDocument: KnowledgeDocument = {
@@ -261,7 +262,7 @@ const emptyDocument: KnowledgeDocument = {
   description: '',
   format: 'markdown',
   createdAt: new Date(),
-  content: ''
+  content: '',
 }
 
 const documentWithoutTags: KnowledgeDocument = {
@@ -271,89 +272,94 @@ const documentWithoutTags: KnowledgeDocument = {
   format: 'mdx',
   metadata: { category: 'Testing' },
   createdAt: new Date('2024-01-01'),
-  content: 'Simple content for testing purposes.'
+  content: 'Simple content for testing purposes.',
 }
 
 export const EditMarkdownDocument: Story = {
   args: {
     document: sampleMarkdownDocument,
     availableDocuments: sampleAvailableDocuments,
-    knowledgeContexts: sampleKnowledgeContexts
+    knowledgeContexts: sampleKnowledgeContexts,
   },
   parameters: {
     docs: {
       description: {
-        story: 'Document editor for a markdown document with comprehensive content and metadata.'
-      }
-    }
-  }
+        story: 'Document editor for a markdown document with comprehensive content and metadata.',
+      },
+    },
+  },
 }
 
 export const EditRichTextDocument: Story = {
   args: {
     document: sampleRichTextDocument,
     availableDocuments: sampleAvailableDocuments,
-    knowledgeContexts: sampleKnowledgeContexts
+    knowledgeContexts: sampleKnowledgeContexts,
   },
   parameters: {
     docs: {
       description: {
-        story: 'Document editor for a rich text document with formatted content.'
-      }
-    }
-  }
+        story: 'Document editor for a rich text document with formatted content.',
+      },
+    },
+  },
 }
 
 export const EditEmptyDocument: Story = {
   args: {
     document: emptyDocument,
     availableDocuments: sampleAvailableDocuments,
-    knowledgeContexts: sampleKnowledgeContexts
+    knowledgeContexts: sampleKnowledgeContexts,
   },
   parameters: {
     docs: {
       description: {
-        story: 'Document editor starting with an empty document to test creation workflow.'
-      }
-    }
-  }
+        story: 'Document editor starting with an empty document to test creation workflow.',
+      },
+    },
+  },
 }
 
 export const EditDocumentWithoutTags: Story = {
   args: {
     document: documentWithoutTags,
     availableDocuments: sampleAvailableDocuments,
-    knowledgeContexts: sampleKnowledgeContexts
+    knowledgeContexts: sampleKnowledgeContexts,
   },
   parameters: {
     docs: {
       description: {
-        story: 'Document editor for a document without tags to test the tags input field.'
-      }
-    }
-  }
+        story: 'Document editor for a document without tags to test the tags input field.',
+      },
+    },
+  },
 }
 
 export const EditLongContent: Story = {
   args: {
     document: {
       ...sampleMarkdownDocument,
-      content: sampleMarkdownDocument.content + '\n\n' + 
-        'Additional content section with more details. '.repeat(20) + '\n\n' +
-        sampleMarkdownDocument.content + '\n\n' +
-        'Even more content to test the textarea scrolling behavior. '.repeat(30) + '\n\n' +
-        '## Additional Section\n\nMore content here to make it really long and test the editing experience with substantial content.'
+      content:
+        sampleMarkdownDocument.content +
+        '\n\n' +
+        'Additional content section with more details. '.repeat(20) +
+        '\n\n' +
+        sampleMarkdownDocument.content +
+        '\n\n' +
+        'Even more content to test the textarea scrolling behavior. '.repeat(30) +
+        '\n\n' +
+        '## Additional Section\n\nMore content here to make it really long and test the editing experience with substantial content.',
     },
     availableDocuments: sampleAvailableDocuments,
-    knowledgeContexts: sampleKnowledgeContexts
+    knowledgeContexts: sampleKnowledgeContexts,
   },
   parameters: {
     docs: {
       description: {
-        story: 'Document editor with very long content to test textarea behavior and scrolling.'
-      }
-    }
-  }
+        story: 'Document editor with very long content to test textarea behavior and scrolling.',
+      },
+    },
+  },
 }
 
 export const EditMinimalDocument: Story = {
@@ -363,18 +369,18 @@ export const EditMinimalDocument: Story = {
       title: 'Minimal Doc',
       format: 'markdown' as const,
       createdAt: new Date(),
-      content: 'Just basic content.'
+      content: 'Just basic content.',
     },
     availableDocuments: sampleAvailableDocuments,
-    knowledgeContexts: sampleKnowledgeContexts
+    knowledgeContexts: sampleKnowledgeContexts,
   },
   parameters: {
     docs: {
       description: {
-        story: 'Document editor with minimal fields to test the layout with fewer properties.'
-      }
-    }
-  }
+        story: 'Document editor with minimal fields to test the layout with fewer properties.',
+      },
+    },
+  },
 }
 
 export const EditMdxDocument: Story = {
@@ -384,12 +390,12 @@ export const EditMdxDocument: Story = {
       title: 'MDX Component Guide',
       description: 'Interactive guide for MDX components',
       format: 'mdx' as const,
-      metadata: { 
-        category: 'Documentation', 
+      metadata: {
+        category: 'Documentation',
         interactive: true,
         complexity: 'Advanced',
         type: 'Guide',
-        team: 'Frontend'
+        team: 'Frontend',
       },
       createdAt: new Date('2024-03-01'),
       updatedAt: new Date('2024-06-15'),
@@ -424,18 +430,18 @@ MDX allows you to:
 1. Keep components simple and focused
 2. Document component props clearly
 3. Test interactive elements thoroughly
-4. Maintain good performance`
+4. Maintain good performance`,
     },
     availableDocuments: sampleAvailableDocuments,
-    knowledgeContexts: sampleKnowledgeContexts
+    knowledgeContexts: sampleKnowledgeContexts,
   },
   parameters: {
     docs: {
       description: {
-        story: 'Document editor for an MDX document with React components and interactive content.'
-      }
-    }
-  }
+        story: 'Document editor for an MDX document with React components and interactive content.',
+      },
+    },
+  },
 }
 
 export const EditDocumentWithMetadataSuggestions: Story = {
@@ -446,14 +452,14 @@ export const EditDocumentWithMetadataSuggestions: Story = {
       title: 'New Project Documentation',
       description: 'Documentation for a new project',
       format: 'markdown' as const,
-      metadata: { 
-        category: 'Development'
+      metadata: {
+        category: 'Development',
       },
       createdAt: new Date(),
-      content: '# New Project\n\nThis is documentation for a new project.'
+      content: '# New Project\n\nThis is documentation for a new project.',
     },
     availableDocuments: sampleAvailableDocuments,
-    knowledgeContexts: sampleKnowledgeContexts
+    knowledgeContexts: sampleKnowledgeContexts,
   },
   parameters: {
     docs: {
@@ -473,8 +479,8 @@ Try adding these metadata fields to see the suggestions:
 - **difficulty**: Will suggest Beginner, Intermediate, Advanced
 - **type**: Will suggest Guide, Reference, Best Practice, etc.
 
-The suggestions come from the sample documents and knowledge contexts provided to the component.`
-      }
-    }
-  }
+The suggestions come from the sample documents and knowledge contexts provided to the component.`,
+      },
+    },
+  },
 }

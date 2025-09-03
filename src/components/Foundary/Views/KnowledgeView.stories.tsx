@@ -5,31 +5,33 @@ import type { KnowledgeDocument, KnowledgeContext } from '../../DigitalColleague
 import { Server, Code, Users, BookOpen, Database, Shield, FileText } from 'lucide-react'
 
 const meta: Meta<typeof KnowledgeView> = {
-  title: 'Digital Colleagues/Views/KnowledgeView',
+  title: 'Foundary/Views/KnowledgeView',
   component: KnowledgeView,
   tags: ['autodocs'],
   parameters: {
     layout: 'fullscreen',
-    componentSubtitle: 'A comprehensive knowledge management interface for organizing and accessing team documentation',
+    componentSubtitle:
+      'A comprehensive knowledge management interface for organizing and accessing team documentation',
     docs: {
       description: {
         component: `
 ### Documentation
 
-[Full Documentation HERE](/?path=/docs/digital-colleagues-views-knowledgeview-documentation--docs)
+[Full Documentation HERE](/?path=/docs/foundary-views-knowledgeview-documentation--docs)
 
-        `
-      }
-    }
+        `,
+      },
+    },
   },
   argTypes: {
     documents: {
-      description: 'Array of knowledge documents to display. Each document contains metadata, content, and organizational information.',
+      description:
+        'Array of knowledge documents to display. Each document contains metadata, content, and organizational information.',
       control: { type: 'object' },
       table: {
         type: { summary: 'KnowledgeDocument[]' },
-        defaultValue: { summary: '[]' }
-      }
+        defaultValue: { summary: '[]' },
+      },
     },
     contexts: {
       description: `Array of KnowledgeContext objects that define different organizational views of the documents. 
@@ -44,8 +46,8 @@ The menuConfig in each context determines how documents are grouped and sorted w
       control: { type: 'object' },
       table: {
         type: { summary: 'KnowledgeContext[]' },
-        defaultValue: { summary: '[]' }
-      }
+        defaultValue: { summary: '[]' },
+      },
     },
     onDocumentClick: {
       description: `Callback function invoked when a user clicks on a document for selection. 
@@ -70,8 +72,8 @@ const handleDocumentClick = (document: KnowledgeDocument) => {
 \`\`\``,
       action: 'document-clicked',
       table: {
-        type: { summary: '(document: KnowledgeDocument) => void' }
-      }
+        type: { summary: '(document: KnowledgeDocument) => void' },
+      },
     },
     onDocumentShare: {
       description: `Callback function invoked when a user initiates sharing of a document.
@@ -96,8 +98,8 @@ const handleDocumentShare = (document: KnowledgeDocument) => {
 \`\`\``,
       action: 'document-shared',
       table: {
-        type: { summary: '(document: KnowledgeDocument) => void' }
-      }
+        type: { summary: '(document: KnowledgeDocument) => void' },
+      },
     },
     onLoadDocumentContent: {
       description: `Optional async function for lazy loading document content.
@@ -122,8 +124,8 @@ const loadContent = async (id: string) => {
 }
 \`\`\``,
       table: {
-        type: { summary: '(documentId: string) => Promise<string>' }
-      }
+        type: { summary: '(documentId: string) => Promise<string>' },
+      },
     },
     selectedDocumentId: {
       description: `ID of the currently selected/highlighted document. 
@@ -147,10 +149,10 @@ const [selectedId, setSelectedId] = useState<string>('doc-123')
       control: { type: 'text' },
       table: {
         type: { summary: 'string' },
-        defaultValue: { summary: 'undefined' }
-      }
-    }
-  }
+        defaultValue: { summary: 'undefined' },
+      },
+    },
+  },
 }
 
 export default meta
@@ -172,7 +174,7 @@ export const sampleDocuments: KnowledgeDocument[] = [
       service: 'Authentication Service',
       component: 'Auth Module',
       layer: 'API Layer',
-      project: 'Security Framework'
+      project: 'Security Framework',
     },
     content: `# API Authentication Guide
 
@@ -206,7 +208,7 @@ This guide covers the implementation of secure API authentication...
       service: 'UI Service',
       component: 'Component Library',
       layer: 'Presentation Layer',
-      project: 'Design System'
+      project: 'Design System',
     },
     content: `# UI Component Library
 
@@ -241,7 +243,7 @@ function App() {
       type: 'Best Practice',
       team: 'Backend',
       difficulty: 'Advanced',
-      version: '3.0'
+      version: '3.0',
     },
     content: `# Database Schema Design
 
@@ -267,7 +269,7 @@ function App() {
       type: 'Process',
       team: 'Human Resources',
       difficulty: 'Beginner',
-      department: 'Operations'
+      department: 'Operations',
     },
     content: `Employee Onboarding Checklist
 
@@ -300,7 +302,7 @@ Month 1:
       type: 'Report',
       team: 'Marketing',
       difficulty: 'Intermediate',
-      quarter: 'Q1 2024'
+      quarter: 'Q1 2024',
     },
     content: `# Q1 2024 Marketing Campaign Analysis
 
@@ -329,7 +331,7 @@ Our Q1 campaigns showed a 25% increase in engagement...
       type: 'Procedure',
       team: 'Security',
       difficulty: 'Advanced',
-      criticality: 'High'
+      criticality: 'High',
     },
     content: `# Security Incident Response Procedure
 
@@ -360,7 +362,7 @@ Our Q1 campaigns showed a 25% increase in engagement...
       type: 'Guidelines',
       team: 'Design',
       difficulty: 'Intermediate',
-      version: '2.0'
+      version: '2.0',
     },
     content: `# Design System Guidelines
 
@@ -396,8 +398,8 @@ export const defaultContexts: KnowledgeContext[] = [
       groupBy: ['category', 'type'],
       sortBy: 'title',
       sortOrder: 'asc',
-      showDocumentCount: true
-    }
+      showDocumentCount: true,
+    },
   },
   {
     id: 'services',
@@ -408,8 +410,8 @@ export const defaultContexts: KnowledgeContext[] = [
       groupBy: ['service', 'team'],
       sortBy: 'updatedAt',
       sortOrder: 'desc',
-      showDocumentCount: true
-    }
+      showDocumentCount: true,
+    },
   },
   {
     id: 'architecture',
@@ -420,8 +422,8 @@ export const defaultContexts: KnowledgeContext[] = [
       groupBy: ['component', 'layer'],
       sortBy: 'title',
       sortOrder: 'asc',
-      showDocumentCount: true
-    }
+      showDocumentCount: true,
+    },
   },
   {
     id: 'teams',
@@ -432,8 +434,8 @@ export const defaultContexts: KnowledgeContext[] = [
       groupBy: ['team', 'project'],
       sortBy: 'updatedAt',
       sortOrder: 'desc',
-      showDocumentCount: true
-    }
+      showDocumentCount: true,
+    },
   },
   {
     id: 'security',
@@ -444,9 +446,9 @@ export const defaultContexts: KnowledgeContext[] = [
       groupBy: ['category', 'difficulty'],
       sortBy: 'updatedAt',
       sortOrder: 'desc',
-      showDocumentCount: true
-    }
-  }
+      showDocumentCount: true,
+    },
+  },
 ]
 
 export const Default: Story = {
@@ -454,9 +456,10 @@ export const Default: Story = {
   parameters: {
     docs: {
       description: {
-        story: 'Shows the KnowledgeView with all default contexts and sample documentation. This is the most comprehensive view showing all features including context switching, document browsing, and metadata display.'
-      }
-    }
+        story:
+          'Shows the KnowledgeView with all default contexts and sample documentation. This is the most comprehensive view showing all features including context switching, document browsing, and metadata display.',
+      },
+    },
   },
   args: {
     documents: sampleDocuments,
@@ -469,13 +472,14 @@ export const ServicesView: Story = {
   parameters: {
     docs: {
       description: {
-        story: 'Displays only the Services context, showing how documents are organized by service and team. This view is useful for service-oriented documentation workflows.'
-      }
-    }
+        story:
+          'Displays only the Services context, showing how documents are organized by service and team. This view is useful for service-oriented documentation workflows.',
+      },
+    },
   },
   args: {
     documents: sampleDocuments,
-    contexts: defaultContexts.filter(c => c.id === 'services'),
+    contexts: defaultContexts.filter((c) => c.id === 'services'),
   },
 }
 
@@ -484,13 +488,14 @@ export const ArchitectureView: Story = {
   parameters: {
     docs: {
       description: {
-        story: 'Shows only the Architecture context, organizing documents by component and layer. Perfect for technical documentation and system architecture references.'
-      }
-    }
+        story:
+          'Shows only the Architecture context, organizing documents by component and layer. Perfect for technical documentation and system architecture references.',
+      },
+    },
   },
   args: {
     documents: sampleDocuments,
-    contexts: defaultContexts.filter(c => c.id === 'architecture'),
+    contexts: defaultContexts.filter((c) => c.id === 'architecture'),
   },
 }
 
@@ -499,13 +504,14 @@ export const TeamsView: Story = {
   parameters: {
     docs: {
       description: {
-        story: 'Focuses on the Teams context, grouping documents by team and project. Ideal for team-specific documentation management.'
-      }
-    }
+        story:
+          'Focuses on the Teams context, grouping documents by team and project. Ideal for team-specific documentation management.',
+      },
+    },
   },
   args: {
     documents: sampleDocuments,
-    contexts: defaultContexts.filter(c => c.id === 'teams'),
+    contexts: defaultContexts.filter((c) => c.id === 'teams'),
   },
 }
 
@@ -514,9 +520,10 @@ export const EmptyState: Story = {
   parameters: {
     docs: {
       description: {
-        story: 'Shows how the component handles an empty document state while still providing context navigation. Useful for testing empty states and initial loading scenarios.'
-      }
-    }
+        story:
+          'Shows how the component handles an empty document state while still providing context navigation. Useful for testing empty states and initial loading scenarios.',
+      },
+    },
   },
   args: {
     documents: [],
@@ -529,9 +536,10 @@ export const WithSelection: Story = {
   parameters: {
     docs: {
       description: {
-        story: 'Demonstrates the component with a pre-selected document (UI Component Library). Shows how selection highlighting works within the knowledge browser.'
-      }
-    }
+        story:
+          'Demonstrates the component with a pre-selected document (UI Component Library). Shows how selection highlighting works within the knowledge browser.',
+      },
+    },
   },
   args: {
     documents: sampleDocuments,
@@ -566,13 +574,15 @@ This story demonstrates how document selection works in the KnowledgeView compon
 - Document comparison tools
 - Knowledge base navigation
 
-The selection state is managed through the \`selectedDocumentId\` prop and updated via the \`onDocumentClick\` callback.`
-      }
-    }
+The selection state is managed through the \`selectedDocumentId\` prop and updated via the \`onDocumentClick\` callback.`,
+      },
+    },
   },
   render: (args) => {
-    const [selectedDocumentId, setSelectedDocumentId] = useState<string | undefined>(args.selectedDocumentId)
-    
+    const [selectedDocumentId, setSelectedDocumentId] = useState<string | undefined>(
+      args.selectedDocumentId,
+    )
+
     const handleDocumentClick = (document: KnowledgeDocument) => {
       setSelectedDocumentId(document.id)
       // Call the original callback for Actions panel
@@ -616,14 +626,16 @@ This story shows how document selection works together with sharing functionalit
 - Knowledge management systems
 - Document collaboration platforms
 - Team documentation workflows
-- Content sharing interfaces`
-      }
-    }
+- Content sharing interfaces`,
+      },
+    },
   },
   render: (args) => {
-    const [selectedDocumentId, setSelectedDocumentId] = useState<string | undefined>(args.selectedDocumentId)
+    const [selectedDocumentId, setSelectedDocumentId] = useState<string | undefined>(
+      args.selectedDocumentId,
+    )
     const [lastSharedDocument, setLastSharedDocument] = useState<KnowledgeDocument | null>(null)
-    
+
     const handleDocumentClick = (document: KnowledgeDocument) => {
       setSelectedDocumentId(document.id)
       args.onDocumentClick?.(document)
@@ -681,13 +693,13 @@ This advanced example demonstrates how document selection persists across differ
 **Technical Implementation:**
 - Uses \`selectedDocumentId\` to maintain selection state
 - KnowledgeBrowser handles highlighting across different grouping structures
-- Context switching doesn't reset selection unless explicitly cleared`
-      }
-    }
+- Context switching doesn't reset selection unless explicitly cleared`,
+      },
+    },
   },
   render: (args) => {
     const [selectedDocumentId, setSelectedDocumentId] = useState<string | undefined>('3')
-    
+
     const handleDocumentClick = (document: KnowledgeDocument) => {
       setSelectedDocumentId(document.id)
       args.onDocumentClick?.(document)
@@ -697,7 +709,8 @@ This advanced example demonstrates how document selection persists across differ
       <div className="space-y-4">
         <div className="p-4 bg-amber-50 dark:bg-amber-950 border border-amber-200 dark:border-amber-800 rounded-lg">
           <p className="text-sm text-amber-800 dark:text-amber-200">
-            💡 <strong>Try this:</strong> Select a document, then switch between contexts to see how the selection persists across different organizational views.
+            💡 <strong>Try this:</strong> Select a document, then switch between contexts to see how
+            the selection persists across different organizational views.
           </p>
         </div>
         <KnowledgeView
@@ -719,9 +732,10 @@ export const NoContexts: Story = {
   parameters: {
     docs: {
       description: {
-        story: 'Shows the fallback state when no contexts are provided. The component gracefully handles this edge case by displaying a message instead of breaking.'
-      }
-    }
+        story:
+          'Shows the fallback state when no contexts are provided. The component gracefully handles this edge case by displaying a message instead of breaking.',
+      },
+    },
   },
   args: {
     documents: sampleDocuments,
@@ -736,9 +750,9 @@ export const CustomContextExample: Story = {
       description: {
         story: `Demonstrates how to create a custom context with specific grouping and sorting rules. 
         
-This example shows a "Priority View" that groups documents by difficulty and priority levels, sorted by update time. This is useful for creating workflow-specific views of your documentation.`
-      }
-    }
+This example shows a "Priority View" that groups documents by difficulty and priority levels, sorted by update time. This is useful for creating workflow-specific views of your documentation.`,
+      },
+    },
   },
   args: {
     documents: sampleDocuments,
@@ -752,8 +766,8 @@ This example shows a "Priority View" that groups documents by difficulty and pri
           groupBy: ['difficulty', 'category'],
           sortBy: 'updatedAt',
           sortOrder: 'desc',
-          showDocumentCount: true
-        }
+          showDocumentCount: true,
+        },
       },
       {
         id: 'formats',
@@ -764,9 +778,9 @@ This example shows a "Priority View" that groups documents by difficulty and pri
           groupBy: ['format', 'team'],
           sortBy: 'title',
           sortOrder: 'asc',
-          showDocumentCount: true
-        }
-      }
+          showDocumentCount: true,
+        },
+      },
     ],
   },
 }
@@ -798,16 +812,16 @@ This story demonstrates a complete document browsing experience with live previe
 - Research and reference tools
 - Team documentation platforms
 
-This pattern is commonly used in document-heavy applications where users need to quickly preview content before opening the full document.`
-      }
-    }
+This pattern is commonly used in document-heavy applications where users need to quickly preview content before opening the full document.`,
+      },
+    },
   },
   render: (args) => {
     const [selectedDocumentId, setSelectedDocumentId] = useState<string | undefined>()
-    const selectedDocument = selectedDocumentId 
-      ? sampleDocuments.find(doc => doc.id === selectedDocumentId)
+    const selectedDocument = selectedDocumentId
+      ? sampleDocuments.find((doc) => doc.id === selectedDocumentId)
       : null
-    
+
     const handleDocumentClick = (document: KnowledgeDocument) => {
       setSelectedDocumentId(document.id)
       args.onDocumentClick?.(document)
@@ -823,22 +837,20 @@ This pattern is commonly used in document-heavy applications where users need to
             onDocumentClick={handleDocumentClick}
           />
         </div>
-        
+
         {/* Document Preview Panel - Takes up 1/3 of the space */}
         <div className="lg:col-span-1 border border-border rounded-lg bg-card">
           {selectedDocument ? (
             <div className="p-4 space-y-4">
               <div>
-                <h3 className="text-lg font-semibold text-foreground">
-                  {selectedDocument.title}
-                </h3>
+                <h3 className="text-lg font-semibold text-foreground">{selectedDocument.title}</h3>
                 {selectedDocument.description && (
                   <p className="text-sm text-muted-foreground mt-1">
                     {selectedDocument.description}
                   </p>
                 )}
               </div>
-              
+
               {/* Metadata */}
               {selectedDocument.metadata && (
                 <div className="space-y-2">
@@ -853,21 +865,24 @@ This pattern is commonly used in document-heavy applications where users need to
                   </div>
                 </div>
               )}
-              
+
               {/* Tags */}
               {selectedDocument.tags && selectedDocument.tags.length > 0 && (
                 <div className="space-y-2">
                   <h4 className="text-sm font-medium text-foreground">Tags</h4>
                   <div className="flex flex-wrap gap-1">
                     {selectedDocument.tags.map((tag) => (
-                      <span key={tag} className="px-2 py-1 text-xs bg-secondary text-secondary-foreground rounded">
+                      <span
+                        key={tag}
+                        className="px-2 py-1 text-xs bg-secondary text-secondary-foreground rounded"
+                      >
                         {tag}
                       </span>
                     ))}
                   </div>
                 </div>
               )}
-              
+
               {/* Dates */}
               <div className="space-y-1 text-xs text-muted-foreground">
                 <div>Created: {selectedDocument.createdAt.toLocaleDateString()}</div>
@@ -875,7 +890,7 @@ This pattern is commonly used in document-heavy applications where users need to
                   <div>Updated: {selectedDocument.updatedAt.toLocaleDateString()}</div>
                 )}
               </div>
-              
+
               {/* Content Preview */}
               {selectedDocument.content && (
                 <div className="space-y-2">
@@ -919,9 +934,9 @@ This story demonstrates how to implement lazy content loading for better perform
 - Loading states and caching
 - Better performance for large collections
 
-**Use Cases:** 50+ documents, >10KB content, mobile users`
-      }
-    }
+**Use Cases:** 50+ documents, >10KB content, mobile users`,
+      },
+    },
   },
   render: (args) => {
     const [selectedDocumentId, setSelectedDocumentId] = useState<string | undefined>()
@@ -929,15 +944,15 @@ This story demonstrates how to implement lazy content loading for better perform
     const [loadingContent, setLoadingContent] = useState<Set<string>>(new Set())
 
     // Documents without pre-loaded content
-    const documentsWithoutContent = sampleDocuments.map(doc => ({
+    const documentsWithoutContent = sampleDocuments.map((doc) => ({
       ...doc,
-      content: undefined
+      content: undefined,
     }))
 
     // Simulate API loading
     const simulateContentLoading = async (documentId: string): Promise<string> => {
-      await new Promise(resolve => setTimeout(resolve, 1000))
-      const originalDoc = sampleDocuments.find(doc => doc.id === documentId)
+      await new Promise((resolve) => setTimeout(resolve, 1000))
+      const originalDoc = sampleDocuments.find((doc) => doc.id === documentId)
       return originalDoc?.content || `# ${originalDoc?.title}\n\nContent loaded dynamically...`
     }
 
@@ -946,12 +961,12 @@ This story demonstrates how to implement lazy content loading for better perform
       args.onDocumentClick?.(document)
 
       if (!loadedContent.has(document.id)) {
-        setLoadingContent(prev => new Set(prev).add(document.id))
+        setLoadingContent((prev) => new Set(prev).add(document.id))
         try {
           const content = await simulateContentLoading(document.id)
-          setLoadedContent(prev => new Map(prev).set(document.id, content))
+          setLoadedContent((prev) => new Map(prev).set(document.id, content))
         } finally {
-          setLoadingContent(prev => {
+          setLoadingContent((prev) => {
             const newSet = new Set(prev)
             newSet.delete(document.id)
             return newSet
@@ -960,8 +975,8 @@ This story demonstrates how to implement lazy content loading for better perform
       }
     }
 
-    const selectedDocument = selectedDocumentId 
-      ? documentsWithoutContent.find(doc => doc.id === selectedDocumentId)
+    const selectedDocument = selectedDocumentId
+      ? documentsWithoutContent.find((doc) => doc.id === selectedDocumentId)
       : null
 
     return (
@@ -975,14 +990,12 @@ This story demonstrates how to implement lazy content loading for better perform
             onLoadDocumentContent={simulateContentLoading}
           />
         </div>
-        
+
         <div className="lg:col-span-1 border border-border rounded-lg bg-card">
           {selectedDocument ? (
             <div className="p-4 space-y-4">
-              <h3 className="text-lg font-semibold">
-                {selectedDocument.title}
-              </h3>
-              
+              <h3 className="text-lg font-semibold">{selectedDocument.title}</h3>
+
               <div className="space-y-2">
                 <div className="flex items-center justify-between">
                   <h4 className="text-sm font-medium">Content</h4>
@@ -993,12 +1006,11 @@ This story demonstrates how to implement lazy content loading for better perform
                     </div>
                   )}
                 </div>
-                
+
                 <div className="p-3 bg-muted rounded text-xs font-mono max-h-40 overflow-y-auto">
-                  {loadingContent.has(selectedDocument.id) 
+                  {loadingContent.has(selectedDocument.id)
                     ? 'Loading content...'
-                    : loadedContent.get(selectedDocument.id) || 'Content not loaded'
-                  }
+                    : loadedContent.get(selectedDocument.id) || 'Content not loaded'}
                 </div>
               </div>
 

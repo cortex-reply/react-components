@@ -7,48 +7,67 @@ import type { KnowledgeDocument } from './types'
 // Enhanced markdown renderer example for the story
 const enhancedMarkdownRenderer = (content: string) => {
   const renderMarkdown = (text: string) => {
-    return text
-      // Headers
-      .replace(/^### (.*$)/gim, '<h3 class="text-lg font-semibold text-foreground mb-3 mt-6">$1</h3>')
-      .replace(/^## (.*$)/gim, '<h2 class="text-xl font-bold text-foreground mb-4 mt-8">$1</h2>')
-      .replace(/^# (.*$)/gim, '<h1 class="text-2xl font-bold text-foreground mb-6 mt-8">$1</h1>')
-      
-      // Code blocks
-      .replace(/```(\w+)?\n([\s\S]*?)\n```/g, (match, lang, code) => 
-        `<pre class="bg-muted border border-border rounded-lg p-4 my-4 overflow-x-auto"><code class="text-sm font-mono text-foreground">${code.trim()}</code></pre>`
-      )
-      
-      // Inline code
-      .replace(/`([^`]+)`/g, '<code class="bg-muted px-2 py-1 rounded text-sm font-mono text-foreground border">$1</code>')
-      
-      // Links
-      .replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" class="text-primary hover:text-primary/80 underline">$1</a>')
-      
-      // Bold and italic
-      .replace(/\*\*\*([^*]+)\*\*\*/g, '<strong class="font-bold"><em class="italic">$1</em></strong>')
-      .replace(/\*\*([^*]+)\*\*/g, '<strong class="font-bold text-foreground">$1</strong>')
-      .replace(/\*([^*]+)\*/g, '<em class="italic text-foreground">$1</em>')
-      
-      // Lists
-      .replace(/^\- (.+$)/gim, '<li class="ml-4 mb-1">• $1</li>')
-      .replace(/^(\d+)\. (.+$)/gim, '<li class="ml-4 mb-1">$1. $2</li>')
-      
-      // Blockquotes
-      .replace(/^> (.+$)/gim, '<blockquote class="border-l-4 border-primary/30 pl-4 py-2 my-4 bg-muted/50 italic text-muted-foreground">$1</blockquote>')
-      
-      // Line breaks
-      .replace(/\n\n/g, '</p><p class="mb-4">')
-      .replace(/\n/g, '<br>')
+    return (
+      text
+        // Headers
+        .replace(
+          /^### (.*$)/gim,
+          '<h3 class="text-lg font-semibold text-foreground mb-3 mt-6">$1</h3>',
+        )
+        .replace(/^## (.*$)/gim, '<h2 class="text-xl font-bold text-foreground mb-4 mt-8">$1</h2>')
+        .replace(/^# (.*$)/gim, '<h1 class="text-2xl font-bold text-foreground mb-6 mt-8">$1</h1>')
+
+        // Code blocks
+        .replace(
+          /```(\w+)?\n([\s\S]*?)\n```/g,
+          (match, lang, code) =>
+            `<pre class="bg-muted border border-border rounded-lg p-4 my-4 overflow-x-auto"><code class="text-sm font-mono text-foreground">${code.trim()}</code></pre>`,
+        )
+
+        // Inline code
+        .replace(
+          /`([^`]+)`/g,
+          '<code class="bg-muted px-2 py-1 rounded text-sm font-mono text-foreground border">$1</code>',
+        )
+
+        // Links
+        .replace(
+          /\[([^\]]+)\]\(([^)]+)\)/g,
+          '<a href="$2" class="text-primary hover:text-primary/80 underline">$1</a>',
+        )
+
+        // Bold and italic
+        .replace(
+          /\*\*\*([^*]+)\*\*\*/g,
+          '<strong class="font-bold"><em class="italic">$1</em></strong>',
+        )
+        .replace(/\*\*([^*]+)\*\*/g, '<strong class="font-bold text-foreground">$1</strong>')
+        .replace(/\*([^*]+)\*/g, '<em class="italic text-foreground">$1</em>')
+
+        // Lists
+        .replace(/^\- (.+$)/gim, '<li class="ml-4 mb-1">• $1</li>')
+        .replace(/^(\d+)\. (.+$)/gim, '<li class="ml-4 mb-1">$1. $2</li>')
+
+        // Blockquotes
+        .replace(
+          /^> (.+$)/gim,
+          '<blockquote class="border-l-4 border-primary/30 pl-4 py-2 my-4 bg-muted/50 italic text-muted-foreground">$1</blockquote>',
+        )
+
+        // Line breaks
+        .replace(/\n\n/g, '</p><p class="mb-4">')
+        .replace(/\n/g, '<br>')
+    )
   }
 
   const processedContent = renderMarkdown(content)
-  
+
   return (
     <div className="prose prose-slate dark:prose-invert max-w-none">
-      <div 
+      <div
         className="text-foreground leading-relaxed"
         dangerouslySetInnerHTML={{
-          __html: `<p class="mb-4">${processedContent}</p>`
+          __html: `<p class="mb-4">${processedContent}</p>`,
         }}
       />
     </div>
@@ -58,39 +77,40 @@ const enhancedMarkdownRenderer = (content: string) => {
 // Story-specific renderers with the enhanced markdown renderer
 const storyRenderers: DocumentRenderers = {
   ...customRenderers,
-  markdown: enhancedMarkdownRenderer
+  markdown: enhancedMarkdownRenderer,
 }
 
 const meta: Meta<typeof DocumentPreview> = {
-  title: 'Digital Colleagues/DocumentPreview',
+  title: 'Foundary/DocumentPreview',
   component: DocumentPreview,
   parameters: {
     layout: 'fullscreen',
     docs: {
       description: {
-        component: 'A document preview component that displays knowledge documents with optional edit functionality and custom renderers for different file types (Markdown, MDX, RichText, Text). Features an enhanced markdown renderer example.'
-      }
-    }
+        component:
+          'A document preview component that displays knowledge documents with optional edit functionality and custom renderers for different file types (Markdown, MDX, RichText, Text). Features an enhanced markdown renderer example.',
+      },
+    },
   },
   tags: ['autodocs'],
   argTypes: {
     document: {
       control: false,
-      description: 'The knowledge document to display'
+      description: 'The knowledge document to display',
     },
     onDocumentUpdate: {
       action: 'document-updated',
-      description: 'Callback fired when a document is updated'
+      description: 'Callback fired when a document is updated',
     },
     editable: {
       control: { type: 'boolean' },
       description: 'Whether the document can be edited',
-      defaultValue: true
+      defaultValue: true,
     },
     renderers: {
       control: false,
-      description: 'Custom renderers for different file formats (markdown, mdx, richtext, text)'
-    }
+      description: 'Custom renderers for different file formats (markdown, mdx, richtext, text)',
+    },
   },
 }
 
@@ -100,7 +120,7 @@ type Story = StoryObj<typeof meta>
 // Wrapper component for stories
 function DocumentPreviewWrapper(args: any) {
   const [document, setDocument] = useState(args.document)
-  
+
   return (
     <div className="h-screen bg-background">
       <DocumentPreview
@@ -119,13 +139,14 @@ function DocumentPreviewWrapper(args: any) {
 const sampleMarkdownDocument: KnowledgeDocument = {
   id: '1',
   title: 'React Development Best Practices',
-  description: 'Comprehensive guide to React development patterns and practices with enhanced markdown rendering',
+  description:
+    'Comprehensive guide to React development patterns and practices with enhanced markdown rendering',
   format: 'markdown',
-  metadata: { 
-    category: 'Development', 
+  metadata: {
+    category: 'Development',
     difficulty: 'Intermediate',
     author: 'Dev Team',
-    lastReviewed: '2024-06-01'
+    lastReviewed: '2024-06-01',
   },
   tags: ['react', 'javascript', 'frontend'],
   createdAt: new Date('2024-01-15'),
@@ -231,7 +252,7 @@ When using hooks, remember these key points:
 
 ## Conclusion
 
-Following these best practices will help you build ***robust React applications*** that are easy to maintain and scale. Remember to stay updated with the latest React patterns and community best practices.`
+Following these best practices will help you build ***robust React applications*** that are easy to maintain and scale. Remember to stay updated with the latest React patterns and community best practices.`,
 }
 
 const sampleTextDocument: KnowledgeDocument = {
@@ -273,8 +294,8 @@ Error Codes:
   metadata: {
     environment: 'production',
     lastUpdated: '2024-01-10',
-    owner: 'DevOps Team'
-  }
+    owner: 'DevOps Team',
+  },
 }
 
 const sampleRichTextDocument: KnowledgeDocument = {
@@ -282,11 +303,11 @@ const sampleRichTextDocument: KnowledgeDocument = {
   title: 'Team Communication Guidelines',
   description: 'Essential guidelines for effective team communication',
   format: 'richtext',
-  metadata: { 
-    category: 'Management', 
+  metadata: {
+    category: 'Management',
     difficulty: 'Beginner',
     department: 'HR',
-    priority: 'High'
+    priority: 'High',
   },
   tags: ['communication', 'team', 'guidelines'],
   createdAt: new Date('2024-02-10'),
@@ -298,18 +319,21 @@ const sampleRichTextDocument: KnowledgeDocument = {
         {
           type: 'heading',
           level: 1,
-          children: [{ type: 'text', text: 'Team Communication Guidelines' }]
+          children: [{ type: 'text', text: 'Team Communication Guidelines' }],
         },
         {
           type: 'paragraph',
           children: [
-            { type: 'text', text: 'Effective communication is crucial for team success. These guidelines help ensure clear, respectful, and productive interactions.' }
-          ]
+            {
+              type: 'text',
+              text: 'Effective communication is crucial for team success. These guidelines help ensure clear, respectful, and productive interactions.',
+            },
+          ],
         },
         {
           type: 'heading',
           level: 2,
-          children: [{ type: 'text', text: 'Core Principles' }]
+          children: [{ type: 'text', text: 'Core Principles' }],
         },
         {
           type: 'list',
@@ -317,21 +341,23 @@ const sampleRichTextDocument: KnowledgeDocument = {
           children: [
             {
               type: 'listItem',
-              children: [{ type: 'text', text: 'Be clear and concise in your messaging' }]
+              children: [{ type: 'text', text: 'Be clear and concise in your messaging' }],
             },
             {
               type: 'listItem',
-              children: [{ type: 'text', text: 'Listen actively and ask clarifying questions' }]
+              children: [{ type: 'text', text: 'Listen actively and ask clarifying questions' }],
             },
             {
               type: 'listItem',
-              children: [{ type: 'text', text: 'Respect different communication styles and preferences' }]
-            }
-          ]
-        }
-      ]
-    }
-  })
+              children: [
+                { type: 'text', text: 'Respect different communication styles and preferences' },
+              ],
+            },
+          ],
+        },
+      ],
+    },
+  }),
 }
 
 const sampleMDXDocument: KnowledgeDocument = {
@@ -386,8 +412,8 @@ Here is how to customize your dashboard:
   metadata: {
     category: 'user-guide',
     interactive: true,
-    lastReviewed: '2024-01-18'
-  }
+    lastReviewed: '2024-01-18',
+  },
 }
 
 // Stories showcasing different renderers and features
@@ -396,15 +422,16 @@ export const MarkdownWithEnhancedRenderer: Story = {
   args: {
     document: sampleMarkdownDocument,
     editable: true,
-    renderers: storyRenderers
+    renderers: storyRenderers,
   },
   parameters: {
     docs: {
       description: {
-        story: 'Markdown document rendered with enhanced custom markdown renderer that supports headings, code blocks, links, lists, bold/italic formatting, and blockquotes with proper Tailwind styling. This demonstrates how to create a practical markdown renderer without external dependencies.'
-      }
-    }
-  }
+        story:
+          'Markdown document rendered with enhanced custom markdown renderer that supports headings, code blocks, links, lists, bold/italic formatting, and blockquotes with proper Tailwind styling. This demonstrates how to create a practical markdown renderer without external dependencies.',
+      },
+    },
+  },
 }
 
 export const TextFormat: Story = {
@@ -412,15 +439,16 @@ export const TextFormat: Story = {
   args: {
     document: sampleTextDocument,
     editable: true,
-    renderers: storyRenderers
+    renderers: storyRenderers,
   },
   parameters: {
     docs: {
       description: {
-        story: 'Plain text document with monospace font and preserved whitespace formatting for configuration files and raw text content.'
-      }
-    }
-  }
+        story:
+          'Plain text document with monospace font and preserved whitespace formatting for configuration files and raw text content.',
+      },
+    },
+  },
 }
 
 export const RichTextFormat: Story = {
@@ -428,15 +456,16 @@ export const RichTextFormat: Story = {
   args: {
     document: sampleRichTextDocument,
     editable: true,
-    renderers: storyRenderers
+    renderers: storyRenderers,
   },
   parameters: {
     docs: {
       description: {
-        story: 'RichText document from PayloadCMS showing structured content. Includes placeholder for actual PayloadCMS RichText integration with @payloadcms/richtext-lexical.'
-      }
-    }
-  }
+        story:
+          'RichText document from PayloadCMS showing structured content. Includes placeholder for actual PayloadCMS RichText integration with @payloadcms/richtext-lexical.',
+      },
+    },
+  },
 }
 
 export const MDXFormat: Story = {
@@ -444,31 +473,33 @@ export const MDXFormat: Story = {
   args: {
     document: sampleMDXDocument,
     editable: true,
-    renderers: storyRenderers
+    renderers: storyRenderers,
   },
   parameters: {
     docs: {
       description: {
-        story: 'MDX document with embedded React components. Shows placeholder for actual MDX integration with @mdx-js/react for interactive documentation.'
-      }
-    }
-  }
+        story:
+          'MDX document with embedded React components. Shows placeholder for actual MDX integration with @mdx-js/react for interactive documentation.',
+      },
+    },
+  },
 }
 
 export const WithoutCustomRenderers: Story = {
   render: DocumentPreviewWrapper,
   args: {
     document: sampleMarkdownDocument,
-    editable: true
+    editable: true,
     // No custom renderers - will use defaults
   },
   parameters: {
     docs: {
       description: {
-        story: 'Document using default renderers when no custom renderers are provided. Compare with the enhanced renderer version to see the difference.'
-      }
-    }
-  }
+        story:
+          'Document using default renderers when no custom renderers are provided. Compare with the enhanced renderer version to see the difference.',
+      },
+    },
+  },
 }
 
 export const ReadOnlyMode: Story = {
@@ -476,28 +507,29 @@ export const ReadOnlyMode: Story = {
   args: {
     document: sampleMarkdownDocument,
     editable: false,
-    renderers: storyRenderers
+    renderers: storyRenderers,
   },
   parameters: {
     docs: {
       description: {
-        story: 'Document preview in read-only mode without edit functionality. The edit button is hidden when editable is false.'
-      }
-    }
-  }
+        story:
+          'Document preview in read-only mode without edit functionality. The edit button is hidden when editable is false.',
+      },
+    },
+  },
 }
 
 export const AllFormatsComparison: Story = {
   render: () => {
     const [activeDocument, setActiveDocument] = useState(sampleMarkdownDocument)
-    
+
     const documents = [
       { label: 'Markdown', doc: sampleMarkdownDocument },
       { label: 'Text', doc: sampleTextDocument },
       { label: 'RichText', doc: sampleRichTextDocument },
-      { label: 'MDX', doc: sampleMDXDocument }
+      { label: 'MDX', doc: sampleMDXDocument },
     ]
-    
+
     return (
       <div className="h-screen bg-background p-6">
         <div className="mb-4">
@@ -532,8 +564,9 @@ export const AllFormatsComparison: Story = {
   parameters: {
     docs: {
       description: {
-        story: 'Interactive comparison of all supported document formats with custom renderers including the enhanced markdown renderer. Click the format buttons to switch between different document types.'
-      }
-    }
-  }
+        story:
+          'Interactive comparison of all supported document formats with custom renderers including the enhanced markdown renderer. Click the format buttons to switch between different document types.',
+      },
+    },
+  },
 }
