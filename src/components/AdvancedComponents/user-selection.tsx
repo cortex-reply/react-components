@@ -1,14 +1,14 @@
-"use client"
+'use client'
 
-import { useState, useMemo } from "react"
-import { Search, User, Check, ChevronLeft } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { Badge } from "@/components/ui/badge"
-import { motion, AnimatePresence } from "motion/react"
-import { type User as UserType} from "../DigitalColleagues/types"
+import { useState, useMemo } from 'react'
+import { Search, User, Check, ChevronLeft } from 'lucide-react'
+import { Button } from '@/components/ui/button'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Input } from '@/components/ui/input'
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+import { Badge } from '@/components/ui/badge'
+import { motion, AnimatePresence } from 'motion/react'
+import { type User as UserType } from '../DigitalColleagues/types'
 
 interface UserSelectionProps {
   users: UserType[]
@@ -23,15 +23,15 @@ export function UserSelection({
   onCancel,
   selectedUserId,
 }: UserSelectionProps) {
-  const [searchTerm, setSearchTerm] = useState("")
+  const [searchTerm, setSearchTerm] = useState('')
 
   const filteredUsers = useMemo(() => {
     return users.filter((user) => {
-      const matchesSearch = 
+      const matchesSearch =
         user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
         user.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
         user.role.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        (user.skills || []).some(skill => skill.toLowerCase().includes(searchTerm.toLowerCase()))
+        (user.skills || []).some((skill) => skill.toLowerCase().includes(searchTerm.toLowerCase()))
 
       return matchesSearch
     })
@@ -92,7 +92,7 @@ export function UserSelection({
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ duration: 0.2 }}
               >
-                <Card 
+                <Card
                   className={`cursor-pointer transition-all hover:shadow-lg ${
                     selectedUserId === user.id ? 'ring-2 ring-primary' : ''
                   }`}
@@ -112,9 +112,7 @@ export function UserSelection({
                           <p className="text-sm text-muted-foreground">{user.role}</p>
                         </div>
                       </div>
-                      {selectedUserId === user.id && (
-                        <Check className="h-5 w-5 text-primary" />
-                      )}
+                      {selectedUserId === user.id && <Check className="h-5 w-5 text-primary" />}
                     </div>
                   </CardHeader>
                   <CardContent className="pt-0">
