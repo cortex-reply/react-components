@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import { motion, AnimatePresence } from 'motion/react'
 import { Bot } from 'lucide-react'
-import { DigitalColleageusLayout } from '../DigitalColleageusLayout'
+import { DigitalColleageusLayout } from '../FoundaryLayout'
 import { DashboardHero } from '../../Heros/DashboardHero'
 import { AppCard } from '../../.archive/app-card'
 import { FileList } from '../../Projects/file-list'

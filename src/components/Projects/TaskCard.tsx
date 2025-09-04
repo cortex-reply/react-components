@@ -1,8 +1,7 @@
 import React from 'react'
 import { Card } from '@/components/ui/card'
-import { Badge } from '@/components/ui/badge'
 import { User, AlertCircle, Bug, Zap, BookOpen } from 'lucide-react'
-import { Task, Epic } from '../DigitalColleagues/types'
+import { Task, Epic } from '../Foundary/types'
 
 interface TaskCardProps {
   task: Task
@@ -116,7 +115,7 @@ export const TaskCard: React.FC<TaskCardProps> = ({
             className={`flex items-center gap-2 px-3 py-1 border border-accent rounded-full text-xs font-medium`}
           >
             {/* <Badge variant="outline" className="text-xs px-2 py-1"> */}
-            {task.points}
+            {task.storyPoints}
             {/* </Badge> */}
           </div>
         </div>

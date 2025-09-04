@@ -16,9 +16,10 @@ import {
   Check,
   X,
 } from 'lucide-react'
-import { Task, Epic, Sprint, DigitalColleague, User as UserType } from '../DigitalColleagues/types'
+import { Task, Epic, Sprint, DigitalColleague, User as UserType } from '../Foundary/types'
 import { TaskSelect } from './TaskSelect'
-import { SearchableSelect } from '../DigitalColleagues/SearchableSelect'
+import { SearchableSelect } from '../Foundary/SearchableSelect'
+import { extractId } from '@/lib/utils/extract-id'
 
 type UpdateState = 'idle' | 'loading' | 'success' | 'error'
 
@@ -220,7 +221,7 @@ export const TaskSidebar: React.FC<TaskSidebarProps> = ({
           <Label className="text-xs text-muted-foreground">Type</Label>
           <ToggleGroup
             type="single"
-            value={task.type}
+            value={task.type || ''}
             onValueChange={(value) => value && onUpdateTask('type', value)}
             className="grid grid-cols-2 gap-1"
             disabled={isUpdating}
@@ -248,7 +249,7 @@ export const TaskSidebar: React.FC<TaskSidebarProps> = ({
           <Label className="text-xs text-muted-foreground">Priority</Label>
           <ToggleGroup
             type="single"
-            value={task.priority}
+            value={task.priority || ''}
             onValueChange={(value) => value && onUpdateTask('priority', value)}
             className="grid grid-cols-3 gap-1"
             disabled={isUpdating}
@@ -274,7 +275,7 @@ export const TaskSidebar: React.FC<TaskSidebarProps> = ({
             type="number"
             min="1"
             max="100"
-            value={task.points || 1}
+            value={task.storyPoints || 1}
             onChange={(e) => onUpdateTask('points', e.target.value)}
             className="w-full h-8 px-2 text-xs border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent bg-background text-foreground disabled:opacity-50 disabled:cursor-not-allowed"
             disabled={isUpdating}
@@ -286,10 +287,10 @@ export const TaskSidebar: React.FC<TaskSidebarProps> = ({
           <Label className="text-xs text-muted-foreground">Epic</Label>
           <TaskSelect
             label=""
-            value={task.epicId}
+            value={extractId(task.epic).toString()}
             onValueChange={(value) => onUpdateTask('epicId', value)}
             options={(epics || []).map((epic) => ({
-              value: epic.id,
+              value: epic.id.toString(),
               label: epic?.name,
               color: epic.color,
             }))}
@@ -303,7 +304,7 @@ export const TaskSidebar: React.FC<TaskSidebarProps> = ({
           <Label className="text-xs text-muted-foreground">Sprint</Label>
           <TaskSelect
             label=""
-            value={task.sprintId || 'none'}
+            value={extractId(task.sprint).toString() || 'none'}
             onValueChange={(value) => onUpdateTask('sprintId', value === 'none' ? '' : value)}
             options={[
               {
@@ -311,8 +312,8 @@ export const TaskSidebar: React.FC<TaskSidebarProps> = ({
                 label: 'No Sprint',
               },
               ...(sprints || []).map((sprint) => ({
-                value: sprint.id,
-                label: `${sprint?.name}${sprint.isActive ? ' (Active)' : ''}`,
+                value: sprint.id.toString(),
+                label: `${sprint?.name}`,
               })),
             ]}
             disabled={isUpdating}
@@ -330,7 +331,7 @@ export const TaskSidebar: React.FC<TaskSidebarProps> = ({
               value: `${
                 typeof (member as any).email === 'string' ? 'users' : 'digital-colleagues'
               }:${member.id}`,
-              label: member?.name,
+              label: member?.name || '',
             }))}
             placeholder="Search team members..."
             allowCustomValue={true}

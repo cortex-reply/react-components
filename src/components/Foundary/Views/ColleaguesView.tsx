@@ -16,9 +16,9 @@ import { NavigationTabs, type TabOption } from '../../AdvancedComponents/navigat
 import { ColleagueCard } from '../colleague-card'
 import { ColleagueForm } from '../colleague-form'
 import { UserSelection } from '../../AdvancedComponents/user-selection'
-import { DigitalColleagueClone } from '../digital-colleague-clone'
+import { DigitalColleagueClone } from '../foundary-clone'
 import { ColleagueTypeSelection } from '../colleague-type-selection'
-import { DigitalColleagueOptions } from '../digital-colleague-options'
+import { DigitalColleagueOptions } from '../foundary-options'
 import {
   HumanColleague,
   TypedDigitalColleague,
