@@ -2,12 +2,14 @@ import React, { useState, useRef, useEffect } from 'react'
 import { Card } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
-import { Task, Epic, Sprint } from './ProjectView'
+// import { Task, Epic, Sprint } from './'
 import { TaskCard } from './TaskCard'
 import { Plus, Move, Edit2, Trash2, Check, X } from 'lucide-react'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import { DashboardHero } from '../Heros/DashboardHero/DashboardHero'
+import { Task, Epic, Sprint } from '../Foundary/types'
+import { extractId } from '@/lib/utils/extract-id'
 
 interface EpicsViewProps {
   tasks: Task[]
@@ -36,7 +38,7 @@ export const EpicsView: React.FC<EpicsViewProps> = ({
   const [editingEpic, setEditingEpic] = useState<string | null>(null)
   const [editForm, setEditForm] = useState<Partial<Epic>>({})
   const [heroHeight, setHeroHeight] = useState(0)
-  
+
   const heroRef = useRef<HTMLDivElement>(null)
   const containerRef = useRef<HTMLDivElement>(null)
 
@@ -91,32 +93,33 @@ export const EpicsView: React.FC<EpicsViewProps> = ({
 
   const handleDrop = (e: React.DragEvent, epicId: string) => {
     e.preventDefault()
-    if (draggedTask && draggedTask.epicId !== epicId) {
-      onUpdateTask(draggedTask.id, {
-        epicId,
+    if (draggedTask && extractId(draggedTask.epic).toString() !== epicId) {
+      onUpdateTask(draggedTask.id.toString(), {
+        epic: Number(epicId),
       })
+
       setDraggedTask(null)
     }
   }
 
   const getTasksByEpic = (epicId: string) => {
-    return tasks.filter((task) => task.epicId === epicId)
+    return tasks.filter((task) => extractId(task.epic).toString() === epicId)
   }
 
   const handleEditEpic = (epic: Epic) => {
-    setEditingEpic(epic.id)
+    setEditingEpic(epic.id.toString())
     setEditForm({
       name: epic.name,
       description: epic.description,
       confidence: epic.confidence,
       phase: epic.phase,
-      progress: epic.progress,
+      // progress: epic.progress || 0, // This is a number, not a string
     })
   }
 
   const handleSaveEdit = () => {
     if (editingEpic && editForm.name) {
-      onUpdateEpic(editingEpic, editForm)
+      onUpdateEpic(editingEpic.toString(), editForm)
       setEditingEpic(null)
       setEditForm({})
     }
@@ -179,37 +182,38 @@ export const EpicsView: React.FC<EpicsViewProps> = ({
         />
       </div>
       <div className="flex-1 min-h-0 mt-8">
-        <div 
+        <div
           className="h-full overflow-y-auto"
           style={{
-            height: heroHeight > 0 ? `calc(100vh - ${heroHeight + 120}px)` : 'calc(100vh - 12rem)'
+            height: heroHeight > 0 ? `calc(100vh - ${heroHeight + 120}px)` : 'calc(100vh - 12rem)',
           }}
         >
           {/* Epics Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 auto-rows-max">
             {epics.map((epic) => {
-              const epicTasks = getTasksByEpic(epic.id)
-              const totalPoints = epicTasks.reduce((sum, task) => sum + task.points, 0)
-              
+              const epicTasks = getTasksByEpic(epic.id.toString())
+              const totalPoints = epicTasks.reduce((sum, task) => sum + (task.storyPoints || 0), 0)
+
               // Calculate dynamic height based on available space
-              const availableHeight = heroHeight > 0 ? `calc(100vh - ${heroHeight + 200}px)` : 'calc(100vh - 14rem)'
+              const availableHeight =
+                heroHeight > 0 ? `calc(100vh - ${heroHeight + 200}px)` : 'calc(100vh - 14rem)'
 
               return (
                 <Card
                   key={epic.id}
                   className={`flex flex-col ${
-                    editingEpic === epic.id ? 'h-auto' : ''
+                    editingEpic === epic.id.toString() ? 'h-auto' : ''
                   } bg-card shadow-sm`}
                   style={{
-                    height: editingEpic === epic.id ? 'auto' : availableHeight,
-                    minHeight: '400px'
+                    height: editingEpic === epic.id.toString() ? 'auto' : availableHeight,
+                    minHeight: '400px',
                   }}
                   onDragOver={handleDragOver}
-                  onDrop={(e) => handleDrop(e, epic.id)}
+                  onDrop={(e) => handleDrop(e, epic.id.toString())}
                 >
                   {/* Epic Header */}
                   <div className="p-4 border-b border-border">
-                    {editingEpic === epic.id ? (
+                    {editingEpic === epic.id.toString() ? (
                       /* Edit Mode */
                       <div className="space-y-4">
                         <div className="flex items-center justify-between">
@@ -284,19 +288,19 @@ export const EpicsView: React.FC<EpicsViewProps> = ({
                           </div>
                         </div>
 
-                        <div>
+                        {/* <div>
                           <label className="text-xs text-muted-foreground">Progress (%)</label>
                           <Input
                             type="number"
                             min="0"
                             max="100"
-                            value={editForm.progress || epic.progress}
+                            value={editForm.progress || epic.progress || 0}
                             onChange={(e) =>
                               setEditForm({ ...editForm, progress: parseInt(e.target.value) || 0 })
                             }
                             className="text-xs"
                           />
-                        </div>
+                        </div> */}
                       </div>
                     ) : (
                       /* Display Mode */
@@ -318,7 +322,7 @@ export const EpicsView: React.FC<EpicsViewProps> = ({
                             <Button
                               size="sm"
                               variant="ghost"
-                              onClick={() => handleDeleteEpic(epic.id)}
+                              onClick={() => handleDeleteEpic(epic.id.toString())}
                               className="p-1 h-8 w-8 hover:bg-destructive/10 hover:text-destructive"
                             >
                               <Trash2 className="h-3 w-3" />
@@ -354,7 +358,7 @@ export const EpicsView: React.FC<EpicsViewProps> = ({
                         )}
 
                         {/* Progress Bar */}
-                        <div className="mb-3">
+                        {/* <div className="mb-3">
                           <div className="flex justify-between text-xs text-muted-foreground mb-1">
                             <span className="select-none">Progress</span>
                             <span className="select-none">{epic.progress}%</span>
@@ -365,10 +369,10 @@ export const EpicsView: React.FC<EpicsViewProps> = ({
                               style={{ width: `${epic.progress}%` }}
                             ></div>
                           </div>
-                        </div>
+                        </div> */}
 
                         <Button
-                          onClick={() => onAddTaskToEpic(epic.id)}
+                          onClick={() => onAddTaskToEpic(epic.id.toString())}
                           variant="outline"
                           size="sm"
                           className="w-full gap-2"

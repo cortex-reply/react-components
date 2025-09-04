@@ -34,7 +34,7 @@ import {
   BellOff,
 } from 'lucide-react'
 
-import { type Reminder, type DigitalColleague } from '../DigitalColleagues/types'
+import { type Reminder, type DigitalColleague } from '../Foundary/types'
 
 export interface TasksViewProps {
   initialReminders?: Reminder[]
@@ -150,17 +150,20 @@ const AddReminderModal: React.FC<{
     const newReminder: Omit<Reminder, 'id' | 'createdAt'> = {
       title: formData.title,
       description: formData.description,
-      dueDate: new Date(formData.dueDate),
+      dueDate: new Date(formData.dueDate).toISOString(),
       dueTime: formData.dueTime || undefined,
-      colleague,
-      isCompleted: false,
+      // colleague,
+      // isCompleted: false,
       isRecurring: formData.isRecurring,
-      recurrencePattern: formData.isRecurring ? formData.recurrencePattern : undefined,
-      recurrenceInterval: formData.isRecurring ? formData.recurrenceInterval : undefined,
-      priority: formData.priority,
-      reminderEnabled: formData.reminderEnabled,
-      reminderMinutes: formData.reminderEnabled ? formData.reminderMinutes : undefined,
-      tags: formData.tags ? formData.tags.split(',').map((tag) => tag.trim()) : undefined,
+      assignedColleague: Number(formData.colleagueId),
+      project: 1,
+      updatedAt: new Date().toISOString(),
+      // recurrencePattern: formData.isRecurring ? formData.recurrencePattern : undefined,
+      // recurrenceInterval: formData.isRecurring ? formData.recurrenceInterval : undefined,
+      // priority: formData.priority,
+      // reminderEnabled: formData.reminderEnabled,
+      // reminderMinutes: formData.reminderEnabled ? formData.reminderMinutes : undefined,
+      // tags: formData.tags ? formData.tags.split(',').map((tag) => tag.trim()) : undefined,
     }
 
     onAddReminder(newReminder)
@@ -285,7 +288,7 @@ const AddReminderModal: React.FC<{
               </SelectTrigger>
               <SelectContent>
                 {validColleagues.map((colleague) => (
-                  <SelectItem key={colleague.id} value={colleague.id}>
+                  <SelectItem key={colleague.id} value={colleague.id.toString()}>
                     {colleague.name}
                   </SelectItem>
                 ))}
@@ -414,41 +417,41 @@ const EditReminderModal: React.FC<{
   const [formData, setFormData] = useState({
     title: reminder.title,
     description: reminder.description,
-    dueDate: reminder.dueDate.toISOString().split('T')[0],
+    dueDate: reminder.dueDate?.toString().split('T')[0],
     dueTime: reminder.dueTime || '',
-    colleagueId: reminder.colleague?.id || '',
-    priority: reminder.priority as 'low' | 'medium' | 'high',
+    // colleagueId: reminder.colleague?.id.toString() || '',
+    // priority: reminder.priority as 'low' | 'medium' | 'high',
     isRecurring: reminder.isRecurring,
-    recurrencePattern:
-      (reminder.recurrencePattern as 'daily' | 'weekly' | 'monthly' | 'yearly') || 'weekly',
-    recurrenceInterval: reminder.recurrenceInterval || 1,
-    reminderEnabled: reminder.reminderEnabled,
-    reminderMinutes: reminder.reminderMinutes || 15,
-    tags: reminder.tags?.join(', ') || '',
+    // recurrencePattern:
+    //   (reminder.recurrencePattern as 'daily' | 'weekly' | 'monthly' | 'yearly') || 'weekly',
+    // recurrenceInterval: reminder.recurrenceInterval || 1,
+    // reminderEnabled: reminder.reminderEnabled,
+    // reminderMinutes: reminder.reminderMinutes || 15,
+    // tags: reminder.tags?.join(', ') || '',
   })
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
 
-    const colleague = colleagues.find((c) => c?.id === formData.colleagueId)
-    if (!colleague) {
-      console.error('No valid colleague selected')
-      return
-    }
+    // const colleague = colleagues.find((c) => c?.id.toString() === formData.colleagueId.toString()   )
+    // if (!colleague) {
+    //   console.error('No valid colleague selected')
+    //   return
+    // }
 
-    onUpdateReminder(reminder.id, {
+    onUpdateReminder(reminder.id.toString(), {
       title: formData.title,
       description: formData.description,
-      dueDate: new Date(formData.dueDate),
+      dueDate: new Date(formData.dueDate || '').toISOString(),
       dueTime: formData.dueTime || undefined,
-      colleague,
-      priority: formData.priority,
+      // colleague,
+      // priority: formData.priority,
       isRecurring: formData.isRecurring,
-      recurrencePattern: formData.isRecurring ? formData.recurrencePattern : undefined,
-      recurrenceInterval: formData.isRecurring ? formData.recurrenceInterval : undefined,
-      reminderEnabled: formData.reminderEnabled,
-      reminderMinutes: formData.reminderEnabled ? formData.reminderMinutes : undefined,
-      tags: formData.tags ? formData.tags.split(',').map((tag) => tag.trim()) : undefined,
+      // recurrencePattern: formData.isRecurring ? formData.recurrencePattern : undefined,
+      // recurrenceInterval: formData.isRecurring ? formData.recurrenceInterval : undefined,
+      // reminderEnabled: formData.reminderEnabled,
+      // reminderMinutes: formData.reminderEnabled ? formData.reminderMinutes : undefined,
+      // tags: formData.tags ? formData.tags.split(',').map((tag) => tag.trim()) : undefined,
     })
     onClose()
   }
@@ -474,7 +477,7 @@ const EditReminderModal: React.FC<{
                 required
               />
             </div>
-            <div>
+            {/* <div>
               <Label htmlFor="edit-priority">Priority</Label>
               <Select
                 value={formData.priority}
@@ -491,14 +494,14 @@ const EditReminderModal: React.FC<{
                   <SelectItem value="high">🔴 High</SelectItem>
                 </SelectContent>
               </Select>
-            </div>
+            </div> */}
           </div>
 
           <div>
             <Label htmlFor="edit-description">Description</Label>
             <Textarea
               id="edit-description"
-              value={formData.description}
+              value={formData.description || ''}
               onChange={(e) => setFormData({ ...formData, description: e.target.value })}
               placeholder="Enter reminder description"
               rows={3}
@@ -527,7 +530,7 @@ const EditReminderModal: React.FC<{
             </div>
           </div>
 
-          <div>
+          {/* <div>
             <Label htmlFor="edit-colleague">Assigned Colleague</Label>
             <Select
               value={formData.colleagueId}
@@ -545,21 +548,21 @@ const EditReminderModal: React.FC<{
                 ))}
               </SelectContent>
             </Select>
-          </div>
+          </div> */}
 
           <div className="space-y-2">
             <div className="flex items-center space-x-2">
               <input
                 type="checkbox"
                 id="edit-isRecurring"
-                checked={formData.isRecurring}
+                checked={formData.isRecurring || false}
                 onChange={(e) => setFormData({ ...formData, isRecurring: e.target.checked })}
                 className="rounded border-border"
               />
               <Label htmlFor="edit-isRecurring">Make this a recurring reminder</Label>
             </div>
 
-            {formData.isRecurring && (
+            {/* {formData.isRecurring && (
               <div className="grid grid-cols-2 gap-4 pl-6">
                 <div>
                   <Label htmlFor="edit-recurrencePattern">Frequency</Label>
@@ -596,10 +599,10 @@ const EditReminderModal: React.FC<{
                   />
                 </div>
               </div>
-            )}
+            )} */}
           </div>
 
-          <div className="space-y-2">
+          {/* <div className="space-y-2">
             <div className="flex items-center space-x-2">
               <input
                 type="checkbox"
@@ -633,9 +636,9 @@ const EditReminderModal: React.FC<{
                 </Select>
               </div>
             )}
-          </div>
+          </div> */}
 
-          <div>
+          {/* <div>
             <Label htmlFor="edit-tags">Tags (comma-separated)</Label>
             <Input
               id="edit-tags"
@@ -643,7 +646,7 @@ const EditReminderModal: React.FC<{
               onChange={(e) => setFormData({ ...formData, tags: e.target.value })}
               placeholder="e.g., urgent, meeting, follow-up"
             />
-          </div>
+          </div> */}
 
           <div className="flex justify-end space-x-2">
             <Button type="button" variant="outline" onClick={onClose}>
@@ -670,22 +673,22 @@ const ReminderCard: React.FC<{
     return null
   }
 
-  const overdue = isOverdue(reminder.dueDate, reminder.dueTime)
-  const today = isToday(reminder.dueDate)
-  const tomorrow = isTomorrow(reminder.dueDate)
+  const overdue = isOverdue(new Date(reminder.dueDate || ''), reminder.dueTime || '')
+  const today = isToday(new Date(reminder.dueDate || ''))
+  const tomorrow = isTomorrow(new Date(reminder.dueDate || ''))
 
   const handleToggleComplete = () => {
-    onUpdateReminder(reminder.id, {
-      isCompleted: !reminder.isCompleted,
-      completedAt: !reminder.isCompleted ? new Date() : undefined,
+    onUpdateReminder(reminder.id.toString(), {
+      // isCompleted: !reminder.isCompleted,
+      // completedAt: !reminder.isCompleted ? new Date() : undefined,
     })
   }
 
   const getDateLabel = () => {
     if (today) return 'Today'
     if (tomorrow) return 'Tomorrow'
-    if (overdue && !reminder.isCompleted) return 'Overdue'
-    return formatDate(reminder.dueDate)
+    // if (overdue && !reminder.isCompleted) return 'Overdue'
+    return formatDate(new Date(reminder.dueDate || ''))
   }
 
   return (
@@ -698,9 +701,9 @@ const ReminderCard: React.FC<{
         onClose={() => setIsEditing(false)}
       />
       <Card
-        className={`transition-all duration-200 ${reminder.isCompleted ? 'opacity-60' : ''} ${
-          overdue && !reminder.isCompleted ? 'border-destructive/50 bg-destructive/5' : ''
-        }`}
+      // className={`transition-all duration-200 ${reminder.isCompleted ? 'opacity-60' : ''} ${
+      //   overdue && !reminder.isCompleted ? 'border-destructive/50 bg-destructive/5' : ''
+      // }`}
       >
         <CardContent className="p-4">
           <div className="flex items-start justify-between">
@@ -709,25 +712,25 @@ const ReminderCard: React.FC<{
                 onClick={handleToggleComplete}
                 className="mt-1 text-primary hover:text-primary/80"
               >
-                {reminder.isCompleted ? (
+                {/* {reminder.isCompleted ? (
                   <CheckCircle className="h-5 w-5" />
                 ) : (
                   <Circle className="h-5 w-5" />
-                )}
+                )} */}
               </button>
 
               <div className="flex-1">
                 <div className="flex items-center space-x-2 mb-1">
                   <h3
-                    className={`font-semibold ${
-                      reminder.isCompleted ? 'line-through text-muted-foreground' : ''
-                    }`}
+                  // className={`font-semibold ${
+                  //   reminder.isCompleted ? 'line-through text-muted-foreground' : ''
+                  // }`}
                   >
                     {reminder.title}
                   </h3>
-                  <span className="text-sm">{getPriorityIcon(reminder.priority)}</span>
+                  {/* <span className="text-sm">{getPriorityIcon(reminder.priority)}</span>
                   {reminder.isRecurring && <Repeat className="h-4 w-4 text-primary" />}
-                  {reminder.reminderEnabled && <Bell className="h-4 w-4 text-success" />}
+                  {reminder.reminderEnabled && <Bell className="h-4 w-4 text-success" />} */}
                 </div>
 
                 <p className="text-sm text-muted-foreground mb-2">{reminder.description}</p>
@@ -735,13 +738,13 @@ const ReminderCard: React.FC<{
                 <div className="flex items-center space-x-4 text-sm text-muted-foreground">
                   <div className="flex items-center space-x-1">
                     <Calendar className="h-4 w-4" />
-                    <span
+                    {/* <span
                       className={
                         overdue && !reminder.isCompleted ? 'text-destructive font-medium' : ''
                       }
                     >
                       {getDateLabel()}
-                    </span>
+                    </span> */}
                   </div>
 
                   {reminder.dueTime && (
@@ -753,11 +756,11 @@ const ReminderCard: React.FC<{
 
                   <div className="flex items-center space-x-1">
                     <User className="h-4 w-4" />
-                    <span>{reminder.colleague?.name || 'Unknown Colleague'}</span>
+                    {/* <span>{reminder.colleague?.name || 'Unknown Colleague'}</span> */}
                   </div>
                 </div>
 
-                {reminder.tags && reminder.tags.length > 0 && (
+                {/* {reminder.tags && reminder.tags.length > 0 && (
                   <div className="flex flex-wrap gap-1 mt-2">
                     {reminder.tags.map((tag, index) => (
                       <Badge key={index} variant="secondary" className="text-xs">
@@ -765,7 +768,7 @@ const ReminderCard: React.FC<{
                       </Badge>
                     ))}
                   </div>
-                )}
+                )} */}
               </div>
             </div>
 
@@ -781,7 +784,7 @@ const ReminderCard: React.FC<{
               <Button
                 variant="ghost"
                 size="sm"
-                onClick={() => onDeleteReminder(reminder.id)}
+                onClick={() => onDeleteReminder(reminder.id.toString())}
                 className="h-8 w-8 p-0 text-destructive hover:text-destructive/80"
               >
                 <Trash2 className="h-4 w-4" />
@@ -808,15 +811,15 @@ export const TasksView: React.FC<TasksViewProps> = ({
   const [openAddReminderModal, setOpenAddReminderModal] = useState(false)
   const handleAddReminder = (newReminder: Omit<Reminder, 'id' | 'createdAt'>) => {
     // Validate that the reminder has required properties
-    if (!newReminder.title || !newReminder.colleague?.id) {
+    if (!newReminder.title) {
       console.error('Invalid reminder data:', newReminder)
       return
     }
 
     const reminder: Reminder = {
       ...newReminder,
-      id: Date.now().toString(),
-      createdAt: new Date(),
+      id: Date.now(),
+      createdAt: new Date().toISOString(),
     }
     setReminders((prev) => [...prev, reminder])
     onAddReminder?.(newReminder)
@@ -830,7 +833,7 @@ export const TasksView: React.FC<TasksViewProps> = ({
 
     setReminders((prev) =>
       prev.map((reminder) =>
-        reminder?.id === reminderId ? { ...reminder, ...updates } : reminder,
+        reminder?.id.toString() === reminderId ? { ...reminder, ...updates } : reminder,
       ),
     )
     onUpdateReminder?.(reminderId, updates)
@@ -842,7 +845,7 @@ export const TasksView: React.FC<TasksViewProps> = ({
       return
     }
 
-    setReminders((prev) => prev.filter((reminder) => reminder?.id !== reminderId))
+    setReminders((prev) => prev.filter((reminder) => reminder?.id.toString() !== reminderId))
     onDeleteReminder?.(reminderId)
   }
 
@@ -854,22 +857,23 @@ export const TasksView: React.FC<TasksViewProps> = ({
       const searchLower = searchTerm.toLowerCase()
       const matchesSearch =
         reminder.title.toLowerCase().includes(searchLower) ||
-        reminder.description.toLowerCase().includes(searchLower) ||
-        reminder.colleague?.name?.toLowerCase().includes(searchLower) ||
-        reminder.tags?.some((tag) => tag.toLowerCase().includes(searchLower))
+        reminder.description?.toLowerCase().includes(searchLower)
+      // reminder.colleague?.name?.toLowerCase().includes(searchLower) ||
+      // reminder.tags?.some((tag) => tag.toLowerCase().includes(searchLower))
       if (!matchesSearch) return false
     }
 
     // Status filter
     switch (filter) {
       case 'pending':
-        return !reminder.isCompleted
+      // return !reminder.isCompleted
       case 'completed':
-        return reminder.isCompleted
+      // return reminder.isCompleted || false
       case 'overdue':
-        return !reminder.isCompleted && isOverdue(reminder.dueDate, reminder.dueTime)
+        // return !reminder.isCompleted && isOverdue(new Date(reminder.dueDate || ''), reminder.dueTime || '')
+        return isOverdue(new Date(reminder.dueDate || ''), reminder.dueTime || '')
       case 'today':
-        return isToday(new Date(reminder.dueDate))
+        return isToday(new Date(reminder.dueDate || ''))
       default:
         return true
     }
@@ -879,43 +883,46 @@ export const TasksView: React.FC<TasksViewProps> = ({
     if (!a || !b) return 0
 
     // Completed items go to bottom
-    if (a.isCompleted && !b.isCompleted) return 1
-    if (!a.isCompleted && b.isCompleted) return -1
+    // if (a.isCompleted && !b.isCompleted) return 1
+    // if (!a.isCompleted && b.isCompleted) return -1
 
     // Sort by priority (high first)
     const priorityOrder = { high: 3, medium: 2, low: 1 }
-    const priorityDiff = priorityOrder[b.priority] - priorityOrder[a.priority]
+    // const priorityDiff = priorityOrder[b.priority] - priorityOrder[a.priority]
+    const priorityDiff = 0
     if (priorityDiff !== 0) return priorityDiff
 
     // Sort by due date
-    return a.dueDate.getTime() - b.dueDate.getTime()
+    return new Date(a.dueDate || '').getTime() - new Date(b.dueDate || '').getTime()
   })
 
   const stats = {
     total: reminders.filter(Boolean).length,
-    pending: reminders.filter((r) => r && !r.isCompleted).length,
-    completed: reminders.filter((r) => r && r.isCompleted).length,
-    overdue: reminders.filter((r) => r && !r.isCompleted && isOverdue(r.dueDate, r.dueTime)).length,
-    today: reminders.filter((r) => r && isToday(new Date(r.dueDate))).length,
+    // pending: reminders.filter((r) => r && !r.isCompleted).length,
+    // completed: reminders.filter((r) => r && r.isCompleted).length,
+    // overdue: reminders.filter((r) => r && !r.isCompleted && isOverdue(r.dueDate, r.dueTime)).length,
+    overdue: reminders.filter((r) => r && isOverdue(new Date(r.dueDate || ''), r.dueTime || ''))
+      .length,
+    today: reminders.filter((r) => r && isToday(new Date(r.dueDate || ''))).length,
   }
 
   // Ensure we have at least one valid colleague for the default reminder
-  const defaultColleague: DigitalColleague = colleagues.find(Boolean) || {
+  const defaultColleague: DigitalColleague = (colleagues.find(Boolean) as DigitalColleague) || {
     id: '1',
     name: 'Default Colleague',
-    status: 'active' as const,
-    joinedDate: new Date(),
-    lastActive: new Date(),
-    type: 'digital' as const,
+    // status: 'active' as const,
+    // joinedDate: new Date(),
+    // lastActive: new Date(),
+    // type: 'digital' as const,
     description: 'Default digital colleague for task management',
     jobDescription: 'Default team member for task management',
     workInstructions: 'Handle basic task assignments and reminders',
-    capabilities: ['task-management', 'reminder-creation'],
-    knowledge: [],
-    coreKnowledge: [],
-    version: '1.0.0',
-    lastUpdated: new Date(),
-    isActive: true,
+    capabilities: ['task-management', 'reminder-creation'] as string[],
+    knowledge: [] as string[],
+    coreKnowledge: [] as string[],
+    // version: '1.0.0',
+    // lastUpdated: new Date(),
+    // isActive: true,
   }
 
   return (
@@ -962,11 +969,11 @@ export const TasksView: React.FC<TasksViewProps> = ({
               <div className="text-sm text-muted-foreground">Total</div>
             </Card>
             <Card className="p-4">
-              <div className="text-2xl font-bold text-primary">{stats.pending}</div>
+              <div className="text-2xl font-bold text-primary">{stats.overdue}</div>
               <div className="text-sm text-muted-foreground">Pending</div>
             </Card>
             <Card className="p-4">
-              <div className="text-2xl font-bold text-success">{stats.completed}</div>
+              <div className="text-2xl font-bold text-success">{stats.today}</div>
               <div className="text-sm text-muted-foreground">Completed</div>
             </Card>
             <Card className="p-4">
@@ -995,8 +1002,8 @@ export const TasksView: React.FC<TasksViewProps> = ({
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="all">All ({stats.total})</SelectItem>
-                <SelectItem value="pending">Pending ({stats.pending})</SelectItem>
-                <SelectItem value="completed">Completed ({stats.completed})</SelectItem>
+                <SelectItem value="overdue">Overdue ({stats.overdue})</SelectItem>
+                {/* <SelectItem value="completed">Completed ({stats.completed})</SelectItem> */}
                 <SelectItem value="overdue">Overdue ({stats.overdue})</SelectItem>
                 <SelectItem value="today">Today ({stats.today})</SelectItem>
               </SelectContent>

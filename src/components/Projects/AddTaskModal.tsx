@@ -167,7 +167,7 @@ export const AddTaskModal: React.FC<AddTaskModalProps> = ({
             <Label>Type</Label>
             <ToggleGroup
               type="single"
-              value={formData.type as Task['type']}
+              value={(formData.type as Task['type']) || ''}
               onValueChange={(value) => value && handleChange('type', value)}
             >
               {taskTypes.map((type) => {
@@ -191,7 +191,7 @@ export const AddTaskModal: React.FC<AddTaskModalProps> = ({
             <Label>Priority</Label>
             <ToggleGroup
               type="single"
-              value={formData.priority as Task['priority']}
+              value={(formData.priority as Task['priority']) || ''}
               onValueChange={(value) => value && handleChange('priority', value)}
             >
               {priorities.map((priority) => (
