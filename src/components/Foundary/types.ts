@@ -1063,3 +1063,14 @@ export interface Notification {
   actionLabel?: string
   onAction?: () => void
 }
+
+export interface ProjectFormData {
+  name: string
+  objectives: string
+  workInstructions: string
+  plan: boolean
+}
+
+export interface ProjectCreationData extends ProjectFormData {
+  description?: string
+}
