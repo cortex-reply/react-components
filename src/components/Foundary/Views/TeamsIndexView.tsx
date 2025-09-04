@@ -1,22 +1,22 @@
-"use client"
+'use client'
 
-import { useState } from "react"
-import { motion, AnimatePresence } from "motion/react"
-import { DashboardHero } from "../../Heros/DashboardHero/DashboardHero"
-import { TeamCard } from "../../Projects/team-card"
-import { type TeamSummary } from "../types"
-import { TeamForm, type Team } from "../team-form"
+import { useState } from 'react'
+import { motion, AnimatePresence } from 'motion/react'
+import { DashboardHero } from '../../Heros/DashboardHero/DashboardHero'
+import { TeamCard } from '../../Projects/team-card'
+import { type TeamSummary } from '../types'
+import { TeamForm, type Team } from '../team-form'
 import {
   Dialog,
   DialogContent,
   DialogDescription,
   DialogHeader,
   DialogTitle,
-} from "@/components/ui/dialog"
+} from '@/components/ui/dialog'
 
 interface TeamsIndexViewProps {
   teams?: TeamSummary[]
-  onCreateTeam?: (team: Team) => void
+  onCreateTeam?: (team: Team) => Promise<void>
   onTeamOpen?: (team: TeamSummary) => void
 }
 
@@ -31,8 +31,8 @@ export default function TeamsIndexView({
     setIsNewTeamDialogOpen(true)
   }
 
-  const handleTeamSave = (team: Team) => {
-    onCreateTeam?.(team)
+  const handleTeamSave = async (team: Team) => {
+    await onCreateTeam?.(team)
     setIsNewTeamDialogOpen(false)
   }
 
@@ -59,7 +59,7 @@ export default function TeamsIndexView({
             description="Collaborate with your human and digital colleagues across different teams and projects."
             gradient="bg-gradient-to-r from-blue-600 via-cyan-600 to-teal-600"
             primaryAction={{
-              label: "Create Team",
+              label: 'Create Team',
               onClick: handleNewTeamClick,
             }}
           />
@@ -68,9 +68,7 @@ export default function TeamsIndexView({
             <h2 className="text-2xl font-semibold">Active Teams</h2>
             {teams.length === 0 ? (
               <div className="text-center py-12">
-                <p className="text-muted-foreground text-lg">
-                  You're not part of any teams yet.
-                </p>
+                <p className="text-muted-foreground text-lg">You're not part of any teams yet.</p>
                 <p className="text-muted-foreground text-sm mt-2">
                   Create a new team or ask to be added to an existing one.
                 </p>
@@ -78,11 +76,7 @@ export default function TeamsIndexView({
             ) : (
               <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
                 {teams.map((team) => (
-                  <TeamCard
-                    key={team.id}
-                    team={team}
-                    onOpen={handleTeamOpen}
-                  />
+                  <TeamCard key={team.id} team={team} onOpen={handleTeamOpen} />
                 ))}
               </div>
             )}
@@ -92,7 +86,7 @@ export default function TeamsIndexView({
 
       {/* New Team Dialog */}
       <Dialog open={isNewTeamDialogOpen} onOpenChange={setIsNewTeamDialogOpen}>
-        <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto p-0">
+        <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
           <div className="sr-only">
             <DialogHeader>
               <DialogTitle>Create New Team</DialogTitle>
