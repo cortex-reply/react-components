@@ -6,15 +6,15 @@ import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import { Checkbox } from '@/components/ui/checkbox'
 import { Label } from '@/components/ui/label'
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
-import { ProjectFormData } from '../DigitalColleagues/types'
+
+import { ProjectCreationData } from '../DigitalColleagues/types'
 import { Loader2, Plus, X } from 'lucide-react'
 
 interface ProjectFormProps {
-  onSubmit: (data: ProjectFormData) => void | Promise<void>
+  onSubmit: (data: ProjectCreationData) => void | Promise<void>
   onCancel?: () => void
   isLoading?: boolean
-  initialData?: Partial<ProjectFormData>
+  initialData?: Partial<ProjectCreationData>
   className?: string
 }
 
@@ -23,19 +23,20 @@ export const ProjectForm: React.FC<ProjectFormProps> = ({
   onCancel,
   isLoading = false,
   initialData,
-  className = ''
+  className = '',
 }) => {
-  const [formData, setFormData] = useState<ProjectFormData>({
+  const [formData, setFormData] = useState<ProjectCreationData>({
     name: initialData?.name || '',
+    description: initialData?.description || '',
     objectives: initialData?.objectives || '',
     workInstructions: initialData?.workInstructions || '',
-    plan: initialData?.plan || false
+    plan: initialData?.plan || false,
   })
 
-  const [errors, setErrors] = useState<Partial<Record<keyof ProjectFormData, string>>>({})
+  const [errors, setErrors] = useState<Partial<Record<keyof ProjectCreationData, string>>>({})
 
   const validateForm = (): boolean => {
-    const newErrors: Partial<Record<keyof ProjectFormData, string>> = {}
+    const newErrors: Partial<Record<keyof ProjectCreationData, string>> = {}
 
     if (!formData.name.trim()) {
       newErrors.name = 'Project name is required'
@@ -52,7 +53,8 @@ export const ProjectForm: React.FC<ProjectFormProps> = ({
     if (!formData.workInstructions.trim()) {
       newErrors.workInstructions = 'Work instructions are required'
     } else if (formData.workInstructions.trim().length < 20) {
-      newErrors.workInstructions = 'Please provide more detailed work instructions (at least 20 characters)'
+      newErrors.workInstructions =
+        'Please provide more detailed work instructions (at least 20 characters)'
     }
 
     setErrors(newErrors)
@@ -61,7 +63,7 @@ export const ProjectForm: React.FC<ProjectFormProps> = ({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    
+
     if (!validateForm()) {
       return
     }
@@ -73,29 +75,30 @@ export const ProjectForm: React.FC<ProjectFormProps> = ({
     }
   }
 
-  const handleInputChange = (field: keyof ProjectFormData, value: string | boolean) => {
-    setFormData(prev => ({ ...prev, [field]: value }))
-    
+  const handleInputChange = (field: keyof ProjectCreationData, value: string | boolean) => {
+    setFormData((prev) => ({ ...prev, [field]: value }))
+
     // Clear error when user starts typing
     if (errors[field]) {
-      setErrors(prev => ({ ...prev, [field]: undefined }))
+      setErrors((prev) => ({ ...prev, [field]: undefined }))
     }
   }
 
   return (
-    <Card className={`w-full max-w-2xl ${className}`}>
-      <CardHeader>
-        <CardTitle className="flex items-center gap-2">
+    <div className={`w-full max-w-2xl ${className}`}>
+      <div className="mb-4">
+        <div className="flex items-center gap-2">
           <Plus className="h-5 w-5" />
           Create New Project
-        </CardTitle>
-        <CardDescription>
-          Set up a new project with clear objectives and work instructions to help your team collaborate effectively.
-        </CardDescription>
-      </CardHeader>
+        </div>
+        <p className="text-sm text-gray-500">
+          Set up a new project with clear objectives and work instructions to help your team
+          collaborate effectively.
+        </p>
+      </div>
 
       <form onSubmit={handleSubmit}>
-        <CardContent className="space-y-6">
+        <div className="space-y-6">
           {/* Project Name */}
           <div className="space-y-2">
             <Label htmlFor="name" className="text-sm font-medium">
@@ -111,9 +114,23 @@ export const ProjectForm: React.FC<ProjectFormProps> = ({
               disabled={isLoading}
               maxLength={100}
             />
-            {errors.name && (
-              <p className="text-sm text-red-600">{errors.name}</p>
-            )}
+            {errors.name && <p className="text-sm text-red-600">{errors.name}</p>}
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="name" className="text-sm font-medium">
+              Project Description *
+            </Label>
+            <Input
+              id="description"
+              type="text"
+              placeholder="Enter project description"
+              value={formData.description}
+              onChange={(e) => handleInputChange('description', e.target.value)}
+              className={errors.description ? 'border-red-500 focus:border-red-500' : ''}
+              disabled={isLoading}
+              maxLength={100}
+            />
+            {errors.description && <p className="text-sm text-red-600">{errors.description}</p>}
           </div>
 
           {/* Project Objectives */}
@@ -126,12 +143,16 @@ export const ProjectForm: React.FC<ProjectFormProps> = ({
               placeholder="Describe the main goals and objectives of this project..."
               value={formData.objectives}
               onChange={(e) => handleInputChange('objectives', e.target.value)}
-              className={`min-h-[100px] resize-y ${errors.objectives ? 'border-red-500 focus:border-red-500' : ''}`}
+              className={`min-h-[100px] resize-y ${
+                errors.objectives ? 'border-red-500 focus:border-red-500' : ''
+              }`}
               disabled={isLoading}
               maxLength={1000}
             />
             <div className="flex justify-between text-xs text-gray-500">
-              <span>{errors.objectives && <span className="text-red-600">{errors.objectives}</span>}</span>
+              <span>
+                {errors.objectives && <span className="text-red-600">{errors.objectives}</span>}
+              </span>
               <span>{formData.objectives.length}/1000</span>
             </div>
           </div>
@@ -146,12 +167,18 @@ export const ProjectForm: React.FC<ProjectFormProps> = ({
               placeholder="Provide detailed instructions on how the work should be carried out, including processes, standards, and expectations..."
               value={formData.workInstructions}
               onChange={(e) => handleInputChange('workInstructions', e.target.value)}
-              className={`min-h-[120px] resize-y ${errors.workInstructions ? 'border-red-500 focus:border-red-500' : ''}`}
+              className={`min-h-[120px] resize-y ${
+                errors.workInstructions ? 'border-red-500 focus:border-red-500' : ''
+              }`}
               disabled={isLoading}
               maxLength={2000}
             />
             <div className="flex justify-between text-xs text-gray-500">
-              <span>{errors.workInstructions && <span className="text-red-600">{errors.workInstructions}</span>}</span>
+              <span>
+                {errors.workInstructions && (
+                  <span className="text-red-600">{errors.workInstructions}</span>
+                )}
+              </span>
               <span>{formData.workInstructions.length}/2000</span>
             </div>
           </div>
@@ -174,9 +201,9 @@ export const ProjectForm: React.FC<ProjectFormProps> = ({
               This will allow project managers to create sprints, assign tasks, and track progress.
             </p>
           </div>
-        </CardContent>
+        </div>
 
-        <CardFooter className="flex justify-end gap-3">
+        <div className="flex justify-end gap-3">
           {onCancel && (
             <Button
               type="button"
@@ -189,11 +216,7 @@ export const ProjectForm: React.FC<ProjectFormProps> = ({
               Cancel
             </Button>
           )}
-          <Button
-            type="submit"
-            disabled={isLoading}
-            className="flex items-center gap-2"
-          >
+          <Button type="submit" disabled={isLoading} className="flex items-center gap-2">
             {isLoading ? (
               <>
                 <Loader2 className="h-4 w-4 animate-spin" />
@@ -206,9 +229,9 @@ export const ProjectForm: React.FC<ProjectFormProps> = ({
               </>
             )}
           </Button>
-        </CardFooter>
+        </div>
       </form>
-    </Card>
+    </div>
   )
 }
 
