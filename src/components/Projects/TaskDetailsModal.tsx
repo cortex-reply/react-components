@@ -1,6 +1,6 @@
 import React, { use, useEffect, useState } from 'react'
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
-import { Task, Epic, Sprint, DigitalColleague, User } from '../DigitalColleagues/types'
+import { Task, Epic, Sprint, DigitalColleague, User } from '../Foundary/types'
 import { EditableField } from '../AdvancedComponents/EditableField'
 import { CommentSection } from '../AdvancedComponents/CommentSection'
 import { TaskSidebar } from './TaskSidebar'
@@ -65,13 +65,14 @@ export const TaskDetailsModal: React.FC<TaskDetailsModalProps> = ({
     if (value !== task[fieldName as keyof Task]) {
       setUpdateState('loading')
       try {
-        const updatedTask = await onUpdateTask(task.id, { [fieldName]: value })
+        const updatedTask = await onUpdateTask(task.id.toString(), { [fieldName]: value })
         setTask(updatedTask)
         setLastUpdated(new Date())
         setUpdateState('success')
         // Reset to idle after showing success
         setTimeout(() => setUpdateState('idle'), 1500)
       } catch (error) {
+        console.log('error', error)
         setUpdateState('error')
         // Reset to idle after showing error
         setTimeout(() => setUpdateState('idle'), 3000)
@@ -83,7 +84,7 @@ export const TaskDetailsModal: React.FC<TaskDetailsModalProps> = ({
     if (value !== task[fieldName as keyof Task]) {
       setUpdateState('loading')
       try {
-        const updatedTask = await onUpdateTask(task.id, { [fieldName]: value })
+        const updatedTask = await onUpdateTask(task.id.toString(), { [fieldName]: value })
         setTask(updatedTask)
         setLastUpdated(new Date())
         setUpdateState('success')
@@ -101,7 +102,7 @@ export const TaskDetailsModal: React.FC<TaskDetailsModalProps> = ({
     if (!onAddComment) return
     setUpdateState('loading')
     try {
-      const updatedTask = await onAddComment?.({ content: text, taskId: task.id })
+      const updatedTask = await onAddComment?.({ content: text, taskId: task.id.toString() })
       setTask(updatedTask)
       setLastUpdated(new Date())
       setUpdateState('success')
@@ -124,7 +125,7 @@ export const TaskDetailsModal: React.FC<TaskDetailsModalProps> = ({
   const handleDelete = async () => {
     setDeleteState('loading')
     try {
-      await onDeleteTask(task.id)
+      await onDeleteTask(task.id.toString())
       setDeleteState('success')
       // Close modal after successful deletion
       setTimeout(() => {
@@ -195,7 +196,7 @@ export const TaskDetailsModal: React.FC<TaskDetailsModalProps> = ({
             {/* Editable Title in Header */}
             <EditableField
               fieldName="name"
-              value={task.name}
+              value={task.name || ''}
               label=""
               onSave={handleFieldUpdate}
               className="border-b border-border pb-3"
@@ -205,7 +206,7 @@ export const TaskDetailsModal: React.FC<TaskDetailsModalProps> = ({
             {/* Description */}
             <EditableField
               fieldName="description"
-              value={task.description}
+              value={task.description || ''}
               label="Description"
               multiline
               onSave={handleFieldUpdate}
@@ -215,10 +216,10 @@ export const TaskDetailsModal: React.FC<TaskDetailsModalProps> = ({
             {/* Comments Section */}
             <CommentSection
               comments={(task?.comments || []).map((el) => ({
-                author: (el as any).author.value.name,
+                author: (el as any).author.value.name || '',
                 createdAt: new Date(el.timestamp),
-                text: el.content,
-                id: el.id,
+                text: el.text,
+                id: el.id || '',
               }))}
               onAddComment={handleAddComment}
             />

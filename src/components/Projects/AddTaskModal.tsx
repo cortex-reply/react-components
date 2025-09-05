@@ -20,12 +20,12 @@ import { Label } from '@/components/ui/label'
 import { Badge } from '@/components/ui/badge'
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group'
 import { BookOpen, Bug, Zap, AlertCircle } from 'lucide-react'
-import { Task, Epic, Sprint, User, DigitalColleague } from '../DigitalColleagues/types'
+import { Task, Epic, Sprint, User, DigitalColleague } from '../Foundary/types'
 
 interface AddTaskModalProps {
   isOpen: boolean
   onClose: () => void
-  onAddTask: (task: Omit<Task, 'id' | 'createdAt'>) => void
+  onAddTask: (task: Omit<Task, 'id' | 'createdAt' | 'updatedAt'>) => void
   epics: Epic[]
   sprints: Sprint[]
   assignees: (User | DigitalColleague)[]
@@ -65,7 +65,7 @@ export const AddTaskModal: React.FC<AddTaskModalProps> = ({
     status: 'todo' as Task['status'],
     priority: 'medium' as Task['priority'],
     type: 'story' as Task['type'],
-    points: 1,
+    storyPoints: 1,
     epicId: '',
     sprintId: 'none',
     assignee: '',
@@ -87,7 +87,7 @@ export const AddTaskModal: React.FC<AddTaskModalProps> = ({
         status: 'todo',
         priority: 'medium',
         type: 'story',
-        points: 1,
+        storyPoints: 1,
         epicId: defaultEpicId || '',
         sprintId: 'none',
         assignee: '',
@@ -104,10 +104,14 @@ export const AddTaskModal: React.FC<AddTaskModalProps> = ({
         status: 'todo',
         priority: formData.priority as Task['priority'],
         type: formData.type as Task['type'],
-        points: formData.points,
-        epicId: formData.epicId,
-        sprintId: formData.sprintId === 'none' ? undefined : formData.sprintId,
-        assignee: formData.assignee.trim() || 'Unassigned',
+        storyPoints: formData.storyPoints,
+        epic: Number(formData.epicId),
+        sprint: Number(formData.sprintId),
+        assignee: formData.assignee.trim()
+          ? { relationTo: 'digital-colleagues', value: Number(formData.assignee) }
+          : null,
+        dateLogged: new Date().toISOString(),
+        index: 0,
       })
       setFormData({
         name: '',
@@ -115,7 +119,7 @@ export const AddTaskModal: React.FC<AddTaskModalProps> = ({
         status: 'todo',
         priority: 'medium',
         type: 'story',
-        points: 1,
+        storyPoints: 1,
         epicId: defaultEpicId || '',
         sprintId: 'none',
         assignee: '',
@@ -163,7 +167,7 @@ export const AddTaskModal: React.FC<AddTaskModalProps> = ({
             <Label>Type</Label>
             <ToggleGroup
               type="single"
-              value={formData.type}
+              value={(formData.type as Task['type']) || ''}
               onValueChange={(value) => value && handleChange('type', value)}
             >
               {taskTypes.map((type) => {
@@ -187,7 +191,7 @@ export const AddTaskModal: React.FC<AddTaskModalProps> = ({
             <Label>Priority</Label>
             <ToggleGroup
               type="single"
-              value={formData.priority}
+              value={(formData.priority as Task['priority']) || ''}
               onValueChange={(value) => value && handleChange('priority', value)}
             >
               {priorities.map((priority) => (
@@ -210,8 +214,8 @@ export const AddTaskModal: React.FC<AddTaskModalProps> = ({
               type="number"
               min="1"
               max="100"
-              value={formData.points}
-              onChange={(e) => handleChange('points', parseInt(e.target.value) || 1)}
+              value={formData.storyPoints}
+              onChange={(e) => handleChange('storyPoints', parseInt(e.target.value) || 1)}
               placeholder="Enter story points"
               required
             />
@@ -230,7 +234,7 @@ export const AddTaskModal: React.FC<AddTaskModalProps> = ({
                 </SelectTrigger>
                 <SelectContent>
                   {epics.map((epic) => (
-                    <SelectItem key={epic.id} value={epic.id}>
+                    <SelectItem key={epic.id} value={epic.id.toString()}>
                       <div className="flex items-center gap-2">
                         <div className={`w-3 h-3 rounded-full ${epic.color}`}></div>
                         {epic.name}
@@ -255,14 +259,14 @@ export const AddTaskModal: React.FC<AddTaskModalProps> = ({
               <SelectContent>
                 <SelectItem value="none">No Sprint</SelectItem>
                 {sprints.map((sprint) => (
-                  <SelectItem key={sprint.id} value={sprint.id}>
+                  <SelectItem key={sprint.id} value={sprint.id.toString()}>
                     <div className="flex items-center gap-2">
                       {sprint.name}
-                      {sprint.isActive && (
+                      {/* {sprint.isActive && (
                         <span className="text-xs bg-green-100 text-green-800 px-1 rounded">
                           Active
                         </span>
-                      )}
+                      )} */}
                     </div>
                   </SelectItem>
                 ))}
@@ -282,7 +286,7 @@ export const AddTaskModal: React.FC<AddTaskModalProps> = ({
               <SelectContent>
                 <SelectItem value="none">No Assignee</SelectItem>
                 {assignees.map((user) => (
-                  <SelectItem key={user.id} value={user.id}>
+                  <SelectItem key={user.id} value={user.id.toString()}>
                     <div className="flex items-center gap-2">{user.name}</div>
                   </SelectItem>
                 ))}

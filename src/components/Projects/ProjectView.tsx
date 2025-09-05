@@ -17,55 +17,59 @@ import type {
   DigitalColleague,
   FileType,
   User,
-  Comment,
-} from '../DigitalColleagues/types'
+  Task,
+  Epic,
+  Sprint,
+  Project,
+} from '../Foundary/types'
 // import { Epic, Sprint, Project, Task } from "@/components/DigitalColleagues/KanbanBoard"
 import { useRouter } from 'next/navigation'
+import { extractId } from '@/lib/utils/extract-id'
 
-export interface Project {
-  id: string
-  name: string
-  description?: string
-  isSelected?: boolean
-}
+// export interface Project {
+//   id: string
+//   name: string
+//   description?: string
+//   isSelected?: boolean
+// }
 
-export interface Epic {
-  id: string
-  name: string
-  color: string
-  description?: string
-  confidence: 'low' | 'medium' | 'high'
-  phase: number // 1-9
-  startDate: Date
-  endDate: Date
-  progress: number // 0-100
-  isSelected?: boolean
-}
+// export interface Epic {
+//   id: string
+//   name: string
+//   color: string
+//   description?: string
+//   confidence: 'low' | 'medium' | 'high'
+//   phase: number // 1-9
+//   startDate: Date
+//   endDate: Date
+//   progress: number // 0-100
+//   isSelected?: boolean
+// }
 
-export interface Sprint {
-  id: string
-  name: string
-  description?: string
-  startDate: Date
-  endDate: Date
-  isActive: boolean
-  isSelected?: boolean
-}
+// export interface Sprint {
+//   id: string
+//   name: string
+//   description?: string
+//   startDate: Date
+//   endDate: Date
+//   isActive: boolean
+//   isSelected?: boolean
+// }
 
-export interface Task {
-  id: string
-  name: string
-  description: string
-  status: 'todo' | 'in-progress' | 'review' | 'done'
-  priority: 'low' | 'medium' | 'high'
-  type: 'story' | 'task' | 'bug' | 'spike'
-  points: number // Story points
-  epicId: string
-  sprintId?: string
-  assignee: string
-  createdAt: Date
-  comments?: Comment[]
-}
+// export interface Task {
+//   id: string
+//   name: string
+//   description: string
+//   status: 'todo' | 'in-progress' | 'review' | 'done'
+//   priority: 'low' | 'medium' | 'high'
+//   type: 'story' | 'task' | 'bug' | 'spike'
+//   points: number // Story points
+//   epicId: string
+//   sprintId?: string
+//   assignee: string
+//   createdAt: Date
+//   comments?: Comment[]
+// }
 
 type View = 'kanban' | 'planning' | 'tasks' | 'files' | 'epics'
 
@@ -216,16 +220,16 @@ export default function ProjectView({
     setCurrentView(initialView)
   }, [initialView])
 
-  const selectedEpics = epics.filter((epic) => epic.isSelected).map((epic) => epic.id)
-  const selectedSprint = sprints.find((sprint) => sprint.isSelected)
+  // const selectedEpics = epics.filter((epic) => epic.isSelected).map((epic) => epic.id)
+  // const selectedSprint = sprints.find((sprint) => sprint.isSelected)
 
   // Filter tasks by selected epics and sprint
   const filteredTasks = tasks.filter((task) => {
-    const isEpicSelected = selectedEpics.includes(task.epicId)
-    if (!selectedSprint) return isEpicSelected
-    if (selectedSprint.id === 'all-tasks') return isEpicSelected
-    if (selectedSprint.id === 'backlog') return isEpicSelected && !task.sprintId
-    return isEpicSelected && task.sprintId === selectedSprint.id
+    // const isEpicSelected = selectedEpics.includes(task.epicId)
+    // if (!selectedSprint) return isEpicSelected
+    // if (selectedSprint.id === 'all-tasks') return isEpicSelected
+    // if (selectedSprint.id === 'backlog') return isEpicSelected && !task.sprintId
+    // return isEpicSelected && task.sprintId === selectedSprint.id
   })
 
   const getTasksByStatus = (status: Task['status']) => {
@@ -235,7 +239,7 @@ export default function ProjectView({
   const getTasksByEpic = (tasks: Task[]) => {
     const tasksByEpic: { [epicId: string]: Task[] } = {}
     epics.forEach((epic) => {
-      tasksByEpic[epic.id] = tasks.filter((task) => task.epicId === epic.id)
+      // tasksByEpic[epic.id] = tasks.filter((task) => task.epicId === epic.id)
     })
     return tasksByEpic
   }
@@ -253,14 +257,21 @@ export default function ProjectView({
     }
   }
 
-  const handleAddTask = (newTask: Omit<Task, 'id' | 'createdAt'>) => {
-    const task: Task = { ...newTask, id: Date.now().toString(), createdAt: new Date() }
+  const handleAddTask = (newTask: Omit<Task, 'id' | 'createdAt' | 'updatedAt'>) => {
+    const task: Task = {
+      ...newTask,
+      id: Date.now(),
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    }
     setTasks((prev) => [...prev, task])
     onAddTask?.(task)
   }
 
   const handleUpdateTask = async (taskId: string, updates: Partial<Task>): Promise<Task> => {
-    setTasks((prev) => prev.map((task) => (task.id === taskId ? { ...task, ...updates } : task)))
+    setTasks((prev) =>
+      prev.map((task) => (task.id === Number(taskId) ? { ...task, ...updates } : task)),
+    )
     return (await onUpdateTask?.(taskId, updates)) as Task
   }
 
@@ -269,8 +280,8 @@ export default function ProjectView({
   }
 
   const handleDeleteTask = (taskId: string) => {
-    setTasks((prev) => prev.filter((task) => task.id !== taskId))
-    if (selectedTask?.id === taskId) {
+    setTasks((prev) => prev.filter((task) => task.id !== Number(taskId)))
+    if (selectedTask?.id === Number(taskId)) {
       setSelectedTask(null)
     }
     onDeleteTask?.(taskId)
@@ -281,7 +292,7 @@ export default function ProjectView({
   }
 
   const handleAddProject = (newProject: Omit<Project, 'id'>) => {
-    const project: Project = { ...newProject, id: Date.now().toString(), isSelected: false }
+    const project: Project = { ...newProject, id: Date.now() }
     setProjects((prev) => [...prev, project])
     onAddProject?.(newProject)
   }
@@ -289,18 +300,18 @@ export default function ProjectView({
   const handleUpdateProject = (projectId: string, updates: Partial<Project>) => {
     setProjects((prev) =>
       prev.map((project) => {
-        if (project.id === projectId) {
+        if (project.id === Number(projectId)) {
           // If selecting this project, deselect all others and navigate
-          if (updates.isSelected) {
-            router.push(`/project/${projectId}`)
-            return { ...project, ...updates }
-          }
+          // if (updates.isSelected) {
+          //   router.push(`/project/${projectId}`)
+          //   return { ...project, ...updates }
+          // }
           return { ...project, ...updates }
         }
         // If selecting a new project, deselect this one
-        if (updates.isSelected && projectId !== project.id) {
-          return { ...project, isSelected: false }
-        }
+        // if (updates.isSelected && Number(projectId) !== project.id) {
+        //   return { ...project, isSelected: false }
+        // }
         return project
       }),
     )
@@ -308,12 +319,12 @@ export default function ProjectView({
   }
 
   const handleDeleteProject = (projectId: string) => {
-    setProjects((prev) => prev.filter((project) => project.id !== projectId))
+    setProjects((prev) => prev.filter((project) => project.id !== Number(projectId)))
     onDeleteProject?.(projectId)
   }
 
   const handleAddEpic = (newEpic: Omit<Epic, 'id'>) => {
-    const epic: Epic = { ...newEpic, id: Date.now().toString(), isSelected: true }
+    const epic: Epic = { ...newEpic, id: Date.now() }
     setEpics((prev) => [...prev, epic])
     onAddEpic?.({ ...epic })
   }
@@ -324,19 +335,21 @@ export default function ProjectView({
   }
 
   const handleUpdateEpic = (epicId: string, updates: Partial<Epic>) => {
-    setEpics((prev) => prev.map((epic) => (epic.id === epicId ? { ...epic, ...updates } : epic)))
+    setEpics((prev) =>
+      prev.map((epic) => (epic.id === Number(epicId) ? { ...epic, ...updates } : epic)),
+    )
     onUpdateEpic?.(epicId, updates)
   }
 
   const handleDeleteEpic = (epicId: string) => {
-    setEpics((prev) => prev.filter((epic) => epic.id !== epicId))
+    setEpics((prev) => prev.filter((epic) => epic.id !== Number(epicId)))
     // Also delete all tasks in this epic
-    setTasks((prev) => prev.filter((task) => task.epicId !== epicId))
+    setTasks((prev) => prev.filter((task) => extractId(task.epic) !== Number(epicId)))
     onDeleteEpic?.(epicId)
   }
 
   const handleAddSprint = (newSprint: Omit<Sprint, 'id'>) => {
-    const sprint: Sprint = { ...newSprint, id: Date.now().toString(), isSelected: false }
+    const sprint: Sprint = { ...newSprint, id: Date.now() }
     setSprints((prev) => [...prev, sprint])
     onAddSprint?.(newSprint)
   }
@@ -344,17 +357,17 @@ export default function ProjectView({
   const handleUpdateSprint = (sprintId: string, updates: Partial<Sprint>) => {
     setSprints((prev) =>
       prev.map((sprint) => {
-        if (sprint.id === sprintId) {
+        if (sprint.id === Number(sprintId)) {
           // If selecting this sprint, deselect all others
-          if (updates.isSelected) {
-            return { ...sprint, ...updates }
-          }
+          // if (updates.isSelected) {
+          //   return { ...sprint, ...updates }
+          // }
           return { ...sprint, ...updates }
         }
         // If selecting a new sprint, deselect this one
-        if (updates.isSelected && sprintId !== sprint.id) {
-          return { ...sprint, isSelected: false }
-        }
+        // if (updates.isSelected && Number(sprintId) !== sprint.id) {
+        //   return { ...sprint, isSelected: false }
+        // }
         return sprint
       }),
     )
@@ -364,10 +377,12 @@ export default function ProjectView({
   const handleDeleteSprint = (sprintId: string) => {
     // Prevent deleting special sprints
     if (sprintId === 'backlog' || sprintId === 'all-tasks') return
-    setSprints((prev) => prev.filter((sprint) => sprint.id !== sprintId))
+    setSprints((prev) => prev.filter((sprint) => sprint.id !== Number(sprintId)))
     // Move tasks from deleted sprint to backlog
     setTasks((prev) =>
-      prev.map((task) => (task.sprintId === sprintId ? { ...task, sprintId: undefined } : task)),
+      prev.map((task) =>
+        extractId(task.sprint) === Number(sprintId) ? { ...task, sprint: undefined } : task,
+      ),
     )
     onDeleteSprint?.(sprintId)
   }
@@ -418,8 +433,8 @@ export default function ProjectView({
   const handleAddReminder = (newReminder: Omit<Reminder, 'id' | 'createdAt'>) => {
     const reminder: Reminder = {
       ...newReminder,
-      id: Date.now().toString(),
-      createdAt: new Date(),
+      id: Date.now(),
+      createdAt: new Date().toISOString(),
     }
     setReminders((prev) => [...prev, reminder])
     onAddReminder?.(newReminder)
@@ -427,13 +442,15 @@ export default function ProjectView({
 
   const handleUpdateReminder = (reminderId: string, updates: Partial<Reminder>) => {
     setReminders((prev) =>
-      prev.map((reminder) => (reminder.id === reminderId ? { ...reminder, ...updates } : reminder)),
+      prev.map((reminder) =>
+        reminder.id === Number(reminderId) ? { ...reminder, ...updates } : reminder,
+      ),
     )
     onUpdateReminder?.(reminderId, updates)
   }
 
   const handleDeleteReminder = (reminderId: string) => {
-    setReminders((prev) => prev.filter((reminder) => reminder.id !== reminderId))
+    setReminders((prev) => prev.filter((reminder) => reminder.id !== Number(reminderId)))
     onDeleteReminder?.(reminderId)
   }
 
@@ -501,16 +518,13 @@ export default function ProjectView({
   // const [ currentView, setCurrentView ] = useState<'kanban' | 'planning' | 'files' | 'epics'>('kanban');
 
   return (
-    <ManagementSidebar
-      currentView={currentView}
-      onViewChange={handleViewChange}
-    >
+    <ManagementSidebar currentView={currentView} onViewChange={handleViewChange}>
       {currentView === 'kanban' && (
         <div className="h-full overflow-hidden">
           <KanbanBoardView
             initialProjects={projects}
             initialEpics={epics}
-            initialSprints={sprints}
+            initialSprints={sprints.map((sprint) => ({ ...sprint, isSelected: false }))}
             initialTasks={tasks}
             initialColleagues={colleagues}
             initialUsers={users}

@@ -1,12 +1,11 @@
 import React from 'react'
 import { Card } from '@/components/ui/card'
-import { Badge } from '@/components/ui/badge'
-import { User, AlertCircle, Bug, Zap, BookOpen } from 'lucide-react'
-import { Task, Epic } from '../DigitalColleagues/types'
+import { User, AlertCircle, Bug, Zap, BookOpen, Calendar } from 'lucide-react'
+import { Task, Epic } from '../Foundary/types'
 
 interface TaskCardProps {
   task: Task
-  epic: Epic
+  epic: Epic | null
   onDragStart: (task: Task) => void
   onTaskClick: (task: Task) => void
   isCompact?: boolean
@@ -116,7 +115,7 @@ export const TaskCard: React.FC<TaskCardProps> = ({
             className={`flex items-center gap-2 px-3 py-1 border border-accent rounded-full text-xs font-medium`}
           >
             {/* <Badge variant="outline" className="text-xs px-2 py-1"> */}
-            {task.points}
+            {task.storyPoints}
             {/* </Badge> */}
           </div>
         </div>
@@ -133,10 +132,10 @@ export const TaskCard: React.FC<TaskCardProps> = ({
           <User className="h-4 w-4" />
           <span>{(task.assignee as any)?.value?.name}</span>
         </div>
-        {/* <div className="flex items-center gap-1">
+        <div className="flex items-center gap-1">
           <Calendar className="h-4 w-4" />
-          <span>{task.createdAt.toLocaleDateString()}</span>
-        </div> */}
+          <span>{new Date(task.createdAt).toLocaleDateString()}</span>
+        </div>
       </div>
     </Card>
   )

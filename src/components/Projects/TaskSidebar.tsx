@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import { Label } from '@/components/ui/label'
 import { Button } from '@/components/ui/button'
@@ -16,9 +16,10 @@ import {
   Check,
   X,
 } from 'lucide-react'
-import { Task, Epic, Sprint, DigitalColleague, User as UserType } from '../DigitalColleagues/types'
+import { Task, Epic, Sprint, DigitalColleague, User as UserType } from '../Foundary/types'
 import { TaskSelect } from './TaskSelect'
-import { SearchableSelect } from '../DigitalColleagues/SearchableSelect'
+import { SearchableSelect } from '../Foundary/SearchableSelect'
+import { extractId } from '@/lib/utils/extract-id'
 
 type UpdateState = 'idle' | 'loading' | 'success' | 'error'
 
@@ -137,6 +138,28 @@ export const TaskSidebar: React.FC<TaskSidebarProps> = ({
   deleteState = 'idle',
   teamMembers,
 }) => {
+  const [storyPoints, setStoryPoints] = useState(task.storyPoints)
+  const debounceTimeoutRef = useRef<NodeJS.Timeout | null>(null)
+
+  // Debounced version of onUpdateTask for story points
+  const debouncedUpdateTask = useCallback(
+    (fieldName: string, value: string) => {
+      if (debounceTimeoutRef.current) {
+        clearTimeout(debounceTimeoutRef.current)
+      }
+
+      debounceTimeoutRef.current = setTimeout(() => {
+        onUpdateTask(fieldName, value)
+      }, 500) // 500ms delay
+    },
+    [onUpdateTask],
+  )
+
+  useEffect(() => {
+    // setStoryPoints(task.storyPoints)
+    debouncedUpdateTask('storyPoints', storyPoints?.toString() || '1')
+  }, [storyPoints])
+
   const getInitials = (name: string) => {
     return name
       .split(' ')
@@ -220,7 +243,7 @@ export const TaskSidebar: React.FC<TaskSidebarProps> = ({
           <Label className="text-xs text-muted-foreground">Type</Label>
           <ToggleGroup
             type="single"
-            value={task.type}
+            value={task.type || ''}
             onValueChange={(value) => value && onUpdateTask('type', value)}
             className="grid grid-cols-2 gap-1"
             disabled={isUpdating}
@@ -248,7 +271,7 @@ export const TaskSidebar: React.FC<TaskSidebarProps> = ({
           <Label className="text-xs text-muted-foreground">Priority</Label>
           <ToggleGroup
             type="single"
-            value={task.priority}
+            value={task.priority || ''}
             onValueChange={(value) => value && onUpdateTask('priority', value)}
             className="grid grid-cols-3 gap-1"
             disabled={isUpdating}
@@ -274,8 +297,13 @@ export const TaskSidebar: React.FC<TaskSidebarProps> = ({
             type="number"
             min="1"
             max="100"
-            value={task.points || 1}
-            onChange={(e) => onUpdateTask('points', e.target.value)}
+            value={storyPoints || 1}
+            onChange={(e) => {
+              const val = Number(e.target.value)
+              if (val < 1) setStoryPoints(1)
+              else if (val > 100) setStoryPoints(100)
+              else setStoryPoints(val)
+            }}
             className="w-full h-8 px-2 text-xs border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent bg-background text-foreground disabled:opacity-50 disabled:cursor-not-allowed"
             disabled={isUpdating}
           />
@@ -286,10 +314,10 @@ export const TaskSidebar: React.FC<TaskSidebarProps> = ({
           <Label className="text-xs text-muted-foreground">Epic</Label>
           <TaskSelect
             label=""
-            value={task.epicId}
+            value={extractId(task.epic).toString()}
             onValueChange={(value) => onUpdateTask('epicId', value)}
             options={(epics || []).map((epic) => ({
-              value: epic.id,
+              value: epic.id.toString(),
               label: epic?.name,
               color: epic.color,
             }))}
@@ -303,7 +331,7 @@ export const TaskSidebar: React.FC<TaskSidebarProps> = ({
           <Label className="text-xs text-muted-foreground">Sprint</Label>
           <TaskSelect
             label=""
-            value={task.sprintId || 'none'}
+            value={extractId(task.sprint).toString() || 'none'}
             onValueChange={(value) => onUpdateTask('sprintId', value === 'none' ? '' : value)}
             options={[
               {
@@ -311,8 +339,8 @@ export const TaskSidebar: React.FC<TaskSidebarProps> = ({
                 label: 'No Sprint',
               },
               ...(sprints || []).map((sprint) => ({
-                value: sprint.id,
-                label: `${sprint?.name}${sprint.isActive ? ' (Active)' : ''}`,
+                value: sprint.id.toString(),
+                label: `${sprint?.name}`,
               })),
             ]}
             disabled={isUpdating}
@@ -330,7 +358,7 @@ export const TaskSidebar: React.FC<TaskSidebarProps> = ({
               value: `${
                 typeof (member as any).email === 'string' ? 'users' : 'digital-colleagues'
               }:${member.id}`,
-              label: member?.name,
+              label: member?.name || '',
             }))}
             placeholder="Search team members..."
             allowCustomValue={true}

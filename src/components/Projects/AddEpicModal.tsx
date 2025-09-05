@@ -17,7 +17,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
-import { Epic } from '../DigitalColleagues/types'
+import { Epic } from '../Foundary/types'
 
 interface AddEpicModalProps {
   isOpen: boolean
@@ -71,10 +71,12 @@ export const AddEpicModal: React.FC<AddEpicModalProps> = ({ isOpen, onClose, onA
         color: formData.color,
         confidence: formData.confidence,
         phase: formData.phase,
-        startDate: new Date(formData.startDate),
-        endDate: new Date(formData.endDate),
-        progress: formData.progress,
-        isSelected: true,
+        startDate: formData.startDate,
+        endDate: formData.endDate,
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+        // progress: formData.progress,
+        // isSelected: true,
       })
       setFormData({
         name: '',
