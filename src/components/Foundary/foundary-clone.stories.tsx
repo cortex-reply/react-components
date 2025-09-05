@@ -1,5 +1,5 @@
 import React from 'react'
-import { DigitalColleagueClone } from './digital-colleague-clone'
+import { DigitalColleagueClone } from './foundary-clone'
 import { action } from '@storybook/addon-actions'
 import type { Meta, StoryObj } from '@storybook/react'
 import type { DigitalColleague } from './types'
@@ -7,7 +7,7 @@ import type { DigitalColleague } from './types'
 // Mock digital colleagues data
 const mockDigitalColleagues: DigitalColleague[] = [
   {
-    id: 'digital-template-1',
+    id: 1,
     type: 'digital',
     name: 'Content Creator Assistant',
     status: 'active',
@@ -31,7 +31,7 @@ const mockDigitalColleagues: DigitalColleague[] = [
     isActive: true,
   },
   {
-    id: 'digital-template-2',
+    id: 2,
     type: 'digital',
     name: 'Code Review Bot',
     status: 'active',
@@ -55,7 +55,7 @@ const mockDigitalColleagues: DigitalColleague[] = [
     isActive: true,
   },
   {
-    id: 'digital-template-3',
+    id: 3,
     type: 'digital',
     name: 'Customer Support Agent',
     status: 'active',
@@ -94,7 +94,7 @@ const mockDigitalColleagues: DigitalColleague[] = [
     isActive: true,
   },
   {
-    id: 'digital-template-4',
+    id: 4,
     type: 'digital',
     name: 'Data Analyst',
     status: 'inactive',

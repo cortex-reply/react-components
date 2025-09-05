@@ -1,12 +1,12 @@
 import type { Meta, StoryObj } from '@storybook/react'
-import { DigitalColleageusLayout } from './DigitalColleageusLayout'
+import { FoundaryLayout } from './foundary-layout'
 import { mockSidebarItems, mockNotifications } from './test-data'
 import { businessUnits } from './test-data'
 import { action } from '@storybook/addon-actions'
 
-const meta: Meta<typeof DigitalColleageusLayout> = {
-  title: 'Foundary/DigitalColleageusLayout',
-  component: DigitalColleageusLayout,
+const meta: Meta<typeof FoundaryLayout> = {
+  title: 'Foundary/FoundaryLayout',
+  component: FoundaryLayout,
   parameters: {
     layout: 'fullscreen',
   },
@@ -18,7 +18,7 @@ const meta: Meta<typeof DigitalColleageusLayout> = {
 }
 
 export default meta
-type Story = StoryObj<typeof DigitalColleageusLayout>
+type Story = StoryObj<typeof FoundaryLayout>
 
 export const Default: Story = {
   args: {
