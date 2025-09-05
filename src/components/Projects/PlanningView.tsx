@@ -55,6 +55,7 @@ export const PlanningView: React.FC<PlanningViewProps> = ({
     endDate: '',
     isActive: false,
   })
+  const [availableSprints, setAvailableSprints] = useState<Sprint[]>([])
   const [sprintFilter, setSprintFilter] = useState<'all' | 'active' | 'upcoming'>('upcoming')
   const [isSprintSelectorOpen, setIsSprintSelectorOpen] = useState(false)
   const [heroHeight, setHeroHeight] = useState(0)
@@ -98,8 +99,9 @@ export const PlanningView: React.FC<PlanningViewProps> = ({
   }
 
   const getDisplayName = (name: string): string => {
-    const parts = name.trim().split(' ')
-    if (parts.length === 1) {
+    if (!name || name?.length === 0) return ''
+    const parts = name?.trim().split(' ')
+    if (parts?.length === 1) {
       return parts[0] // Just first name if only one part
     }
     const firstName = parts[0]
@@ -127,7 +129,10 @@ export const PlanningView: React.FC<PlanningViewProps> = ({
   }
 
   // Filter and manage sprints
-  const availableSprints = sprints.filter((sprint) => sprint.id !== 1 && sprint.id !== 2)
+  // const availableSprints = sprints.filter((sprint) => sprint.id !== 1 && sprint.id !== 2)
+  useEffect(() => {
+    setAvailableSprints(sprints)
+  }, [sprints])
 
   const displayedSprints = availableSprints.filter((sprint) => {
     switch (sprintFilter) {
@@ -144,17 +149,15 @@ export const PlanningView: React.FC<PlanningViewProps> = ({
     selectedSprintIds.includes(sprint.id.toString()),
   )
 
-  // const backlogTasks = tasks.filter(
-  //   (task) => !task.sprintId || task.sprintId === 'backlog' || task.sprintId === 'Backlog',
-  // )
-  // const backlogStoryPoints = backlogTasks.reduce((sum, task) => sum + (task.points || 0), 0)
+  const backlogTasks = tasks.filter((task) => !task.sprint || task.status === 'backlog')
+  const backlogStoryPoints = backlogTasks.reduce((sum, task) => sum + (task.storyPoints || 0), 0)
 
   // Sprint management functions
   const toggleSprintView = (sprintId: string) => {
     setSelectedSprintIds((prev) => {
       if (prev.includes(sprintId)) {
         return prev.filter((id) => id !== sprintId)
-      } else if (prev.length < 3) {
+      } else if (prev?.length < 3) {
         return [...prev, sprintId]
       }
       return prev
@@ -202,6 +205,17 @@ export const PlanningView: React.FC<PlanningViewProps> = ({
         endDate: sprintEditForm.endDate,
         // isActive: sprintEditForm.isActive,
       })
+      setAvailableSprints((prev) =>
+        prev.map((sprint) => {
+          if (sprint.id === Number(editingSprintId)) {
+            sprint.name = sprintEditForm.name
+            sprint.description = sprintEditForm.description
+            sprint.startDate = sprintEditForm.startDate
+            sprint.endDate = sprintEditForm.endDate
+          }
+          return sprint
+        }),
+      )
       setEditingSprintId(null)
     }
   }
@@ -244,11 +258,10 @@ export const PlanningView: React.FC<PlanningViewProps> = ({
 
     // Normalize the sprint IDs for comparison
     const currentSprint = extractId(draggedTask.sprint) || undefined
-    const targetSprint = targetSprintId === 'backlog' ? undefined : targetSprintId
 
     // Only update if moving to a different sprint
-    if (currentSprint !== targetSprint) {
-      // onUpdateTask(draggedTask.id.toString(), { sprint: targetSprint as Sprint })
+    if (currentSprint !== Number(targetSprintId)) {
+      onUpdateTask(draggedTask.id.toString(), { sprint: Number(targetSprintId) })
     }
 
     setDraggedTask(null)
@@ -342,15 +355,15 @@ export const PlanningView: React.FC<PlanningViewProps> = ({
                 <div className="flex items-center gap-3">
                   <div>
                     <h3 className="font-semibold text-foreground text-sm">Sprint Board</h3>
-                    {/* <p className="text-xs text-muted-foreground">
-                      {selectedSprintIds.length}/3 selected
-                    </p> */}
+                    <p className="text-xs text-muted-foreground">
+                      {selectedSprintIds?.length}/3 selected
+                    </p>
                   </div>
 
                   {/* Current Selection - Always Visible */}
-                  {selectedSprintIds.length > 0 && (
+                  {selectedSprintIds?.length > 0 && (
                     <div className="flex items-center gap-2">
-                      {/* <span className="text-xs text-muted-foreground">Viewing:</span> */}
+                      <span className="text-xs text-muted-foreground">Viewing:</span>
                       <div className="flex flex-wrap gap-1">
                         {visibleSprints.map((sprint) => (
                           <div
@@ -558,7 +571,7 @@ export const PlanningView: React.FC<PlanningViewProps> = ({
                                     >
                                       <Edit2 className="h-3 w-3" />
                                     </Button>
-                                    {sprint.id !== 1 && sprint.id !== 2 && (
+                                    {
                                       <Button
                                         size="sm"
                                         variant="ghost"
@@ -567,7 +580,7 @@ export const PlanningView: React.FC<PlanningViewProps> = ({
                                       >
                                         <Trash2 className="h-3 w-3" />
                                       </Button>
-                                    )}
+                                    }
                                   </div>
                                 </div>
                                 <div className="flex items-center justify-between mt-2">
@@ -576,12 +589,12 @@ export const PlanningView: React.FC<PlanningViewProps> = ({
                                     size="sm"
                                     className="text-xs w-full h-8 flex items-center justify-center cursor-pointer"
                                     onClick={() => toggleSprintView(sprint.id.toString())}
-                                    disabled={!isSelected && selectedSprintIds.length >= 3}
+                                    disabled={!isSelected && selectedSprintIds?.length >= 3}
                                   >
                                     <span className="pointer-events-none select-none">
                                       {isSelected
                                         ? 'Deselect'
-                                        : selectedSprintIds.length >= 3
+                                        : selectedSprintIds?.length >= 3
                                         ? 'Limit Reached'
                                         : 'Select'}
                                     </span>
@@ -608,7 +621,7 @@ export const PlanningView: React.FC<PlanningViewProps> = ({
                     )}
                   </div>
 
-                  {selectedSprintIds.length === 0 && (
+                  {selectedSprintIds?.length === 0 && (
                     <div className="mt-4 p-4 bg-muted/50 rounded-lg border-2 border-dashed border-border">
                       <div className="text-center">
                         <Calendar className="h-6 w-6 mx-auto mb-2 text-muted-foreground" />
@@ -643,14 +656,14 @@ export const PlanningView: React.FC<PlanningViewProps> = ({
               >
                 <div className="flex items-center justify-between mb-4 flex-shrink-0">
                   <h3 className="font-semibold text-foreground select-none text-lg">Backlog</h3>
-                  {/* <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-2">
                     <Badge variant="secondary" className="bg-muted text-muted-foreground">
-                      {backlogTasks.length} tasks
+                      {backlogTasks?.length} tasks
                     </Badge>
                     <Badge variant="outline" className="bg-gray-50 text-gray-700 border-gray-200">
                       {backlogStoryPoints} pts
                     </Badge>
-                  </div> */}
+                  </div>
                 </div>
 
                 <div
@@ -659,12 +672,12 @@ export const PlanningView: React.FC<PlanningViewProps> = ({
                   }`}
                 >
                   {(() => {
-                    // const { tasksByEpic, unassignedTasks } = getTasksByEpic(backlogTasks)
+                    const { tasksByEpic, unassignedTasks } = getTasksByEpic(backlogTasks)
 
                     return (
                       <>
                         {/* Epic Groups */}
-                        {/* {Object.entries(tasksByEpic).map(([epicId, epicTasks]) => {
+                        {Object.entries(tasksByEpic).map(([epicId, epicTasks]) => {
                           const epic = getEpicById(epicId)
                           if (!epic) return null
                           const isCollapsed = collapsedEpics.has(epicId)
@@ -679,7 +692,7 @@ export const PlanningView: React.FC<PlanningViewProps> = ({
                                 <span className="font-medium text-muted-foreground">
                                   {epic.name}
                                 </span>
-                                <span className="text-muted-foreground">({epicTasks.length})</span>
+                                <span className="text-muted-foreground">({epicTasks?.length})</span>
                                 <div className="ml-auto">
                                   {isCollapsed ? (
                                     <ChevronDown className="h-3 w-3 text-muted-foreground" />
@@ -697,10 +710,10 @@ export const PlanningView: React.FC<PlanningViewProps> = ({
                               )}
                             </div>
                           )
-                        })} */}
+                        })}
 
                         {/* Unassigned Tasks */}
-                        {/* {unassignedTasks.length > 0 &&
+                        {unassignedTasks?.length > 0 &&
                           (() => {
                             const isCollapsed = collapsedEpics.has('no-epic')
                             return (
@@ -712,7 +725,7 @@ export const PlanningView: React.FC<PlanningViewProps> = ({
                                   <div className="w-3 h-3 rounded-full bg-gray-400" />
                                   <span className="font-medium text-muted-foreground">No Epic</span>
                                   <span className="text-muted-foreground">
-                                    ({unassignedTasks.length})
+                                    ({unassignedTasks?.length})
                                   </span>
                                   <div className="ml-auto">
                                     {isCollapsed ? (
@@ -724,34 +737,34 @@ export const PlanningView: React.FC<PlanningViewProps> = ({
                                 </div>
                                 {!isCollapsed && (
                                   <div className="space-y-2 pl-2">
-                                    {unassignedTasks.map((task) => (
+                                    {unassignedTasks?.map((task) => (
                                       <CompactTaskCard key={task.id} task={task} />
                                     ))}
                                   </div>
                                 )}
                               </div>
                             )
-                          })()} */}
+                          })()}
 
-                        {/* {backlogTasks.length === 0 && (
+                        {backlogTasks?.length === 0 && (
                           <div className="flex items-center justify-center h-32 text-muted-foreground text-sm select-none">
                             Drop tasks here to move to backlog
                           </div>
-                        )} */}
+                        )}
 
                         {/* Fallback: Show all backlog tasks if nothing else is showing */}
-                        {/* {backlogTasks.length > 0 &&
+                        {backlogTasks?.length > 0 &&
                           Object.keys(tasksByEpic).length === 0 &&
                           unassignedTasks.length === 0 && (
                             <div className="space-y-2">
                               <div className="text-xs text-muted-foreground mb-2">
                                 Direct backlog tasks:
                               </div>
-                              {backlogTasks.map((task) => (
+                              {backlogTasks?.map((task) => (
                                 <CompactTaskCard key={task.id} task={task} />
                               ))}
                             </div>
-                          )} */}
+                          )}
                       </>
                     )
                   })()}
@@ -762,10 +775,10 @@ export const PlanningView: React.FC<PlanningViewProps> = ({
             {/* Sprint Columns - Now at same level as backlog */}
             {visibleSprints.map((sprint) => {
               const sprintTasksFiltered = tasks.filter(
-                (task) => extractId(task.sprint) === sprint.id,
+                (task) => extractId(task?.sprint) === sprint.id,
               )
               const totalStoryPoints = sprintTasksFiltered.reduce(
-                (sum, task) => sum + (task.storyPoints || 0),
+                (sum, task) => sum + (task?.storyPoints || 0),
                 0,
               )
 
@@ -796,30 +809,39 @@ export const PlanningView: React.FC<PlanningViewProps> = ({
                       )} */}
                     </div>
                     <div className="flex items-center gap-2">
-                      <Badge variant="secondary" className="bg-muted text-muted-foreground">
-                        {sprintTasksFiltered.length} tasks
+                      <Badge
+                        variant="secondary"
+                        className="bg-muted flex items-center justify-center text-muted-foreground"
+                      >
+                        {sprintTasksFiltered?.length} tasks
                       </Badge>
-                      <Badge variant="outline" className="bg-blue-50 text-blue-700 border-blue-200">
+                      <Badge
+                        variant="outline"
+                        className="bg-blue-50 flex items-center justify-center text-blue-700 border-blue-200"
+                      >
                         {totalStoryPoints} pts
                       </Badge>
                       <Button
                         size="sm"
                         variant="ghost"
-                        onClick={() => handleSprintEditStart(sprint)}
+                        onClick={() => {
+                          setIsSprintSelectorOpen(true)
+                          handleSprintEditStart(sprint as Sprint)
+                        }}
                         className="h-6 px-2"
                       >
                         <Edit2 className="h-3 w-3" />
                       </Button>
-                      {/* {sprint.id !== 'backlog' && sprint.id !== 'all-tasks' && (
+                      {
                         <Button
                           size="sm"
                           variant="ghost"
-                          onClick={() => onDeleteSprint(sprint.id)}
+                          onClick={() => onDeleteSprint(sprint.id.toString())}
                           className="h-6 px-2 text-destructive hover:text-destructive"
                         >
                           <Trash2 className="h-3 w-3" />
                         </Button>
-                      )} */}
+                      }
                     </div>
                   </div>
 
@@ -846,7 +868,7 @@ export const PlanningView: React.FC<PlanningViewProps> = ({
                                     {epic.name}
                                   </span>
                                   <span className="text-muted-foreground">
-                                    ({epicTasks.length})
+                                    ({epicTasks?.length})
                                   </span>
                                   <div className="ml-auto">
                                     {isCollapsed ? (
@@ -858,7 +880,7 @@ export const PlanningView: React.FC<PlanningViewProps> = ({
                                 </div>
                                 {!isCollapsed && (
                                   <div className="space-y-2 pl-2">
-                                    {epicTasks.map((task) => (
+                                    {epicTasks?.map((task) => (
                                       <CompactTaskCard key={task.id} task={task} />
                                     ))}
                                   </div>
@@ -868,7 +890,7 @@ export const PlanningView: React.FC<PlanningViewProps> = ({
                           })}
 
                           {/* Unassigned Tasks */}
-                          {unassignedTasks.length > 0 &&
+                          {unassignedTasks?.length > 0 &&
                             (() => {
                               const isCollapsed = collapsedEpics.has('no-epic')
                               return (
@@ -882,7 +904,7 @@ export const PlanningView: React.FC<PlanningViewProps> = ({
                                       No Epic
                                     </span>
                                     <span className="text-muted-foreground">
-                                      ({unassignedTasks.length})
+                                      ({unassignedTasks?.length})
                                     </span>
                                     <div className="ml-auto">
                                       {isCollapsed ? (
@@ -894,7 +916,7 @@ export const PlanningView: React.FC<PlanningViewProps> = ({
                                   </div>
                                   {!isCollapsed && (
                                     <div className="space-y-2 pl-2">
-                                      {unassignedTasks.map((task) => (
+                                      {unassignedTasks?.map((task) => (
                                         <CompactTaskCard key={task.id} task={task} />
                                       ))}
                                     </div>
@@ -903,7 +925,7 @@ export const PlanningView: React.FC<PlanningViewProps> = ({
                               )
                             })()}
 
-                          {sprintTasksFiltered.length === 0 && (
+                          {sprintTasksFiltered?.length === 0 && (
                             <div className="flex items-center justify-center h-32 text-muted-foreground text-sm select-none">
                               Drop tasks here
                             </div>
