@@ -1,6 +1,6 @@
 import React, { use, useEffect, useState } from 'react'
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
-import { Task, Epic, Sprint, DigitalColleague, User } from '../Foundary/types'
+import { Task, Epic, Sprint, DigitalColleague, User, Colleague } from '../Foundary/types'
 import { EditableField } from '../AdvancedComponents/EditableField'
 import { CommentSection } from '../AdvancedComponents/CommentSection'
 import { TaskSidebar } from './TaskSidebar'
@@ -24,7 +24,7 @@ interface TaskDetailsModalProps {
   onUpdateTask: (taskId: string, updates: Partial<Task>) => Promise<Task>
   onDeleteTask: (taskId: string) => Promise<void>
   onAddComment?: ({ content, taskId }: { taskId: string; content: string }) => Promise<Task>
-  colleagues: (User | DigitalColleague)[]
+  colleagues: Colleague[]
 }
 
 export const TaskDetailsModal: React.FC<TaskDetailsModalProps> = ({
@@ -56,6 +56,7 @@ export const TaskDetailsModal: React.FC<TaskDetailsModalProps> = ({
     //   createdAt: new Date(task.createdAt.getTime() + 86400000), // +1 day
     // },
   ])
+  const [members, setMembers] = useState(colleagues)
 
   useEffect(() => {
     setTask(initialTask)
@@ -91,6 +92,7 @@ export const TaskDetailsModal: React.FC<TaskDetailsModalProps> = ({
         // Reset to idle after showing success
         setTimeout(() => setUpdateState('idle'), 1500)
       } catch (error) {
+        console.log('error', error)
         setUpdateState('error')
         // Reset to idle after showing error
         setTimeout(() => setUpdateState('idle'), 3000)
@@ -237,7 +239,7 @@ export const TaskDetailsModal: React.FC<TaskDetailsModalProps> = ({
             isUpdating={updateState === 'loading'}
             isDeleting={deleteState === 'loading'}
             deleteState={deleteState}
-            teamMembers={colleagues}
+            teamMembers={members}
           />
         </div>
       </DialogContent>

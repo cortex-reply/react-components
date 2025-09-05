@@ -9,9 +9,8 @@ import { TaskDetailsModal } from './TaskDetailsModal'
 import { AddEpicModal } from './AddEpicModal'
 import { DashboardHero } from '../Heros/DashboardHero'
 
-import { Project, Epic, Sprint, Task, DigitalColleague, User } from '../Foundary/types'
+import { Project, Epic, Sprint, Task, DigitalColleague, User, Colleague } from '../Foundary/types'
 import { extractId } from '@/lib/utils/extract-id'
-// import { extractId } from '@/utils/extract-id'
 
 export interface KanbanBoardProps {
   initialTasks?: Task[]
@@ -19,7 +18,7 @@ export interface KanbanBoardProps {
   initialSprints?: (Sprint & { isSelected: boolean })[]
   initialProjects?: Project[]
   initialUsers?: User[]
-  initialColleagues?: DigitalColleague[]
+  initialColleagues?: Colleague[]
   // Task handlers
   onAddTask?: (newTask: Omit<Task, 'id' | 'createdAt' | 'updatedAt'>) => void
   onUpdateTask?: (taskId: string, updates: Partial<Task>) => Promise<Task>
@@ -54,7 +53,7 @@ export const KanbanBoardView: React.FC<KanbanBoardProps> = ({
   const [selectedTask, setSelectedTask] = useState<Task | null>(null)
   const [draggedTask, setDraggedTask] = useState<Task | null>(null)
   const [users, setUsers] = useState<User[]>(initialUsers)
-  const [colleagues, setColleagues] = useState<DigitalColleague[]>(initialColleagues)
+  const [colleagues, setColleagues] = useState<Colleague[]>(initialColleagues)
   const [heroHeight, setHeroHeight] = useState(0)
 
   const heroRef = useRef<HTMLDivElement>(null)
@@ -76,6 +75,10 @@ export const KanbanBoardView: React.FC<KanbanBoardProps> = ({
   useEffect(() => {
     setSprints(initialSprints)
   }, [initialSprints])
+
+  useEffect(() => {
+    setColleagues(initialColleagues)
+  }, [initialColleagues])
 
   // Measure hero height and adjust when it changes
   useEffect(() => {
@@ -334,7 +337,7 @@ export const KanbanBoardView: React.FC<KanbanBoardProps> = ({
           sprints={sprints}
           onUpdateTask={handleUpdateTask}
           onDeleteTask={handleDeleteTask}
-          colleagues={[...colleagues, ...users]}
+          colleagues={colleagues}
           onAddComment={onAddComment}
         />
       )}
