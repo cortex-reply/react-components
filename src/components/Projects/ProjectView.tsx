@@ -419,9 +419,9 @@ export default function ProjectView({
     // In a real app, this would update the current team context
   }
 
-  const handleAddTaskToEpic = (epicId: string) => {
+  const handleAddTaskToEpic = (task: Omit<Task, 'id' | 'createdAt' | 'updatedAt'>) => {
     // Set the epic in the add task modal and open it
-    setSelectedEpicForTask(epicId)
+    // setSelectedEpicForTask(task.epic)
     setIsAddTaskModalOpen(true)
   }
 
