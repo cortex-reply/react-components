@@ -3,7 +3,7 @@
 import { motion } from 'motion/react'
 import { MoreHorizontal, Trash2, Edit } from 'lucide-react'
 import { Button } from '@/components/ui/button'
-import { FileType } from '../DigitalColleagues/types'
+import { File as FileType } from '../Foundary/types'
 
 interface FileListProps {
   files: FileType[]

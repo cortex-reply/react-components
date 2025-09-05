@@ -1,26 +1,21 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { Plus, Search, File, Filter, Download, Upload } from 'lucide-react'
+import { Plus, Search, File, Filter } from 'lucide-react'
 import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Card, CardContent } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select'
+
 import { NavigationTabs } from '../AdvancedComponents/navigation-tabs'
 import { FileList } from './file-list'
 import { DashboardHero } from '../Heros/DashboardHero/DashboardHero'
-import { FileType, type RecentFile } from '../DigitalColleagues/types'
+import { File as FileType } from '../Foundary/types'
 import { motion, AnimatePresence } from 'motion/react'
+import { AddFileModal } from './AddFileModal'
 
 interface FileViewProps {
   initialFiles?: FileType[]
-  onFileAdd?: () => void
+  onFileAdd?: (file: FormData) => void
   onFileEdit?: (file: FileType) => void
   onFileDelete?: (fileId: string) => void
   onFileClick?: (file: FileType) => void
@@ -41,18 +36,18 @@ export default function FileView({
   const [searchTerm, setSearchTerm] = useState('')
   const [appFilter, setAppFilter] = useState<string>('all')
   const [activeTab, setActiveTab] = useState('all')
-
+  const [isAddFileModalOpen, setIsAddFileModalOpen] = useState(false)
   useEffect(() => {
     setFiles(initialFiles)
   }, [initialFiles])
 
   // Get unique apps for filter
-  const uniqueApps = Array.from(new Set(files.map((file) => file.mimeType)))
+  // const uniqueApps = Array.from(new Set(files.map((file) => file.mimeType)))
 
   const filteredFiles = files.filter((file) => {
     const matchesSearch = file.name.toLowerCase().includes(searchTerm.toLowerCase())
-    const matchesApp = appFilter === 'all' || file.mimeType === appFilter
-    return matchesSearch && matchesApp
+    // const matchesApp = appFilter === 'all' || file.mimeType === appFilter || file.app === appFilter
+    return matchesSearch
   })
 
   const recentFiles = filteredFiles.slice(0, 10) // Show 10 most recent
@@ -60,7 +55,7 @@ export default function FileView({
 
   const handleAddFile = () => {
     // This would typically open a file upload dialog
-    onFileAdd?.()
+    setIsAddFileModalOpen(true)
   }
 
   const handleEditFile = (file: FileType) => {
@@ -70,7 +65,7 @@ export default function FileView({
   const handleDeleteFile = (file: FileType) => {
     console.log('deleting file', file)
     setFiles((prev) => prev.filter((f) => f.name !== file.name))
-    onFileDelete?.(file.id)
+    onFileDelete?.(file.id.toString())
   }
 
   const handleFileClick = (file: FileType) => {
@@ -248,6 +243,11 @@ export default function FileView({
           </div>
         </motion.div>
       </AnimatePresence>
+      <AddFileModal
+        isOpen={isAddFileModalOpen}
+        onClose={() => setIsAddFileModalOpen(false)}
+        onAddFile={onFileAdd}
+      />
     </div>
   )
 }

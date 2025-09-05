@@ -14,7 +14,8 @@ import { mockProjectSummary } from '../test-data'
 import type {
   App,
   ProjectSummary,
-  FileType,
+  // FileType,
+  File as FileType,
   BusinessUnit,
   Project,
   SidebarItem,

@@ -15,7 +15,7 @@ import { TaskDetailsModal } from './TaskDetailsModal'
 import type {
   Reminder,
   DigitalColleague,
-  FileType,
+  File as FileType,
   User,
   Task,
   Epic,
