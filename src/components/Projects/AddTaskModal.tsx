@@ -66,15 +66,15 @@ export const AddTaskModal: React.FC<AddTaskModalProps> = ({
     priority: 'medium' as Task['priority'],
     type: 'story' as Task['type'],
     storyPoints: 1,
-    epicId: '',
-    sprintId: 'none',
+    epic: '',
+    sprint: 'none',
     assignee: '',
   })
 
   // Effect to set the default epic when modal opens
   useEffect(() => {
     if (isOpen && defaultEpicId) {
-      setFormData((prev) => ({ ...prev, epicId: defaultEpicId }))
+      setFormData((prev) => ({ ...prev, epic: defaultEpicId }))
     }
   }, [isOpen, defaultEpicId])
 
@@ -88,8 +88,8 @@ export const AddTaskModal: React.FC<AddTaskModalProps> = ({
         priority: 'medium',
         type: 'story',
         storyPoints: 1,
-        epicId: defaultEpicId || '',
-        sprintId: 'none',
+        epic: defaultEpicId || '',
+        sprint: 'none',
         assignee: '',
       })
     }
@@ -105,8 +105,8 @@ export const AddTaskModal: React.FC<AddTaskModalProps> = ({
         priority: formData.priority as Task['priority'],
         type: formData.type as Task['type'],
         storyPoints: formData.storyPoints,
-        epic: Number(formData.epicId),
-        sprint: Number(formData.sprintId),
+        epic: Number(formData.epic),
+        sprint: Number(formData.sprint),
         assignee: formData.assignee.trim()
           ? { relationTo: 'digital-colleagues', value: Number(formData.assignee) }
           : null,
@@ -120,8 +120,8 @@ export const AddTaskModal: React.FC<AddTaskModalProps> = ({
         priority: 'medium',
         type: 'story',
         storyPoints: 1,
-        epicId: defaultEpicId || '',
-        sprintId: 'none',
+        epic: defaultEpicId || '',
+        sprint: '',
         assignee: '',
       })
       onClose()
@@ -225,10 +225,7 @@ export const AddTaskModal: React.FC<AddTaskModalProps> = ({
           {!defaultEpicId && (
             <div className="space-y-2">
               <Label htmlFor="epic">Epic</Label>
-              <Select
-                value={formData.epicId}
-                onValueChange={(value) => handleChange('epicId', value)}
-              >
+              <Select value={formData.epic} onValueChange={(value) => handleChange('epic', value)}>
                 <SelectTrigger>
                   <SelectValue placeholder="Select an epic" />
                 </SelectTrigger>
@@ -250,8 +247,8 @@ export const AddTaskModal: React.FC<AddTaskModalProps> = ({
           <div className="space-y-2">
             <Label htmlFor="sprint">Sprint (Optional)</Label>
             <Select
-              value={formData.sprintId}
-              onValueChange={(value) => handleChange('sprintId', value)}
+              value={formData.sprint}
+              onValueChange={(value) => handleChange('sprint', value)}
             >
               <SelectTrigger>
                 <SelectValue placeholder="Select a sprint" />

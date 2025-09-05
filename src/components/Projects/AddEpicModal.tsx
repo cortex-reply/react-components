@@ -84,8 +84,8 @@ export const AddEpicModal: React.FC<AddEpicModalProps> = ({ isOpen, onClose, onA
         color: 'bg-blue-500',
         confidence: 'medium',
         phase: 1,
-        startDate: new Date().toISOString().split('T')[0],
-        endDate: new Date().toISOString().split('T')[0],
+        startDate: new Date().toISOString(),
+        endDate: new Date().toISOString(),
         progress: 0,
       })
       onClose()
@@ -204,7 +204,7 @@ export const AddEpicModal: React.FC<AddEpicModalProps> = ({ isOpen, onClose, onA
             </div>
           </div>
 
-          <div className="space-y-2">
+          {/* <div className="space-y-2">
             <Label>Progress (%)</Label>
             <Input
               type="number"
@@ -213,7 +213,7 @@ export const AddEpicModal: React.FC<AddEpicModalProps> = ({ isOpen, onClose, onA
               value={formData.progress}
               onChange={(e) => handleChange('progress', parseInt(e.target.value) || 0)}
             />
-          </div>
+          </div> */}
 
           <DialogFooter>
             <Button type="button" variant="outline" onClick={onClose}>
