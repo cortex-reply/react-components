@@ -8,7 +8,7 @@ import { Input } from '@/components/ui/input'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Badge } from '@/components/ui/badge'
 import { motion, AnimatePresence } from 'motion/react'
-import { type User as UserType } from '../DigitalColleagues/types'
+import { type User as UserType } from '../Foundary/types'
 
 interface UserSelectionProps {
   users: UserType[]
@@ -28,10 +28,10 @@ export function UserSelection({
   const filteredUsers = useMemo(() => {
     return users.filter((user) => {
       const matchesSearch =
-        user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        user.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        user.role.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        (user.skills || []).some((skill) => skill.toLowerCase().includes(searchTerm.toLowerCase()))
+        user.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        user.email.toLowerCase().includes(searchTerm.toLowerCase())
+      // user.role.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      // (user.skills || []).some((skill) => skill.toLowerCase().includes(searchTerm.toLowerCase()))
 
       return matchesSearch
     })
@@ -102,14 +102,14 @@ export function UserSelection({
                     <div className="flex items-start justify-between">
                       <div className="flex items-center gap-3">
                         <Avatar>
-                          <AvatarImage src={user.avatar} alt={user.name} />
+                          {/* <AvatarImage src={user.avatar} alt={user.name} /> */}
                           <AvatarFallback>
                             <User className="h-4 w-4" />
                           </AvatarFallback>
                         </Avatar>
                         <div>
                           <CardTitle className="text-lg">{user.name}</CardTitle>
-                          <p className="text-sm text-muted-foreground">{user.role}</p>
+                          {/* <p className="text-sm text-muted-foreground">{user.role}</p> */}
                         </div>
                       </div>
                       {selectedUserId === user.id && <Check className="h-5 w-5 text-primary" />}
@@ -123,15 +123,15 @@ export function UserSelection({
                       </div>
                       <div>
                         <p className="text-sm text-muted-foreground">Department</p>
-                        <Badge variant="secondary">{user.department}</Badge>
+                        {/* <Badge variant="secondary">{user.department}</Badge> */}
                       </div>
-                      {user.location && (
+                      {/* {user.location && (
                         <div>
                           <p className="text-sm text-muted-foreground">Location</p>
                           <p className="text-sm">{user.location}</p>
                         </div>
-                      )}
-                      {user.skills && user.skills.length > 0 && (
+                      )} */}
+                      {/* {user.skills && user.skills.length > 0 && (
                         <div>
                           <p className="text-sm text-muted-foreground mb-2">Skills</p>
                           <div className="flex flex-wrap gap-1">
@@ -147,7 +147,7 @@ export function UserSelection({
                             )}
                           </div>
                         </div>
-                      )}
+                      )} */}
                     </div>
                   </CardContent>
                 </Card>

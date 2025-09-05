@@ -34,7 +34,7 @@ interface ColleaguesViewProps {
   initialColleagues?: Colleague[]
   onColleagueAdd?: (colleague: Colleague) => void
   onColleagueEdit?: (colleague: Colleague) => void
-  onColleagueDelete?: (colleague: string, type: 'user' | 'digital') => void
+  onColleagueDelete?: (colleague: string, type: 'human' | 'digital') => void
   compactView?: boolean
   departments?: string[]
   className?: string
@@ -213,9 +213,12 @@ export default function ColleaguesView({
   }
 
   const handleDeleteColleague = (colleagueId: string) => {
+    console.log('deleting', colleagueId, colleagues)
     onColleagueDelete?.(
       colleagueId,
-      (colleagues.find((c) => c.id === colleagueId) as Colleague).type as 'user' | 'digital',
+      (colleagues.find((c) => c.id.toString() === colleagueId.toString()) as Colleague)?.type as
+        | 'human'
+        | 'digital',
     )
     setColleagues((prev) => prev.filter((c) => c.id !== colleagueId))
   }
@@ -273,12 +276,12 @@ export default function ColleaguesView({
 
   if (currentView === 'userSelection') {
     return (
-      <h1>User selection</h1>
-      // <UserSelection
-      //   users={safeAvailableUsers}
-      //   onUserSelect={handleUserSelect}
-      //   onCancel={() => setCurrentView('typeSelection')}
-      // />
+      // <h1>User selection</h1>
+      <UserSelection
+        users={safeAvailableUsers}
+        onUserSelect={handleUserSelect}
+        onCancel={() => setCurrentView('typeSelection')}
+      />
     )
   }
 
@@ -384,8 +387,8 @@ export default function ColleaguesView({
                     {colleagues.filter((c) => c.type === 'human').length}
                   </div>
                   <p className="text-xs text-muted-foreground">
-                    {/* {colleagues.filter((c) => c.type === 'human' && c.status === 'active').length}{' '} */}
-                    0 active
+                    {/* {colleagues.filter((c) => c.type === 'human' && c.status === 'active').length} 0 */}
+                    active
                   </p>
                 </CardContent>
               </Card>

@@ -1,18 +1,18 @@
-"use client"
+'use client'
 
-import type React from "react"
+import type React from 'react'
 
-import { useState, useEffect } from "react"
-import { Bot, Plus, X, Edit } from "lucide-react"
-import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Textarea } from "@/components/ui/textarea"
-import { Switch } from "@/components/ui/switch"
-import type { Colleague, DigitalColleague, KnowledgeDocument } from "./types"
-import { KnowledgeSearch } from "./knowledge-search"
+import { useState, useEffect } from 'react'
+import { Bot, Plus, X, Edit } from 'lucide-react'
+import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { Textarea } from '@/components/ui/textarea'
+import { Switch } from '@/components/ui/switch'
+import type { Colleague, DigitalColleague, KnowledgeDocument } from './types'
+import { KnowledgeSearch } from './knowledge-search'
 
 interface ColleagueFormProps {
   colleague?: DigitalColleague
@@ -33,27 +33,26 @@ export function ColleagueForm({
   isLoading = false,
   title,
   submitLabel,
-  cancelLabel = "Cancel",
+  cancelLabel = 'Cancel',
   readOnly = false,
   availableKnowledgeDocuments = [],
 }: ColleagueFormProps) {
   const [formData, setFormData] = useState<Partial<DigitalColleague>>({
-    type: "digital",
-    name: "",
-    description: "",
-    jobDescription: "",
-    workInstructions: "",
+    type: 'digital',
+    name: '',
+    description: '',
+    jobDescription: '',
+    workInstructions: '',
     capabilities: [],
     knowledge: [],
     coreKnowledge: [],
-    version: "1",
+    version: '1',
     ...colleague,
   })
 
-  const [newSkill, setNewSkill] = useState("")
-  const [newCapability, setNewCapability] = useState("")
+  const [newSkill, setNewSkill] = useState('')
+  const [newCapability, setNewCapability] = useState('')
   const [editMode, setEditMode] = useState(!readOnly)
-
 
   useEffect(() => {
     if (colleague) {
@@ -66,18 +65,18 @@ export function ColleagueForm({
 
     // Auto-increment version for updates, start at 1 for new colleagues
     const currentVersion = formData.version ? parseInt(formData.version) : 0
-    const nextVersion = colleague ? (currentVersion + 1).toString() : "1"
+    const nextVersion = colleague ? (currentVersion + 1).toString() : '1'
 
     const digitalData: DigitalColleague = {
       id: formData.id || Date.now().toString(),
       name: formData.name!,
-      type: "digital",
-      status: "active",
+      type: 'digital',
+      status: 'active',
       joinedDate: formData.joinedDate || new Date(),
       lastActive: formData.lastActive || new Date(),
       description: formData.description,
-      jobDescription: formData.jobDescription || "",
-      workInstructions: formData.workInstructions || "",
+      jobDescription: formData.jobDescription || '',
+      workInstructions: formData.workInstructions || '',
       capabilities: formData.capabilities || [],
       knowledge: formData.knowledge || [],
       coreKnowledge: formData.coreKnowledge || [],
@@ -96,7 +95,7 @@ export function ColleagueForm({
       ...formData,
       [field]: [...currentArray, value.trim()],
     })
-    setter("")
+    setter('')
   }
 
   const removeArrayItem = (field: string, index: number) => {
@@ -108,7 +107,7 @@ export function ColleagueForm({
   }
 
   const handleEditToggle = (e: React.FormEvent) => {
-        e.preventDefault()
+    e.preventDefault()
 
     setEditMode(!editMode)
   }
@@ -132,7 +131,7 @@ export function ColleagueForm({
               onChange={(e) => setNewValue(e.target.value)}
               placeholder={placeholder}
               onKeyPress={(e) => {
-                if (e.key === "Enter") {
+                if (e.key === 'Enter') {
                   e.preventDefault()
                   addArrayItem(field, newValue, setNewValue)
                 }
@@ -173,8 +172,9 @@ export function ColleagueForm({
     )
   }
 
-  const formTitle = title || (!editMode ? "View Colleague" : (colleague ? "Edit Colleague" : "Add New Colleague"))
-  const buttonLabel = submitLabel || (colleague ? "Update Colleague" : "Add Colleague")
+  const formTitle =
+    title || (!editMode ? 'View Colleague' : colleague ? 'Edit Colleague' : 'Add New Colleague')
+  const buttonLabel = submitLabel || (colleague ? 'Update Colleague' : 'Add Colleague')
 
   return (
     <Card className="m-8 w-full max-w-4xl mx-auto">
@@ -192,7 +192,7 @@ export function ColleagueForm({
               <Label htmlFor="name">Name *</Label>
               <Input
                 id="name"
-                value={formData.name || ""}
+                value={formData.name || ''}
                 onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                 required
                 disabled={isLoading || !editMode}
@@ -202,7 +202,7 @@ export function ColleagueForm({
               <Label htmlFor="description">Description</Label>
               <Textarea
                 id="description"
-                value={formData.description || ""}
+                value={formData.description || ''}
                 onChange={(e) => setFormData({ ...formData, description: e.target.value })}
                 rows={3}
                 placeholder="Brief description of this digital colleague..."
@@ -214,65 +214,76 @@ export function ColleagueForm({
           {/* Digital Colleague Details */}
           <div className="space-y-4">
             <h3 className="text-lg font-semibold">Digital Colleague Details</h3>
-              <div className="space-y-2">
-                <Label htmlFor="jobDescription">Job Description *</Label>
-                <Textarea
-                  id="jobDescription"
-                  value={(formData as DigitalColleague).jobDescription || ""}
-                  onChange={(e) => setFormData({ ...formData, jobDescription: e.target.value })}
-                  rows={4}
-                  required={formData.type === "digital"}
-                  disabled={isLoading || !editMode}
-                />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="workInstructions">Work Instructions</Label>
-                <Textarea
-                  id="workInstructions"
-                  value={(formData as Partial<DigitalColleague>).workInstructions || ""}
-                  onChange={(e) => setFormData({ ...formData, workInstructions: e.target.value })}
-                  rows={4}
-                  placeholder="Enter detailed work instructions for this digital colleague..."
-                  disabled={isLoading || !editMode}
-                />
-              </div>
-              {renderArrayField("capabilities", "Capabilities", newCapability, setNewCapability, "Add capability")}
-              
-              <KnowledgeSearch
-                selectedDocuments={(formData as Partial<DigitalColleague>).knowledge || []}
-                onDocumentsChange={(documents) => setFormData({ ...formData, knowledge: documents })}
-                label="Knowledge"
-                placeholder="Search for knowledge documents to add..."
+            <div className="space-y-2">
+              <Label htmlFor="jobDescription">Job Description *</Label>
+              <Textarea
+                id="jobDescription"
+                value={(formData as DigitalColleague).jobDescription || ''}
+                onChange={(e) => setFormData({ ...formData, jobDescription: e.target.value })}
+                rows={4}
+                required={formData.type === 'digital'}
                 disabled={isLoading || !editMode}
-                availableDocuments={availableKnowledgeDocuments}
-              />
-              
-              <KnowledgeSearch
-                selectedDocuments={(formData as Partial<DigitalColleague>).coreKnowledge || []}
-                onDocumentsChange={(documents) => setFormData({ ...formData, coreKnowledge: documents })}
-                label="Core Knowledge"
-                placeholder="Search for core knowledge documents..."
-                maxSelections={5}
-                disabled={isLoading || !editMode}
-                availableDocuments={availableKnowledgeDocuments}
               />
             </div>
+            <div className="space-y-2">
+              <Label htmlFor="workInstructions">Work Instructions</Label>
+              <Textarea
+                id="workInstructions"
+                value={(formData as Partial<DigitalColleague>).workInstructions || ''}
+                onChange={(e) => setFormData({ ...formData, workInstructions: e.target.value })}
+                rows={4}
+                placeholder="Enter detailed work instructions for this digital colleague..."
+                disabled={isLoading || !editMode}
+              />
+            </div>
+            {renderArrayField(
+              'capabilities',
+              'Capabilities',
+              newCapability,
+              setNewCapability,
+              'Add capability',
+            )}
+
+            <KnowledgeSearch
+              selectedDocuments={(formData as Partial<DigitalColleague>).knowledge || []}
+              onDocumentsChange={(documents) => setFormData({ ...formData, knowledge: documents })}
+              label="Knowledge"
+              placeholder="Search for knowledge documents to add..."
+              disabled={isLoading || !editMode}
+              availableDocuments={availableKnowledgeDocuments}
+            />
+
+            <KnowledgeSearch
+              selectedDocuments={(formData as Partial<DigitalColleague>).coreKnowledge || []}
+              onDocumentsChange={(documents) =>
+                setFormData({ ...formData, coreKnowledge: documents })
+              }
+              label="Core Knowledge"
+              placeholder="Search for core knowledge documents..."
+              maxSelections={5}
+              disabled={isLoading || !editMode}
+              availableDocuments={availableKnowledgeDocuments}
+            />
+          </div>
 
           {/* Form Actions */}
           <div className="flex justify-end gap-2 pt-4 border-t">
             <Button type="button" variant="outline" onClick={onCancel} disabled={isLoading}>
-              {!editMode ? "Close" : cancelLabel}
+              {!editMode ? 'Close' : cancelLabel}
             </Button>
             {!editMode ? (
-              
-                <Button type="button" onClick={handleEditToggle} disabled={isLoading} className="gap-2">
-                  <Edit className="h-4 w-4" />
-                  Edit
-                </Button>
-              
+              <Button
+                type="button"
+                onClick={handleEditToggle}
+                disabled={isLoading}
+                className="gap-2"
+              >
+                <Edit className="h-4 w-4" />
+                Edit
+              </Button>
             ) : (
               <Button type="submit" disabled={isLoading}>
-                {isLoading ? "Saving..." : buttonLabel}
+                {isLoading ? 'Saving...' : buttonLabel}
               </Button>
             )}
           </div>
