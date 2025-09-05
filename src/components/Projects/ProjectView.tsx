@@ -21,6 +21,7 @@ import type {
   Epic,
   Sprint,
   Project,
+  Colleague,
 } from '../Foundary/types'
 // import { Epic, Sprint, Project, Task } from "@/components/DigitalColleagues/KanbanBoard"
 import { useRouter } from 'next/navigation'
@@ -80,7 +81,7 @@ interface Props {
   initialSprints?: Sprint[]
   initialProjects?: Project[]
   initialReminders?: Reminder[]
-  initialColleagues?: DigitalColleague[]
+  initialColleagues?: Colleague[]
   initialUsers?: User[]
   initialFiles?: FileType[]
   initialView?: View
@@ -175,7 +176,7 @@ export default function ProjectView({
   const [sprints, setSprints] = useState<Sprint[]>(initialSprints)
   const [projects, setProjects] = useState<Project[]>(initialProjects)
   const [reminders, setReminders] = useState<Reminder[]>(initialReminders)
-  const [colleagues, setColleagues] = useState<DigitalColleague[]>(initialColleagues)
+  const [colleagues, setColleagues] = useState<Colleague[]>(initialColleagues)
   const [users, setUsers] = useState<User[]>(initialUsers)
   const [files, setFiles] = useState<FileType[]>(initialFiles)
   const [isAddTaskModalOpen, setIsAddTaskModalOpen] = useState(false)

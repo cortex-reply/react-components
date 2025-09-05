@@ -140,6 +140,11 @@ export const TaskSidebar: React.FC<TaskSidebarProps> = ({
 }) => {
   const [storyPoints, setStoryPoints] = useState(task.storyPoints)
   const debounceTimeoutRef = useRef<NodeJS.Timeout | null>(null)
+  const [members, setMembers] = useState(teamMembers)
+
+  useEffect(() => {
+    setMembers(teamMembers)
+  }, [teamMembers])
 
   // Debounced version of onUpdateTask for story points
   const debouncedUpdateTask = useCallback(
@@ -315,7 +320,7 @@ export const TaskSidebar: React.FC<TaskSidebarProps> = ({
           <TaskSelect
             label=""
             value={extractId(task.epic).toString()}
-            onValueChange={(value) => onUpdateTask('epicId', value)}
+            onValueChange={(value) => onUpdateTask('epic', value)}
             options={(epics || []).map((epic) => ({
               value: epic.id.toString(),
               label: epic?.name,
@@ -332,7 +337,7 @@ export const TaskSidebar: React.FC<TaskSidebarProps> = ({
           <TaskSelect
             label=""
             value={extractId(task.sprint).toString() || 'none'}
-            onValueChange={(value) => onUpdateTask('sprintId', value === 'none' ? '' : value)}
+            onValueChange={(value) => onUpdateTask('sprint', value === 'none' ? '' : value)}
             options={[
               {
                 value: 'none',
@@ -354,7 +359,7 @@ export const TaskSidebar: React.FC<TaskSidebarProps> = ({
             label=""
             value={(task.assignee as any)?.value?.name}
             onValueChange={(value) => onUpdateTask('assignee', value)}
-            options={teamMembers.map((member) => ({
+            options={members.map((member) => ({
               value: `${
                 typeof (member as any).email === 'string' ? 'users' : 'digital-colleagues'
               }:${member.id}`,

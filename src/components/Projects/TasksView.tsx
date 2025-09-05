@@ -34,11 +34,11 @@ import {
   BellOff,
 } from 'lucide-react'
 
-import { type Reminder, type DigitalColleague } from '../Foundary/types'
+import { type Reminder, type Colleague } from '../Foundary/types'
 
 export interface TasksViewProps {
   initialReminders?: Reminder[]
-  initialColleagues?: DigitalColleague[]
+  initialColleagues?: Colleague[]
   onAddReminder?: (reminder: Omit<Reminder, 'id' | 'createdAt'>) => void
   onUpdateReminder?: (reminderId: string, updates: Partial<Reminder>) => void
   onDeleteReminder?: (reminderId: string) => void
@@ -114,7 +114,7 @@ const isTomorrow = (date: Date) => {
 }
 
 const AddReminderModal: React.FC<{
-  colleagues: DigitalColleague[]
+  colleagues: Colleague[]
   onAddReminder: (reminder: Omit<Reminder, 'id' | 'createdAt'>) => void
   open: boolean
   setOpen: (open: boolean) => void
@@ -409,7 +409,7 @@ const AddReminderModal: React.FC<{
 
 const EditReminderModal: React.FC<{
   reminder: Reminder
-  colleagues: DigitalColleague[]
+  colleagues: Colleague[]
   onUpdateReminder: (reminderId: string, updates: Partial<Reminder>) => void
   open: boolean
   onClose: () => void
@@ -662,7 +662,7 @@ const EditReminderModal: React.FC<{
 
 const ReminderCard: React.FC<{
   reminder: Reminder
-  colleagues: DigitalColleague[]
+  colleagues: Colleague[]
   onUpdateReminder: (reminderId: string, updates: Partial<Reminder>) => void
   onDeleteReminder: (reminderId: string) => void
 }> = ({ reminder, colleagues, onUpdateReminder, onDeleteReminder }) => {
@@ -805,9 +805,7 @@ export const TasksView: React.FC<TasksViewProps> = ({
   onDeleteReminder,
 }) => {
   const [reminders, setReminders] = useState<Reminder[]>(initialReminders.filter(Boolean))
-  const [colleagues, setColleagues] = useState<DigitalColleague[]>(
-    initialColleagues.filter(Boolean),
-  )
+  const [colleagues, setColleagues] = useState<Colleague[]>(initialColleagues.filter(Boolean))
   const [filter, setFilter] = useState<'all' | 'pending' | 'completed' | 'overdue' | 'today'>('all')
   const [searchTerm, setSearchTerm] = useState('')
   const [openAddReminderModal, setOpenAddReminderModal] = useState(false)
@@ -918,7 +916,7 @@ export const TasksView: React.FC<TasksViewProps> = ({
   }
 
   // Ensure we have at least one valid colleague for the default reminder
-  const defaultColleague: DigitalColleague = (colleagues.find(Boolean) as DigitalColleague) || {
+  const defaultColleague: Colleague = (colleagues.find(Boolean) as Colleague) || {
     id: '1',
     name: 'Default Colleague',
     // status: 'active' as const,
