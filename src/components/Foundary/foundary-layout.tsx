@@ -10,7 +10,7 @@ import type { SidebarItem, BusinessUnit } from './types'
 import type { Notification } from '../AdvancedComponents/notifications-panel'
 import { User } from 'lucide-react'
 
-interface DigitalColleageusLayoutProps {
+interface FoundaryLayoutProps {
   sidebarItems: SidebarItem[]
   children: React.ReactNode
   title?: string
@@ -45,7 +45,7 @@ const businessUnits: BusinessUnit[] = [
   },
 ]
 
-export function DigitalColleageusLayout({
+export function FoundaryLayout({
   sidebarItems,
   children,
   title = 'Digital Colleagues',
@@ -66,7 +66,7 @@ export function DigitalColleageusLayout({
   appName = 'Nuvia',
   tagline = 'Collaboration Platform',
   sidebarInitiallyClosed = false,
-}: DigitalColleageusLayoutProps) {
+}: FoundaryLayoutProps) {
   const [sidebarOpen, setSidebarOpen] = useState(!sidebarInitiallyClosed)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [localBusinessUnit, setLocalBusinessUnit] = useState(currentBusinessUnit)

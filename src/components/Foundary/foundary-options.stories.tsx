@@ -1,5 +1,5 @@
 import React from 'react'
-import { DigitalColleagueOptions } from './digital-colleague-options'
+import { DigitalColleagueOptions } from './foundary-options'
 import { action } from '@storybook/addon-actions'
 import type { Meta, StoryObj } from '@storybook/react'
 
