@@ -738,13 +738,9 @@ const ReminderCard: React.FC<{
                 <div className="flex items-center space-x-4 text-sm text-muted-foreground">
                   <div className="flex items-center space-x-1">
                     <Calendar className="h-4 w-4" />
-                    {/* <span
-                      className={
-                        overdue && !reminder.isCompleted ? 'text-destructive font-medium' : ''
-                      }
-                    >
+                    <span className={overdue ? 'text-destructive font-medium' : ''}>
                       {getDateLabel()}
-                    </span> */}
+                    </span>
                   </div>
 
                   {reminder.dueTime && (
@@ -756,7 +752,11 @@ const ReminderCard: React.FC<{
 
                   <div className="flex items-center space-x-1">
                     <User className="h-4 w-4" />
-                    {/* <span>{reminder.colleague?.name || 'Unknown Colleague'}</span> */}
+                    <span>
+                      {typeof reminder.assignedColleague !== 'number'
+                        ? reminder.assignedColleague.name
+                        : 'Unknown Colleague'}
+                    </span>
                   </div>
                 </div>
 
@@ -805,10 +805,21 @@ export const TasksView: React.FC<TasksViewProps> = ({
   onDeleteReminder,
 }) => {
   const [reminders, setReminders] = useState<Reminder[]>(initialReminders.filter(Boolean))
-  const [colleagues] = useState<DigitalColleague[]>(initialColleagues.filter(Boolean))
+  const [colleagues, setColleagues] = useState<DigitalColleague[]>(
+    initialColleagues.filter(Boolean),
+  )
   const [filter, setFilter] = useState<'all' | 'pending' | 'completed' | 'overdue' | 'today'>('all')
   const [searchTerm, setSearchTerm] = useState('')
   const [openAddReminderModal, setOpenAddReminderModal] = useState(false)
+
+  useEffect(() => {
+    setReminders(initialReminders.filter(Boolean))
+  }, [initialReminders])
+
+  useEffect(() => {
+    setColleagues(initialColleagues.filter(Boolean))
+  }, [initialColleagues])
+
   const handleAddReminder = (newReminder: Omit<Reminder, 'id' | 'createdAt'>) => {
     // Validate that the reminder has required properties
     if (!newReminder.title) {
