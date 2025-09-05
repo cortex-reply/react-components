@@ -14,13 +14,14 @@ import { mockProjectSummary } from '../test-data'
 import type {
   App,
   ProjectSummary,
-  FileType,
+  // FileType,
   BusinessUnit,
   Project,
   SidebarItem,
   Colleague,
   User,
 } from '../types'
+import type { File as FileType } from '../../Foundary/types'
 // import { ColleaguesManagement } from "../colleagues-management"
 import ColleaguesView from './../Views/ColleaguesView'
 import KnowledgeView from '../Views/KnowledgeView'
