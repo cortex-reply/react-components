@@ -22,7 +22,7 @@ export interface KanbanBoardProps {
   initialColleagues?: DigitalColleague[]
   // Task handlers
   onAddTask?: (newTask: Omit<Task, 'id' | 'createdAt' | 'updatedAt'>) => void
-  onUpdateTask?: (taskId: string, updates: Partial<Task>) => void
+  onUpdateTask?: (taskId: string, updates: Partial<Task>) => Promise<Task>
   onDeleteTask?: (taskId: string) => void
   onTaskClick?: (task: Task) => void
   // Epic handlers
@@ -63,7 +63,7 @@ export const KanbanBoardView: React.FC<KanbanBoardProps> = ({
   const selectedEpics = epics.filter((epic) => true).map((epic) => epic.id)
   const selectedSprint = sprints.find((sprint) => sprint.isSelected)
 
-  // selectedEpics.push(0)
+  selectedEpics.push(0)
 
   useEffect(() => {
     setTasks(initialTasks)
@@ -120,11 +120,12 @@ export const KanbanBoardView: React.FC<KanbanBoardProps> = ({
 
   // Filter tasks by selected epics and sprint
   const filteredTasks = tasks.filter((task) => {
-    const isEpicSelected = selectedEpics.includes(extractId(task.epic)) || extractId(task.epic) < 0
-    if (!selectedSprint) return isEpicSelected
-    if (selectedSprint.name === 'all-tasks') return isEpicSelected
-    if (selectedSprint.name === 'backlog') return isEpicSelected && !extractId(task.sprint)
-    return isEpicSelected && extractId(task.sprint) === extractId(selectedSprint)
+    // const isEpicSelected = selectedEpics.includes(extractId(task.epic)) || extractId(task.epic) < 0
+    // if (!selectedSprint) return isEpicSelected
+    // if (selectedSprint.name === 'all-tasks') return isEpicSelected
+    // if (selectedSprint.name === 'backlog') return isEpicSelected && !extractId(task.sprint)
+    // return isEpicSelected && extractId(task.sprint) === extractId(selectedSprint)
+    return true
   })
 
   const getTasksByStatus = (status: Task['status']) => {
@@ -171,7 +172,7 @@ export const KanbanBoardView: React.FC<KanbanBoardProps> = ({
       prev.map((task) => (task.id === Number(taskId) ? { ...task, ...updates } : task)),
     )
     if (onUpdateTask) {
-      await onUpdateTask(taskId, updates)
+      return await onUpdateTask(taskId, updates)
     }
     const task = tasks.find((task) => task.id === Number(taskId))
     if (!task) {
@@ -246,6 +247,8 @@ export const KanbanBoardView: React.FC<KanbanBoardProps> = ({
               const columnTasks = getTasksByStatus(column.status)
               const tasksByEpic = getTasksByEpic(columnTasks)
 
+              // console.log('col', col)
+
               return (
                 <KanbanColumn
                   key={column.id}
@@ -256,6 +259,17 @@ export const KanbanBoardView: React.FC<KanbanBoardProps> = ({
                   isCompact={column.status === 'done'}
                   height={calculatedHeight}
                 >
+                  {tasksByEpic['no-epic'].map((task) => {
+                    return (
+                      <TaskCard
+                        epic={null}
+                        task={task}
+                        onDragStart={handleDragStart}
+                        onTaskClick={handleTaskClick}
+                        isCompact={column.status === 'done'}
+                      />
+                    )
+                  })}
                   {selectedEpics.map((epicId) => {
                     const epic = epics.find((e) => e.id === epicId)
                     const epicTasks = tasksByEpic[epicId] || []

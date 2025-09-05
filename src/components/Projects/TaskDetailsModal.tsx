@@ -72,6 +72,7 @@ export const TaskDetailsModal: React.FC<TaskDetailsModalProps> = ({
         // Reset to idle after showing success
         setTimeout(() => setUpdateState('idle'), 1500)
       } catch (error) {
+        console.log('error', error)
         setUpdateState('error')
         // Reset to idle after showing error
         setTimeout(() => setUpdateState('idle'), 3000)

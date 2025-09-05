@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import { Label } from '@/components/ui/label'
 import { Button } from '@/components/ui/button'
@@ -138,6 +138,28 @@ export const TaskSidebar: React.FC<TaskSidebarProps> = ({
   deleteState = 'idle',
   teamMembers,
 }) => {
+  const [storyPoints, setStoryPoints] = useState(task.storyPoints)
+  const debounceTimeoutRef = useRef<NodeJS.Timeout | null>(null)
+
+  // Debounced version of onUpdateTask for story points
+  const debouncedUpdateTask = useCallback(
+    (fieldName: string, value: string) => {
+      if (debounceTimeoutRef.current) {
+        clearTimeout(debounceTimeoutRef.current)
+      }
+
+      debounceTimeoutRef.current = setTimeout(() => {
+        onUpdateTask(fieldName, value)
+      }, 500) // 500ms delay
+    },
+    [onUpdateTask],
+  )
+
+  useEffect(() => {
+    // setStoryPoints(task.storyPoints)
+    debouncedUpdateTask('storyPoints', storyPoints?.toString() || '1')
+  }, [storyPoints])
+
   const getInitials = (name: string) => {
     return name
       .split(' ')
@@ -275,8 +297,13 @@ export const TaskSidebar: React.FC<TaskSidebarProps> = ({
             type="number"
             min="1"
             max="100"
-            value={task.storyPoints || 1}
-            onChange={(e) => onUpdateTask('points', e.target.value)}
+            value={storyPoints || 1}
+            onChange={(e) => {
+              const val = Number(e.target.value)
+              if (val < 1) setStoryPoints(1)
+              else if (val > 100) setStoryPoints(100)
+              else setStoryPoints(val)
+            }}
             className="w-full h-8 px-2 text-xs border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent bg-background text-foreground disabled:opacity-50 disabled:cursor-not-allowed"
             disabled={isUpdating}
           />
