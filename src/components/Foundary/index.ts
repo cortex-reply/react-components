@@ -1,7 +1,7 @@
 // Main Components
 export { AppSidebarLeft } from './AppSidebarLeft'
 export { DashboardHeader } from './DashboardHeader'
-export { DigitalColleageusLayout } from './foundary-layout'
+export { FoundaryLayout } from './foundary-layout'
 export { default as MainPage } from './MainPage'
 export { ManagementSidebar } from './ManagementSidebar'
 export { SearchableSelect } from './SearchableSelect'

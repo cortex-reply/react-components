@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import { motion, AnimatePresence } from 'motion/react'
 import { Bot } from 'lucide-react'
-import { DigitalColleageusLayout } from '../foundary-layout'
+import { FoundaryLayout } from '../foundary-layout'
 import { DashboardHero } from '../../Heros/DashboardHero'
 import { AppCard } from '../../.archive/app-card'
 import { FileList } from '../../Projects/file-list'
@@ -326,7 +326,7 @@ export default function Home({
   }
 
   return (
-    <DigitalColleageusLayout
+    <FoundaryLayout
       sidebarItems={mockSidebarItems}
       title={title}
       notifications={mockNotifications}
@@ -354,6 +354,6 @@ export default function Home({
           {renderTabContent()}
         </motion.div>
       </AnimatePresence>
-    </DigitalColleageusLayout>
+    </FoundaryLayout>
   )
 }
