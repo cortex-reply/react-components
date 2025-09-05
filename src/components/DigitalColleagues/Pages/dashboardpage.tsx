@@ -163,13 +163,16 @@ export default function Home({
         )
       case 'colleagues':
         return (
-          <ColleaguesView
-            initialColleagues={initialColleagues}
-            availableUsers={users}
-            onColleagueAdd={onColleagueAdd}
-            onColleagueEdit={onColleagueEdit}
-            onColleagueDelete={onColleagueDelete}
-          />
+          <div>
+            <h1>Colleagues</h1>
+          </div>
+          // <ColleaguesView
+          //   initialColleagues={initialColleagues}
+          //   availableUsers={users}
+          //   onColleagueAdd={onColleagueAdd}
+          //   onColleagueEdit={onColleagueEdit}
+          //   onColleagueDelete={onColleagueDelete}
+          // />
         )
       case 'chat':
         return (

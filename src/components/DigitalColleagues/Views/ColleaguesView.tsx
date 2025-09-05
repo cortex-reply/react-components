@@ -19,13 +19,14 @@ import { UserSelection } from '../../AdvancedComponents/user-selection'
 import { DigitalColleagueClone } from '../digital-colleague-clone'
 import { ColleagueTypeSelection } from '../colleague-type-selection'
 import { DigitalColleagueOptions } from '../digital-colleague-options'
+import { type KnowledgeDocument } from '../types'
 import {
-  type Colleague,
-  type HumanColleague,
-  type DigitalColleague,
-  type KnowledgeDocument,
   type User as UserType,
-} from '../types'
+  type HumanColleague,
+  type Colleague,
+  type DigitalColleague,
+  TypedDigitalColleague,
+} from '../../Foundary/types'
 import { motion, AnimatePresence } from 'motion/react'
 import { DashboardHero } from '../../Heros/DashboardHero'
 interface ColleaguesViewProps {
@@ -81,17 +82,16 @@ export default function ColleaguesView({
     const matchesSearch =
       colleague.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       (colleague.type === 'human' &&
-        (colleague.email?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          colleague.role?.toLowerCase().includes(searchTerm.toLowerCase()))) ||
+        colleague.email?.toLowerCase().includes(searchTerm.toLowerCase())) ||
       (colleague.type === 'digital' &&
         colleague.jobDescription?.toLowerCase().includes(searchTerm.toLowerCase()))
 
-    const matchesDepartment =
-      departmentFilter === 'all' ||
-      (colleague.type === 'human' && colleague.department === departmentFilter)
-    const matchesStatus = statusFilter === 'all' || colleague.status === statusFilter
+    // const matchesDepartment =
+    //   departmentFilter === 'all' ||
+    //   (colleague.type === 'human' && colleague.department === departmentFilter)
+    // const matchesStatus = statusFilter === 'all' || colleague.status === statusFilter
 
-    return matchesSearch && matchesDepartment && matchesStatus
+    return matchesSearch
   })
 
   const humanColleagues = filteredColleagues.filter((c) => c.type === 'human')
@@ -127,18 +127,21 @@ export default function ColleaguesView({
     const humanColleague: HumanColleague = {
       id: `human-${Date.now()}`,
       type: 'human',
-      name: user.name,
+      name: user.name || '',
       email: user.email,
-      role: user.role,
-      department: user.department,
-      phone: user.phone,
-      location: user.location,
-      timezone: user.timezone,
-      skills: user.skills || [],
-      bio: user.bio,
-      status: 'active',
-      joinedDate: new Date(),
-      lastActive: new Date(),
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+
+      // role: user.role,
+      // department: user.department,
+      // phone: user.phone,
+      // location: user.location,
+      // timezone: user.timezone,
+      // skills: user.skills || [],
+      // bio: user.bio,
+      // status: 'active',
+      // joinedDate: new Date(),
+      // lastActive: new Date(),
     }
 
     setColleagues((prev) => [...prev, humanColleague])
@@ -146,7 +149,7 @@ export default function ColleaguesView({
     setCurrentView('main')
   }
 
-  const handleDigitalColleagueClone = (clonedColleague: DigitalColleague) => {
+  const handleDigitalColleagueClone = (clonedColleague: TypedDigitalColleague) => {
     if (!clonedColleague || !clonedColleague.id) {
       console.error(
         'Invalid cloned colleague provided to handleDigitalColleagueClone:',
@@ -165,7 +168,7 @@ export default function ColleaguesView({
     setCurrentView('form')
   }
 
-  const handleSaveColleague = (colleague: DigitalColleague) => {
+  const handleSaveColleague = (colleague: TypedDigitalColleague) => {
     if (!colleague || !colleague.id) {
       console.error('Invalid colleague provided to handleSaveColleague:', colleague)
       return
@@ -282,38 +285,38 @@ export default function ColleaguesView({
     )
   }
 
-  if (currentView === 'digitalClone') {
-    return (
-      <DigitalColleagueClone
-        digitalColleagues={safeExistingDigitalColleagues}
-        onColleagueClone={handleDigitalColleagueClone}
-        onCancel={() => setCurrentView('digitalOptions')}
-      />
-    )
-  }
+  // if (currentView === 'digitalClone') {
+  //   return (
+  //     <DigitalColleagueClone
+  //       digitalColleagues={safeExistingDigitalColleagues}
+  //       onColleagueClone={handleDigitalColleagueClone}
+  //       onCancel={() => setCurrentView('digitalOptions')}
+  //     />
+  //   )
+  // }
 
-  if (currentView === 'form') {
-    return (
-      <ColleagueForm
-        colleague={editingColleague || undefined}
-        onSave={handleSaveColleague}
-        onCancel={handleCancelForm}
-        availableKnowledgeDocuments={getAllAvailableKnowledgeDocuments()}
-      />
-    )
-  }
+  // if (currentView === 'form') {
+  //   return (
+  //     <ColleagueForm
+  //       colleague={editingColleague || undefined}
+  //       onSave={handleSaveColleague}
+  //       onCancel={handleCancelForm}
+  //       availableKnowledgeDocuments={getAllAvailableKnowledgeDocuments()}
+  //     />
+  //   )
+  // }
 
-  if (currentView === 'view') {
-    return (
-      <ColleagueForm
-        colleague={viewingColleague || undefined}
-        onSave={handleSaveColleague}
-        onCancel={handleCancelView}
-        readOnly={true}
-        availableKnowledgeDocuments={getAllAvailableKnowledgeDocuments()}
-      />
-    )
-  }
+  // if (currentView === 'view') {
+  //   return (
+  //     <ColleagueForm
+  //       colleague={viewingColleague || undefined}
+  //       onSave={handleSaveColleague}
+  //       onCancel={handleCancelView}
+  //       readOnly={true}
+  //       availableKnowledgeDocuments={getAllAvailableKnowledgeDocuments()}
+  //     />
+  //   )
+  // }
 
   return (
     <div className="px-2 md:px-4 py-4 space-y-8">
@@ -360,7 +363,7 @@ export default function ColleaguesView({
                 <CardContent>
                   <div className="text-2xl font-bold">{colleagues.length}</div>
                   <p className="text-xs text-muted-foreground">
-                    {colleagues.filter((c) => c.status === 'active').length} active
+                    {/* {colleagues.filter((c) => c.status === 'active').length} active */}
                   </p>
                 </CardContent>
               </Card>
@@ -374,7 +377,7 @@ export default function ColleaguesView({
                     {colleagues.filter((c) => c.type === 'human').length}
                   </div>
                   <p className="text-xs text-muted-foreground">
-                    {colleagues.filter((c) => c.type === 'human' && c.status === 'active').length}{' '}
+                    {/* {colleagues.filter((c) => c.type === 'human' && c.status === 'active').length}{' '} */}
                     active
                   </p>
                 </CardContent>
@@ -389,7 +392,7 @@ export default function ColleaguesView({
                     {colleagues.filter((c) => c.type === 'digital').length}
                   </div>
                   <p className="text-xs text-muted-foreground">
-                    {colleagues.filter((c) => c.type === 'digital' && c.status === 'active').length}{' '}
+                    {/* {colleagues.filter((c) => c.type === 'digital' && c.status === 'active').length}{' '} */}
                     active
                   </p>
                 </CardContent>
@@ -466,7 +469,7 @@ export default function ColleaguesView({
                       : 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3'
                   }`}
                 >
-                  {filteredColleagues.map((colleague) => (
+                  {/* {filteredColleagues.map((colleague) => (
                     <ColleagueCard
                       key={`${colleague}-${colleague.id}`}
                       colleague={colleague}
@@ -475,7 +478,7 @@ export default function ColleaguesView({
                       onViewDetails={handleViewDetails}
                       compact={compactView}
                     />
-                  ))}
+                  ))} */}
                 </div>
               )}
 
@@ -487,7 +490,7 @@ export default function ColleaguesView({
                       : 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3'
                   }`}
                 >
-                  {humanColleagues.map((colleague) => (
+                  {/* {humanColleagues.map((colleague) => (
                     <ColleagueCard
                       key={colleague.id}
                       colleague={colleague}
@@ -496,7 +499,7 @@ export default function ColleaguesView({
                       onViewDetails={handleViewDetails}
                       compact={compactView}
                     />
-                  ))}
+                  ))} */}
                 </div>
               )}
 
@@ -508,7 +511,7 @@ export default function ColleaguesView({
                       : 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3'
                   }`}
                 >
-                  {digitalColleagues.map((colleague) => (
+                  {/* {digitalColleagues.map((colleague) => (
                     <ColleagueCard
                       key={colleague.id}
                       colleague={colleague}
@@ -517,7 +520,7 @@ export default function ColleaguesView({
                       onViewDetails={handleViewDetails}
                       compact={compactView}
                     />
-                  ))}
+                  ))} */}
                 </div>
               )}
             </div>

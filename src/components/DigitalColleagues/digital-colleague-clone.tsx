@@ -1,14 +1,14 @@
-"use client"
+'use client'
 
-import { useState, useMemo } from "react"
-import { Search, Bot, Check, ChevronLeft, Copy, Calendar, Users } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { Badge } from "@/components/ui/badge"
-import { motion, AnimatePresence } from "motion/react"
-import { type DigitalColleague } from "./types"
+import { useState, useMemo } from 'react'
+import { Search, Bot, Check, ChevronLeft, Copy, Calendar, Users } from 'lucide-react'
+import { Button } from '@/components/ui/button'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Input } from '@/components/ui/input'
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+import { Badge } from '@/components/ui/badge'
+import { motion, AnimatePresence } from 'motion/react'
+import { type DigitalColleague } from '../Foundary/types'
 
 interface DigitalColleagueCloneProps {
   digitalColleagues: DigitalColleague[]
@@ -23,20 +23,19 @@ export function DigitalColleagueClone({
   onCancel,
   selectedColleagueId,
 }: DigitalColleagueCloneProps) {
-  const [searchTerm, setSearchTerm] = useState("")
-  const [statusFilter, setStatusFilter] = useState<string>("all")
+  const [searchTerm, setSearchTerm] = useState('')
+  const [statusFilter, setStatusFilter] = useState<string>('all')
 
   const filteredColleagues = useMemo(() => {
     return digitalColleagues.filter((colleague) => {
-      const matchesSearch = 
-        colleague.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        colleague.jobDescription.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        colleague.capabilities.some(cap => cap.toLowerCase().includes(searchTerm.toLowerCase())) ||
-        colleague.workInstructions.toLowerCase().includes(searchTerm.toLowerCase())
+      const matchesSearch = colleague.name.toLowerCase().includes(searchTerm.toLowerCase())
+      // colleague.jobDescription.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      // colleague.capabilities.some(cap => cap.toLowerCase().includes(searchTerm.toLowerCase())) ||
+      // colleague.workInstructions.toLowerCase().includes(searchTerm.toLowerCase())
 
-      const matchesStatus = statusFilter === "all" || colleague.status === statusFilter
+      // const matchesStatus = statusFilter === 'all' || colleague.status === statusFilter
 
-      return matchesSearch && matchesStatus
+      return matchesSearch
     })
   }, [digitalColleagues, searchTerm, statusFilter])
 
@@ -44,21 +43,22 @@ export function DigitalColleagueClone({
     // Create a clone with a new ID and name
     const clonedColleague: DigitalColleague = {
       ...colleague,
-      id: `${colleague.id}-clone-${Date.now()}`,
+      // id: `${colleague.id}-clone-${Date.now()}`,
+      id: Date.now(),
       name: `${colleague.name} (Copy)`,
-      joinedDate: new Date(),
-      lastActive: new Date(),
-      lastUpdated: new Date(),
-      version: "1.0.0", // Reset version for new clone
+      // joinedDate: new Date(),
+      // lastActive: new Date(),
+      // lastUpdated: new Date(),
+      // version: "1.0.0", // Reset version for new clone
     }
     onColleagueClone(clonedColleague)
   }
 
   const formatDate = (date: Date) => {
-    return new Intl.DateTimeFormat('en-US', { 
-      month: 'short', 
-      day: 'numeric', 
-      year: 'numeric' 
+    return new Intl.DateTimeFormat('en-US', {
+      month: 'short',
+      day: 'numeric',
+      year: 'numeric',
     }).format(date)
   }
 
@@ -122,9 +122,11 @@ export function DigitalColleagueClone({
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ duration: 0.2 }}
               >
-                <Card 
+                <Card
                   className={`cursor-pointer transition-all hover:shadow-lg ${
-                    selectedColleagueId === colleague.id ? 'ring-2 ring-primary' : ''
+                    selectedColleagueId?.toString() === colleague.id.toString()
+                      ? 'ring-2 ring-primary'
+                      : ''
                   }`}
                   onClick={() => handleColleagueClone(colleague)}
                 >
@@ -139,14 +141,14 @@ export function DigitalColleagueClone({
                         <div>
                           <CardTitle className="text-lg flex items-center gap-2">
                             {colleague.name}
-                            <Badge 
-                              variant={colleague.status === "active" ? "default" : "secondary"}
+                            {/* <Badge
+                              variant={colleague.status === 'active' ? 'default' : 'secondary'}
                               className="text-xs"
                             >
                               {colleague.status}
-                            </Badge>
+                            </Badge> */}
                           </CardTitle>
-                          <p className="text-sm text-muted-foreground">v{colleague.version}</p>
+                          {/* <p className="text-sm text-muted-foreground">v{colleague.version}</p> */}
                         </div>
                       </div>
                       <Button
@@ -169,16 +171,16 @@ export function DigitalColleagueClone({
                         <p className="text-sm text-muted-foreground">Job Description</p>
                         <p className="text-sm line-clamp-2">{colleague.jobDescription}</p>
                       </div>
-                      
+
                       {colleague.capabilities && colleague.capabilities.length > 0 && (
                         <div>
                           <p className="text-sm text-muted-foreground mb-2">Capabilities</p>
                           <div className="flex flex-wrap gap-1">
-                            {colleague.capabilities.slice(0, 3).map((capability) => (
+                            {/* {colleague.capabilities.slice(0, 3).map((capability) => (
                               <Badge key={capability} variant="outline" className="text-xs">
                                 {capability}
                               </Badge>
-                            ))}
+                            ))} */}
                             {colleague.capabilities.length > 3 && (
                               <Badge variant="outline" className="text-xs">
                                 +{colleague.capabilities.length - 3}
@@ -191,12 +193,12 @@ export function DigitalColleagueClone({
                       <div className="flex items-center justify-between text-xs text-muted-foreground">
                         <div className="flex items-center gap-1">
                           <Calendar className="h-3 w-3" />
-                          <span>Updated {formatDate(colleague.lastUpdated)}</span>
+                          {/* <span>Updated {formatDate(colleague.lastUpdated)}</span> */}
                         </div>
                         {colleague.knowledge && (
                           <div className="flex items-center gap-1">
                             <Users className="h-3 w-3" />
-                            <span>{colleague.knowledge.length} docs</span>
+                            {/* <span>{colleague.knowledge.length} docs</span> */}
                           </div>
                         )}
                       </div>
