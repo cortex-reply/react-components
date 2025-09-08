@@ -21,12 +21,12 @@ export interface KanbanBoardProps {
   initialColleagues?: Colleague[]
   // Task handlers
   onAddTask?: (newTask: Omit<Task, 'id' | 'createdAt' | 'updatedAt'>) => void
-  onUpdateTask?: (taskId: string, updates: Partial<Task>) => Promise<Task>
+  onUpdateTask?: (taskId: string, updates: Partial<Task>) => void
   onDeleteTask?: (taskId: string) => void
   onTaskClick?: (task: Task) => void
   // Epic handlers
   onAddEpic?: (newEpic: Omit<Epic, 'id' | 'updatedAt' | 'createdAt'>) => void
-  onAddComment?: ({ content, taskId }: { taskId: string; content: string }) => Promise<Task>
+  onAddComment?: ({ content, taskId }: { taskId: string; content: string }) => void
 }
 
 export const KanbanBoardView: React.FC<KanbanBoardProps> = ({
@@ -45,39 +45,77 @@ export const KanbanBoardView: React.FC<KanbanBoardProps> = ({
   onAddEpic,
   onAddComment,
 }) => {
-  const [tasks, setTasks] = useState<Task[]>(initialTasks)
-  const [epics, setEpics] = useState<Epic[]>(initialEpics)
-  const [sprints, setSprints] = useState<(Sprint & { isSelected: boolean })[]>(initialSprints)
+  const [tasks, setTasks] = useState<Task[]>([])
+  const [epics, setEpics] = useState<Epic[]>([])
+  const [sprints, setSprints] = useState<(Sprint & { isSelected: boolean })[]>([])
   const [isAddTaskModalOpen, setIsAddTaskModalOpen] = useState(false)
   const [isAddEpicModalOpen, setIsAddEpicModalOpen] = useState(false)
   const [selectedTask, setSelectedTask] = useState<Task | null>(null)
   const [draggedTask, setDraggedTask] = useState<Task | null>(null)
-  const [users, setUsers] = useState<User[]>(initialUsers)
-  const [colleagues, setColleagues] = useState<Colleague[]>(initialColleagues)
+  const [users, setUsers] = useState<User[]>([])
+  const [colleagues, setColleagues] = useState<Colleague[]>([])
   const [heroHeight, setHeroHeight] = useState(0)
 
   const heroRef = useRef<HTMLDivElement>(null)
   const containerRef = useRef<HTMLDivElement>(null)
+  const selectedEpicIds = React.useMemo(
+    () => [...epics.map((e) => e.id), 0], // include “no-epic” sentinel id 0
+    [epics],
+  )
 
-  const selectedEpics = epics.filter((epic) => true).map((epic) => epic.id)
-  const selectedSprint = sprints.find((sprint) => sprint.isSelected)
+  const prevTaskHash = useRef<string>('')
+  const prevEpicHash = useRef<string>('')
+  const prevSprintHash = useRef<string>('')
+  const prevColleagueHash = useRef<string>('')
 
-  selectedEpics.push(0)
+  const getHash = (list: { id: string | number; createdAt: string; updatedAt: string }[]) => {
+    return list
+      .map(
+        (item) =>
+          `${item.id}-${new Date(item.createdAt).getTime()}-${new Date(item.updatedAt).getTime()}`,
+      )
+      .join('-')
+  }
 
   useEffect(() => {
-    setTasks(initialTasks)
+    const next = getHash(initialTasks)
+    if (next !== prevTaskHash.current) {
+      setTasks(initialTasks)
+      if (selectedTask) {
+        setSelectedTask(initialTasks.find((task) => task.id === selectedTask.id) || null)
+      }
+      prevTaskHash.current = next
+    }
   }, [initialTasks])
 
   useEffect(() => {
-    setEpics(initialEpics)
+    const next = getHash(initialEpics)
+    if (next !== prevEpicHash.current) {
+      setEpics(initialEpics)
+      prevEpicHash.current = next
+    }
   }, [initialEpics])
 
   useEffect(() => {
-    setSprints(initialSprints)
+    const next = getHash(initialSprints)
+    if (next !== prevSprintHash.current) {
+      setSprints(initialSprints)
+      prevSprintHash.current = next
+    }
   }, [initialSprints])
 
   useEffect(() => {
-    setColleagues(initialColleagues)
+    const next = getHash(
+      initialColleagues.map((el) => ({
+        id: el.id,
+        updatedAt: el.updatedAt,
+        createdAt: el.createdAt,
+      })),
+    )
+    if (next !== prevColleagueHash.current) {
+      setColleagues(initialColleagues)
+      prevColleagueHash.current = next
+    }
   }, [initialColleagues])
 
   // Measure hero height and adjust when it changes
@@ -90,6 +128,7 @@ export const KanbanBoardView: React.FC<KanbanBoardProps> = ({
     }
 
     // Initial measurement
+
     measureHeroHeight()
 
     // Set up ResizeObserver to watch for changes in hero height
@@ -170,18 +209,17 @@ export const KanbanBoardView: React.FC<KanbanBoardProps> = ({
     onAddTask?.(newTask)
   }
 
-  const handleUpdateTask = async (taskId: string, updates: Partial<Task>): Promise<Task> => {
+  const handleUpdateTask = async (taskId: string, updates: Partial<Task>): Promise<void> => {
     setTasks((prev) =>
       prev.map((task) => (task.id === Number(taskId) ? { ...task, ...updates } : task)),
     )
     if (onUpdateTask) {
-      return await onUpdateTask(taskId, updates)
+      await onUpdateTask(taskId, updates)
     }
-    const task = tasks.find((task) => task.id === Number(taskId))
-    if (!task) {
-      throw new Error('Task not found')
+
+    if (selectedTask?.id === Number(taskId)) {
+      setSelectedTask((prev) => ({ ...prev, ...updates } as Task))
     }
-    return { ...task, ...updates }
   }
 
   const handleDeleteTask = async (taskId: string): Promise<void> => {
@@ -265,6 +303,7 @@ export const KanbanBoardView: React.FC<KanbanBoardProps> = ({
                   {tasksByEpic['no-epic'].map((task) => {
                     return (
                       <TaskCard
+                        key={task.id}
                         epic={null}
                         task={task}
                         onDragStart={handleDragStart}
@@ -273,7 +312,7 @@ export const KanbanBoardView: React.FC<KanbanBoardProps> = ({
                       />
                     )
                   })}
-                  {selectedEpics.map((epicId) => {
+                  {selectedEpicIds.map((epicId) => {
                     const epic = epics.find((e) => e.id === epicId)
                     const epicTasks = tasksByEpic[epicId] || []
 
