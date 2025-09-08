@@ -20,7 +20,7 @@ interface EpicsViewProps {
   onUpdateTask: (taskId: string, updates: Partial<Task>) => void
   onTaskClick: (task: Task) => void
   onAddTaskToEpic: (task: Omit<Task, 'id' | 'updatedAt' | 'createdAt'>) => void
-  onAddEpic: () => void
+  onAddEpic: (epic: Omit<Epic, 'id' | 'updatedAt' | 'createdAt'>) => void
   onUpdateEpic: (epicId: string, updates: Partial<Epic>) => void
   onDeleteEpic: (epicId: string) => void
 }

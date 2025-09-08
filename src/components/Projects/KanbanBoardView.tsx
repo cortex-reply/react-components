@@ -25,7 +25,7 @@ export interface KanbanBoardProps {
   onDeleteTask?: (taskId: string) => void
   onTaskClick?: (task: Task) => void
   // Epic handlers
-  onAddEpic?: (newEpic: Omit<Epic, 'id'>) => void
+  onAddEpic?: (newEpic: Omit<Epic, 'id' | 'updatedAt' | 'createdAt'>) => void
   onAddComment?: ({ content, taskId }: { taskId: string; content: string }) => Promise<Task>
 }
 
@@ -194,7 +194,7 @@ export const KanbanBoardView: React.FC<KanbanBoardProps> = ({
     }
   }
 
-  const handleAddEpic = (newEpic: Omit<Epic, 'id'>) => {
+  const handleAddEpic = (newEpic: Omit<Epic, 'id' | 'updatedAt' | 'createdAt'>) => {
     const epic: Epic = {
       ...newEpic,
       id: Date.now(),
