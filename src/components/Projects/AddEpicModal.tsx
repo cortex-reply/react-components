@@ -22,7 +22,7 @@ import { Epic } from '../Foundary/types'
 interface AddEpicModalProps {
   isOpen: boolean
   onClose: () => void
-  onAddEpic: (epic: Omit<Epic, 'id'>) => void
+  onAddEpic: (epic: Omit<Epic, 'id' | 'updatedAt' | 'createdAt'>) => void
 }
 
 export const AddEpicModal: React.FC<AddEpicModalProps> = ({ isOpen, onClose, onAddEpic }) => {
@@ -73,8 +73,8 @@ export const AddEpicModal: React.FC<AddEpicModalProps> = ({ isOpen, onClose, onA
         phase: formData.phase,
         startDate: formData.startDate,
         endDate: formData.endDate,
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
+        // createdAt: new Date().toISOString(),
+        // updatedAt: new Date().toISOString(),
         // progress: formData.progress,
         // isSelected: true,
       })

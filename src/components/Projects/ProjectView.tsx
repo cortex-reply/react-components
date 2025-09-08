@@ -91,7 +91,7 @@ interface Props {
   onDeleteTask?: (taskId: string) => void
   onTaskClick?: (task: Task) => void
   // Epic handlers
-  onAddEpic?: (newEpic: Omit<Epic, 'id' | 'createdAt'>) => void
+  onAddEpic?: (epic: Omit<Epic, 'id' | 'updatedAt' | 'createdAt'>) => void
   onUpdateEpic?: (epicId: string, updates: Partial<Epic>) => void
   onDeleteEpic?: (epicId: string) => void
   onAddTaskToEpic?: (epicId: string) => void
@@ -324,8 +324,13 @@ export default function ProjectView({
     onDeleteProject?.(projectId)
   }
 
-  const handleAddEpic = (newEpic: Omit<Epic, 'id'>) => {
-    const epic: Epic = { ...newEpic, id: Date.now() }
+  const handleAddEpic = (newEpic: Omit<Epic, 'id' | 'updatedAt' | 'createdAt'>) => {
+    const epic: Epic = {
+      ...newEpic,
+      id: Date.now(),
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    }
     setEpics((prev) => [...prev, epic])
     onAddEpic?.({ ...epic })
   }
