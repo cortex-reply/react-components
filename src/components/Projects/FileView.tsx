@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { Plus, Search, File, Filter } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
@@ -37,8 +37,24 @@ export default function FileView({
   const [appFilter, setAppFilter] = useState<string>('all')
   const [activeTab, setActiveTab] = useState('all')
   const [isAddFileModalOpen, setIsAddFileModalOpen] = useState(false)
+
+  const prevFilesHash = useRef<string>('')
+
+  const getHash = (list: { id: string | number; createdAt: string; updatedAt: string }[]) => {
+    return list
+      .map(
+        (item) =>
+          `${item.id}-${new Date(item.createdAt).getTime()}-${new Date(item.updatedAt).getTime()}`,
+      )
+      .join('-')
+  }
+
   useEffect(() => {
-    setFiles(initialFiles)
+    const next = getHash(initialFiles)
+    if (next !== prevFilesHash.current) {
+      setFiles(initialFiles)
+      prevFilesHash.current = next
+    }
   }, [initialFiles])
 
   // Get unique apps for filter
