@@ -5,6 +5,16 @@ import { MoreHorizontal, Trash2, Edit } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { File as FileType } from '../Foundary/types'
 
+const formatFileSize = (bytes?: number | null): string => {
+  if (!bytes || bytes <= 0) return '0 KB'
+  const kilobytes = bytes / 1024
+  if (kilobytes < 1024) {
+    return `${kilobytes.toFixed(2)} KB`
+  }
+  const megabytes = kilobytes / 1024
+  return `${megabytes.toFixed(2)} MB`
+}
+
 interface FileListProps {
   files: FileType[]
   onFileClick?: (file: FileType) => void
@@ -47,12 +57,10 @@ export function FileList({
                 <p className="font-medium">{file.name}</p>
               </div>
             </div>
-            <div className="col-span-2 text-sm md:text-base">{file.filesize}</div>
+            <div className="col-span-2 text-sm md:text-base">{formatFileSize(file.filesize)}</div>
             <div className="col-span-2 flex items-center justify-between w-full md:w-auto">
               <span className="text-sm md:text-base">
-                {typeof file.createdAt === 'string'
-                  ? file.createdAt
-                  : new Date(file.createdAt).toLocaleDateString()}
+                {new Date(file.createdAt).toLocaleDateString()}
               </span>
               <div className="flex gap-1">
                 {/* <Button

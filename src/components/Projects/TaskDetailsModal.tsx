@@ -21,9 +21,9 @@ interface TaskDetailsModalProps {
   initialTask: Task
   epics: Epic[]
   sprints: Sprint[]
-  onUpdateTask: (taskId: string, updates: Partial<Task>) => Promise<Task>
+  onUpdateTask: (taskId: string, updates: Partial<Task>) => void
   onDeleteTask: (taskId: string) => Promise<void>
-  onAddComment?: ({ content, taskId }: { taskId: string; content: string }) => Promise<Task>
+  onAddComment?: ({ content, taskId }: { taskId: string; content: string }) => void
   colleagues: Colleague[]
 }
 
@@ -66,8 +66,8 @@ export const TaskDetailsModal: React.FC<TaskDetailsModalProps> = ({
     if (value !== task[fieldName as keyof Task]) {
       setUpdateState('loading')
       try {
-        const updatedTask = await onUpdateTask(task.id.toString(), { [fieldName]: value })
-        setTask(updatedTask)
+        await onUpdateTask(task.id.toString(), { [fieldName]: value })
+        // setTask(updatedTask)
         setLastUpdated(new Date())
         setUpdateState('success')
         // Reset to idle after showing success
@@ -85,8 +85,8 @@ export const TaskDetailsModal: React.FC<TaskDetailsModalProps> = ({
     if (value !== task[fieldName as keyof Task]) {
       setUpdateState('loading')
       try {
-        const updatedTask = await onUpdateTask(task.id.toString(), { [fieldName]: value })
-        setTask(updatedTask)
+        await onUpdateTask(task.id.toString(), { [fieldName]: value })
+        // setTask(updatedTask)
         setLastUpdated(new Date())
         setUpdateState('success')
         // Reset to idle after showing success
@@ -104,8 +104,8 @@ export const TaskDetailsModal: React.FC<TaskDetailsModalProps> = ({
     if (!onAddComment) return
     setUpdateState('loading')
     try {
-      const updatedTask = await onAddComment?.({ content: text, taskId: task.id.toString() })
-      setTask(updatedTask)
+      await onAddComment?.({ content: text, taskId: task.id.toString() })
+      // setTask(updatedTask)
       setLastUpdated(new Date())
       setUpdateState('success')
       // Reset to idle after showing success
@@ -185,7 +185,7 @@ export const TaskDetailsModal: React.FC<TaskDetailsModalProps> = ({
     <Dialog open={isOpen} onOpenChange={handleClose}>
       <DialogContent className="max-w-3xl max-h-[80vh] overflow-y-auto p-4">
         <DialogHeader>
-          <DialogTitle className="sr-only">{task.name}</DialogTitle>
+          <DialogTitle className="sr-only">{task?.name}</DialogTitle>
           <div className="flex items-center justify-between">
             <div className="flex-1">{renderStatusIndicator()}</div>
             {!canClose && <div className="text-xs text-muted-foreground">Please wait...</div>}
