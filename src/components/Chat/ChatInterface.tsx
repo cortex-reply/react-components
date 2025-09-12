@@ -526,7 +526,8 @@ export function ChatInterface({
                   <ToolContent>
                     <ToolInput input={part.input} />
                     <ToolOutput
-                      output={<Response>{String(part.output)}</Response>}
+                      // output={<Response>{String(part.output)}</Response>}
+                      output={part.output}
                       errorText={part.errorText}
                     />
                   </ToolContent>
