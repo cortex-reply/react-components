@@ -38,7 +38,7 @@ import {
   getDataPart,
 } from './types'
 
-import { PartAuthenticateTool, PartText } from './PartTypes'
+import { PartAuthenticateTool, PartText, PartApprovalTool } from './PartTypes'
 
 interface ChatInterfaceProps {
   messages: UIMessage[]
@@ -204,7 +204,7 @@ export function ChatInterface({
     // const textContent = getTextContent(message)
 
     return (
-      <div className={cn('flex items-start gap-3', isUser ? 'flex-row-reverse' : '')}>
+      <div className={cn('flex my-2 items-start gap-3', isUser ? 'flex-row-reverse' : '')}>
         <Avatar className="h-8 w-8 shrink-0">
           <AvatarFallback
             className={cn(
@@ -314,6 +314,28 @@ export function ChatInterface({
                 return (
                   <div key={index} className="mb-2">
                     <PartAuthenticateTool
+                      toolPart={toolPart}
+                      index={index}
+                      addToolResult={addToolResult ?? (() => {})}
+                    />
+                  </div>
+                )
+              }
+              if (part.type === 'tool-authenticate') {
+                return (
+                  <div key={index} className="mb-2">
+                    <PartAuthenticateTool
+                      toolPart={toolPart}
+                      index={index}
+                      addToolResult={addToolResult ?? (() => {})}
+                    />
+                  </div>
+                )
+              }
+              if (part.type === 'tool-requestApproval') {
+                return (
+                  <div key={index} className="mb-2">
+                    <PartApprovalTool
                       toolPart={toolPart}
                       index={index}
                       addToolResult={addToolResult ?? (() => {})}
