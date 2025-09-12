@@ -38,7 +38,20 @@ import {
   getDataPart,
 } from './types'
 
-import { PartAuthenticateTool, PartText, PartApprovalTool, Reasoning, ReasoningContent, ReasoningTrigger } from './PartTypes'
+import {
+  PartAuthenticateTool,
+  PartText,
+  PartApprovalTool,
+  Reasoning,
+  ReasoningContent,
+  ReasoningTrigger,
+  Tool,
+  ToolHeader,
+  ToolContent,
+  ToolInput,
+  ToolOutput,
+  Response 
+} from './PartTypes'
 
 interface ChatInterfaceProps {
   messages: UIMessage[]
@@ -488,21 +501,39 @@ export function ChatInterface({
                 </div>
               )
             }
-            
+
             if (part.type === 'reasoning') {
-            
-                        return (
-                          <Reasoning
-                            key={`${message.id}-${index}`}
-                            className="w-full"
-                            isStreaming={status === 'streaming' && index === message.parts.length - 1 && message.id === messages.at(-1)?.id}
-                          >
-                            <ReasoningTrigger />
-                            <ReasoningContent>{part.text}</ReasoningContent>
-                          </Reasoning>
-                        );
-          }
-        })}
+              return (
+                <Reasoning
+                  key={`${message.id}-${index}`}
+                  className="w-full"
+                  isStreaming={
+                    status === 'streaming' &&
+                    index === message.parts.length - 1 &&
+                    message.id === messages.at(-1)?.id
+                  }
+                >
+                  <ReasoningTrigger />
+                  <ReasoningContent>{part.text}</ReasoningContent>
+                </Reasoning>
+              )
+            }
+
+            if (part.type === 'dynamic-tool') {
+              return (
+                <Tool defaultOpen={true}>
+                  <ToolHeader type={`tool-${part.toolName}`} state={part.state} />
+                  <ToolContent>
+                    <ToolInput input={part.input} />
+                    <ToolOutput
+                      output={<Response>{String(part.output)}</Response>}
+                      errorText={part.errorText}
+                    />
+                  </ToolContent>
+                </Tool>
+              )
+            }
+          })}
         </div>
       </div>
     )
