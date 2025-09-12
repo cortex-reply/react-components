@@ -38,7 +38,7 @@ import {
   getDataPart,
 } from './types'
 
-import { PartAuthenticateTool, PartText, PartApprovalTool } from './PartTypes'
+import { PartAuthenticateTool, PartText, PartApprovalTool, Reasoning, ReasoningContent, ReasoningTrigger } from './PartTypes'
 
 interface ChatInterfaceProps {
   messages: UIMessage[]
@@ -488,9 +488,21 @@ export function ChatInterface({
                 </div>
               )
             }
-
-            return null
-          })}
+            
+            if (part.type === 'reasoning') {
+            
+                        return (
+                          <Reasoning
+                            key={`${message.id}-${index}`}
+                            className="w-full"
+                            isStreaming={status === 'streaming' && index === message.parts.length - 1 && message.id === messages.at(-1)?.id}
+                          >
+                            <ReasoningTrigger />
+                            <ReasoningContent>{part.text}</ReasoningContent>
+                          </Reasoning>
+                        );
+          }
+        })}
         </div>
       </div>
     )
