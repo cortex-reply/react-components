@@ -521,7 +521,7 @@ export function ChatInterface({
 
             if (part.type === 'dynamic-tool') {
               return (
-                <Tool defaultOpen={true}>
+                <Tool defaultOpen={true} key={`${message.id}-${index}`}>
                   <ToolHeader type={`tool-${part.toolName}`} state={part.state} />
                   <ToolContent>
                     <ToolInput input={part.input} />
