@@ -4,7 +4,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Holiday } from '../../model/Holiday'
 import { Employee } from '../../model/Employee'
 import { isDayOff } from '@/lib/utils/DaysUtil'
-
+import { TimeUtil } from '@/lib/utils/TimeUtil'
 interface HolidayGridProps {
   currentDate: Date
   setCurrentDate: (date: Date) => Promise<{ success: boolean }>
@@ -38,6 +38,14 @@ export function HolidayGrid({
   const getDayInitial = (date: Date) => {
     return date.toLocaleString('default', { weekday: 'short' }).charAt(0)
   }
+
+  const correctedHolidays = holidays.map((holiday) => {
+    return {
+      ...holiday,
+      startDate: TimeUtil.toUtcMidnight(holiday.startDate),
+      endDate: TimeUtil.toUtcMidnight(holiday.endDate),
+    }
+  })
 
   return (
     <div className="px-4 sm:px-6 lg:px-8">
@@ -150,7 +158,7 @@ export function HolidayGrid({
                         day + 1,
                       )
 
-                      const holiday = holidays.find(
+                      const holiday = correctedHolidays.find(
                         (h) =>
                           h.userId === employee.id &&
                           new Date(h.startDate) <= date &&

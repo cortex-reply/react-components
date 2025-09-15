@@ -6,13 +6,13 @@ import tsconfigPaths from "vite-tsconfig-paths";
 export default defineConfig({
   plugins: [react(), tsconfigPaths()],
   test: {
-    environment: "jsdom",
+    environment: 'jsdom',
     globals: true,
-    setupFiles: [],
+    setupFiles: ['./tests/setup.ts'],
     coverage: {
-      include: ["src/**"],
-      exclude: ["src/**/index.ts", "src/**/*.test.*", "src/**/declaration.d.ts"],
-      reporter: ["text", "json", "clover", "html"],
+      include: ['src/**'],
+      exclude: ['src/**/index.ts', 'src/**/*.test.*', 'src/**/declaration.d.ts'],
+      reporter: ['text', 'json', 'clover', 'html'],
     },
   },
-});
+})

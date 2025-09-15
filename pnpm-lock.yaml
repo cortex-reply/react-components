@@ -28,7 +28,7 @@ importers:
         version: 2.2.0(react@19.0.0)
       '@payloadcms/richtext-lexical':
         specifier: ^3.11.0
-        version: 3.11.0(caa0b121e90c885b5d7ec1ae77def19b)
+        version: 3.11.0(rqvzmqboqeqnucpve33fr4q26m)
       '@radix-ui/react-avatar':
         specifier: ^1.1.2
         version: 1.1.2(@types/react-dom@19.0.2(@types/react@19.0.2))(@types/react@19.0.2)(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
@@ -128,24 +128,12 @@ importers:
       prism-react-renderer:
         specifier: ^2.4.1
         version: 2.4.1(react@19.0.0)
-      r18gs:
-        specifier: ^3.0.1
-        version: 3.0.1(@types/react@19.0.2)(react@19.0.0)
       react-day-picker:
         specifier: ^8.10.1
         version: 8.10.1(date-fns@4.1.0)(react@19.0.0)
       react-icons:
         specifier: ^5.4.0
         version: 5.4.0(react@19.0.0)
-      tailwindcss-animate:
-        specifier: ^1.0.7
-        version: 1.0.7(tailwindcss@3.4.17)
-      tailwindcss-animated:
-        specifier: ^2.0.0
-        version: 2.0.0(tailwindcss@3.4.17)
-      tailwindcss-intersect:
-        specifier: ^2.1.0
-        version: 2.1.0(tailwindcss@3.4.17)
       yup:
         specifier: ^1.6.1
         version: 1.6.1
@@ -204,6 +192,9 @@ importers:
       '@storybook/theming':
         specifier: ^8.6.12
         version: 8.6.12(storybook@8.6.12(prettier@3.5.3))
+      '@testing-library/jest-dom':
+        specifier: ^6.8.0
+        version: 6.8.0
       '@testing-library/react':
         specifier: ^16.1.0
         version: 16.1.0(@testing-library/dom@10.4.0)(@types/react-dom@19.0.2(@types/react@19.0.2))(@types/react@19.0.2)(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
@@ -297,6 +288,12 @@ importers:
       tailwindcss:
         specifier: ^3.4.17
         version: 3.4.17
+      tailwindcss-animate:
+        specifier: ^1.0.7
+        version: 1.0.7(tailwindcss@3.4.17)
+      tailwindcss-intersect:
+        specifier: ^2.2.0
+        version: 2.2.0(tailwindcss@3.4.17)
       tsup:
         specifier: ^8.3.5
         version: 8.3.5(jiti@1.21.7)(postcss@8.4.49)(tsx@4.19.2)(typescript@5.7.2)(yaml@2.6.1)
@@ -3229,6 +3226,10 @@ packages:
 
   '@testing-library/jest-dom@6.5.0':
     resolution: {integrity: sha512-xGGHpBXYSHUUr6XsKBfs85TWlYKpTc37cSBBVrXcib2MkHLboWlkClhWF37JKlDb9KEq3dHs+f2xR7XJEWGBxA==}
+    engines: {node: '>=14', npm: '>=6', yarn: '>=1'}
+
+  '@testing-library/jest-dom@6.8.0':
+    resolution: {integrity: sha512-WgXcWzVM6idy5JaftTVC8Vs83NKRmGJz4Hqs4oyOuO2J4r/y79vvKZsb+CaGyCSEbUPI6OsewfPd0G1A0/TUZQ==}
     engines: {node: '>=14', npm: '>=6', yarn: '>=1'}
 
   '@testing-library/react@16.1.0':
@@ -6285,12 +6286,6 @@ packages:
   quick-format-unescaped@4.0.4:
     resolution: {integrity: sha512-tYC1Q1hgyRuHgloV/YXs2w15unPVh8qfu/qCTfhTYamaw7fyhumKa2yGpdSo87vY32rIclj+4fWYQXUMs9EHvg==}
 
-  r18gs@3.0.1:
-    resolution: {integrity: sha512-cuH/f+jlfJ5Se6OnQ6FJDF6GrugwBeWDYVSDvK4hL9Prxe7bHTRn0ep7ZOh/QYg1TKx6FFiV8IpeYmmFpQNCgw==}
-    peerDependencies:
-      '@types/react': 16.8 - 19
-      react: 16.8 - 19
-
   raf-schd@4.0.3:
     resolution: {integrity: sha512-tQkJl2GRWh83ui2DiPTJz9wEiMN20syf+5oKfB03yYP7ioZcJwsIK8FjrtLwH1m7C7e+Tt2yYBlrOpdT+dyeIQ==}
 
@@ -6983,13 +6978,8 @@ packages:
     peerDependencies:
       tailwindcss: '>=3.0.0 || insiders'
 
-  tailwindcss-animated@2.0.0:
-    resolution: {integrity: sha512-anNNGpxNgjydD8p1lcJjxxH+XbjW6KR8Xs29owTrbcf3tOJ6IRblpyFob43HBkfxFJJTAfFQqugoEG2b1EsR0A==}
-    peerDependencies:
-      tailwindcss: '>=3.1.0 || >=4.0.0'
-
-  tailwindcss-intersect@2.1.0:
-    resolution: {integrity: sha512-JonOxIkpCgDkEFaIw3WHN7t2bs+uclnCzsvCcVyN/VuCULtJnxHGe0PEi13rZf/KnW1D77UKogoUEmwxW+wo/A==}
+  tailwindcss-intersect@2.2.0:
+    resolution: {integrity: sha512-LnOQ/iU44jNQ8k3OExa7Ccv/y5NlzAN574jjDnX5gLCdlqoeUT5ADtTznF92oAdon3NZA69b+JLknahbwsqxDA==}
     peerDependencies:
       tailwindcss: '>=3.2.0 || >=4.0.0'
 
@@ -9486,7 +9476,7 @@ snapshots:
       - supports-color
       - typescript
 
-  '@payloadcms/richtext-lexical@3.11.0(caa0b121e90c885b5d7ec1ae77def19b)':
+  '@payloadcms/richtext-lexical@3.11.0(rqvzmqboqeqnucpve33fr4q26m)':
     dependencies:
       '@faceless-ui/modal': 3.0.0-beta.2(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
       '@faceless-ui/scroll-info': 2.0.0-beta.0(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
@@ -10869,6 +10859,15 @@ snapshots:
       css.escape: 1.5.1
       dom-accessibility-api: 0.6.3
       lodash: 4.17.21
+      redent: 3.0.0
+
+  '@testing-library/jest-dom@6.8.0':
+    dependencies:
+      '@adobe/css-tools': 4.4.1
+      aria-query: 5.3.2
+      css.escape: 1.5.1
+      dom-accessibility-api: 0.6.3
+      picocolors: 1.1.1
       redent: 3.0.0
 
   '@testing-library/react@16.1.0(@testing-library/dom@10.4.0)(@types/react-dom@19.0.2(@types/react@19.0.2))(@types/react@19.0.2)(react-dom@19.0.0(react@19.0.0))(react@19.0.0)':
@@ -14170,11 +14169,6 @@ snapshots:
 
   quick-format-unescaped@4.0.4: {}
 
-  r18gs@3.0.1(@types/react@19.0.2)(react@19.0.0):
-    dependencies:
-      '@types/react': 19.0.2
-      react: 19.0.0
-
   raf-schd@4.0.3: {}
 
   raf@3.4.1:
@@ -14952,11 +14946,7 @@ snapshots:
     dependencies:
       tailwindcss: 3.4.17
 
-  tailwindcss-animated@2.0.0(tailwindcss@3.4.17):
-    dependencies:
-      tailwindcss: 3.4.17
-
-  tailwindcss-intersect@2.1.0(tailwindcss@3.4.17):
+  tailwindcss-intersect@2.2.0(tailwindcss@3.4.17):
     dependencies:
       tailwindcss: 3.4.17
 

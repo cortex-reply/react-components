@@ -12,7 +12,7 @@ const config = {
     // preflight: false
   },
   plugins: [
-    require('tailwindcss-animated'),
+    require('tailwindcss-animate'),
     require('@tailwindcss/typography'),
     require('tailwindcss-intersect'),
   ],

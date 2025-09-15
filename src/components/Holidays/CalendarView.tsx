@@ -4,7 +4,7 @@ import { useState } from 'react'
 import { Menu } from '@headlessui/react'
 import { ChevronLeft, ChevronRight, ChevronDown, MoreHorizontal, Clock } from 'lucide-react'
 import { Button } from '@/components/ui/button'
-import { cn } from '@/lib/utils'
+import { cn, TimeUtil } from '@/lib/utils'
 
 interface CalendarViewProps {
   currentDate: Date
@@ -35,7 +35,10 @@ export function CalendarView({ currentDate, setCurrentDate, holidays }: Calendar
       date: day,
       isCurrentMonth: day.getMonth() === currentDate.getMonth(),
       isToday: day.toDateString() === new Date().toDateString(),
-      holidays: holidays.filter((h) => new Date(h.startDate) <= day && new Date(h.endDate) >= day),
+      holidays: holidays.filter(
+        (h) =>
+          TimeUtil.toUtcMidnight(h.startDate) <= day && TimeUtil.toUtcMidnight(h.endDate) >= day,
+      ),
     }
   })
 
