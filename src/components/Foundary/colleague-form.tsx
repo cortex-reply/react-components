@@ -11,7 +11,13 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
 import { Switch } from '@/components/ui/switch'
-import type { Colleague, DigitalColleague, KnowledgeDocument, TypedDigitalColleague } from './types'
+import type {
+  Colleague,
+  DigitalColleague,
+  Knowledge,
+  KnowledgeDocument,
+  TypedDigitalColleague,
+} from './types'
 import { KnowledgeSearch } from './knowledge-search'
 
 interface ColleagueFormProps {
@@ -23,7 +29,7 @@ interface ColleagueFormProps {
   submitLabel?: string
   cancelLabel?: string
   readOnly?: boolean
-  availableKnowledgeDocuments?: KnowledgeDocument[]
+  availableKnowledgeDocuments?: Knowledge[]
 }
 
 export function ColleagueForm({
@@ -46,7 +52,7 @@ export function ColleagueForm({
     capabilities: [],
     capabilityLevel: 0,
     // knowledge: [],
-    // coreKnowledge: [],
+    coreKnowledge: null,
     // version: "1",
     ...colleague,
   })
@@ -81,7 +87,7 @@ export function ColleagueForm({
       capabilities: formData.capabilities || [],
       capabilityLevel: formData.capabilityLevel || 0,
       // knowledge: formData.knowledge || [],
-      // coreKnowledge: formData.coreKnowledge || [],
+      coreKnowledge: formData.coreKnowledge || null,
       // version: nextVersion,
       // lastUpdated: formData.lastUpdated || new Date(),
       // isActive: true,
@@ -253,19 +259,57 @@ export function ColleagueForm({
               placeholder="Search for knowledge documents to add..."
               disabled={isLoading || !editMode}
               availableDocuments={availableKnowledgeDocuments}
-            />
+            /> */}
 
             <KnowledgeSearch
-              selectedDocuments={(formData as Partial<DigitalColleague>).coreKnowledge || []}
-              onDocumentsChange={(documents) =>
-                setFormData({ ...formData, coreKnowledge: documents })
+              selectedDocuments={
+                formData.coreKnowledge
+                  ? [
+                      {
+                        id: (formData.coreKnowledge as Knowledge)?.id?.toString(),
+                        title: (formData.coreKnowledge as Knowledge)?.name,
+                        format: 'markdown',
+                        content: (formData.coreKnowledge as Knowledge)?.content || '',
+                        createdAt: new Date((formData.coreKnowledge as Knowledge)?.createdAt),
+                        description: (formData.coreKnowledge as Knowledge)?.description || '',
+                        metadata: (formData.coreKnowledge as Knowledge)?.metadata || {},
+                        updatedAt: new Date((formData.coreKnowledge as Knowledge)?.updatedAt),
+                      },
+                    ]
+                  : []
               }
+              onDocumentsChange={(documents) => {
+                const coreKnowledge: Knowledge = {
+                  createdAt: documents[0]?.createdAt.toISOString(),
+                  id: parseInt(documents[0]?.id),
+                  name: documents[0]?.title,
+                  source: 'payload',
+                  // source: 'payload',
+                  updatedAt: (documents[0]?.updatedAt || new Date()).toISOString(),
+                }
+                console.log(documents)
+                setFormData({
+                  ...formData,
+                  coreKnowledge: documents && documents.length > 0 ? coreKnowledge : undefined,
+                })
+              }}
               label="Core Knowledge"
               placeholder="Search for core knowledge documents..."
-              maxSelections={5}
+              maxSelections={1}
               disabled={isLoading || !editMode}
-              availableDocuments={availableKnowledgeDocuments}
-            /> */}
+              availableDocuments={availableKnowledgeDocuments.map((doc) => ({
+                id: doc.id.toString(),
+                title: doc.name,
+                name: doc.name,
+                format: 'markdown',
+                content: doc.content || '',
+                createdAt: new Date(doc.createdAt),
+                source: doc.source,
+                description: doc.description || '',
+                metadata: doc.metadata || {},
+                updatedAt: new Date(doc.updatedAt),
+              }))}
+            />
           </div>
 
           {/* Form Actions */}

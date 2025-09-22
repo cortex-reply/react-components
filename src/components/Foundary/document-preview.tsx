@@ -1,47 +1,75 @@
-"use client"
+'use client'
 
-import { motion } from "motion/react"
-import { File, FileText, Edit3, Type } from "lucide-react"
-import { useState } from "react"
-import { Button } from "@/components/ui/button"
-import { Badge } from "@/components/ui/badge"
-import { DocumentEdit } from "./document-edit"
-import type { KnowledgeDocument, KnowledgeContext } from "./types"
-import type { ReactNode } from "react"
+import { motion } from 'motion/react'
+import { File, FileText, Edit3, Type } from 'lucide-react'
+import { useEffect, useState } from 'react'
+import { Button } from '@/components/ui/button'
+import { DocumentEdit } from './document-edit'
+import type { KnowledgeDocument, KnowledgeContext, Knowledge } from './types'
+import type { ReactNode } from 'react'
+import ReactMarkdown from 'react-markdown'
+// import { RichText } from '../Payload'
+import remarkGfm from 'remark-gfm'
+import RichText from './RichText'
 
 // Default markdown renderer (can be replaced with react-markdown or similar)
 const defaultMarkdownRenderer = (content: string): ReactNode => (
-  <div 
-    className="prose prose-slate dark:prose-invert max-w-none"
-    dangerouslySetInnerHTML={{
-      __html: content
-        .replace(/\n/g, '<br>')
-        .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-        .replace(/\*(.*?)\*/g, '<em>$1</em>')
-        .replace(/`(.*?)`/g, '<code class="bg-muted px-1 py-0.5 rounded text-sm">$1</code>')
-        .replace(/^# (.*$)/gm, '<h1 class="text-2xl font-bold mb-4">$1</h1>')
-        .replace(/^## (.*$)/gm, '<h2 class="text-xl font-semibold mb-3">$1</h2>')
-        .replace(/^### (.*$)/gm, '<h3 class="text-lg font-medium mb-2">$1</h3>')
+  <ReactMarkdown
+    remarkPlugins={[remarkGfm]}
+    components={{
+      h1: ({ children }) => <h1 className="text-2xl font-bold">{children}</h1>,
+      h2: ({ children }) => <h2 className="text-xl font-bold">{children}</h2>,
+      h3: ({ children }) => <h3 className="text-lg font-bold">{children}</h3>,
+      h4: ({ children }) => <h4 className="text-base font-bold">{children}</h4>,
+      ol: ({ children }) => <ol className="list-decimal">{children}</ol>,
+      ul: ({ children }) => <ul className="list-disc">{children}</ul>,
+      li: ({ children }) => <li className="ml-4">{children}</li>,
+      p: ({ children }) => <p className="mb-4">{children}</p>,
+      a: ({ children, href }) => (
+        <a href={href} className="text-blue-500">
+          {children}
+        </a>
+      ),
+      img: ({ src, alt }) => <img src={src} alt={alt} className="mb-4" />,
+      blockquote: ({ children }) => (
+        <blockquote className="border-l-4 border-gray-300 pl-4 mb-4">{children}</blockquote>
+      ),
     }}
-  />
+  >
+    {content}
+  </ReactMarkdown> // <div
+  //   className="prose prose-slate dark:prose-invert max-w-none"
+  //   dangerouslySetInnerHTML={{
+  //     __html: content
+  //       .replace(/\n/g, '<br>')
+  //       .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+  //       .replace(/\*(.*?)\*/g, '<em>$1</em>')
+  //       .replace(/`(.*?)`/g, '<code class="bg-muted px-1 py-0.5 rounded text-sm">$1</code>')
+  //       .replace(/^# (.*$)/gm, '<h1 class="text-2xl font-bold mb-4">$1</h1>')
+  //       .replace(/^## (.*$)/gm, '<h2 class="text-xl font-semibold mb-3">$1</h2>')
+  //       .replace(/^### (.*$)/gm, '<h3 class="text-lg font-medium mb-2">$1</h3>'),
+  //   }}
+  // />
 )
 
 // Default text renderer
 const defaultTextRenderer = (content: string): ReactNode => (
-  <div className="whitespace-pre-wrap font-mono text-sm leading-relaxed">
-    {content}
-  </div>
+  <div className="whitespace-pre-wrap font-mono text-sm leading-relaxed">{content}</div>
 )
 
 // Default richtext renderer (placeholder for PayloadCMS richtext)
-const defaultRichTextRenderer = (content: string): ReactNode => (
+const defaultRichTextRenderer = (content: Knowledge['richTextContent']): ReactNode => (
   <div className="prose prose-slate dark:prose-invert max-w-none">
-    <div className="bg-amber-50 dark:bg-amber-950/20 border border-amber-200 dark:border-amber-800 rounded-lg p-4 mb-4">
+    {content && (
+      <RichText value={JSON.stringify(content)} editable={false} name="richTextContent" />
+    )}
+    {/* <div className="bg-amber-50 dark:bg-amber-950/20 border border-amber-200 dark:border-amber-800 rounded-lg p-4 mb-4">
       <p className="text-amber-800 dark:text-amber-200 text-sm">
-        <strong>RichText Renderer:</strong> This is a placeholder. Integrate with @payloadcms/richtext-lexical for full rendering.
+        <strong>RichText Renderer:</strong> This is a placeholder. Integrate with
+        @payloadcms/richtext-lexical for full rendering.
       </p>
     </div>
-    <pre className="text-sm">{content}</pre>
+    <pre className="text-sm">{content}</pre> */}
   </div>
 )
 
@@ -50,7 +78,8 @@ const defaultMDXRenderer = (content: string): ReactNode => (
   <div className="prose prose-slate dark:prose-invert max-w-none">
     <div className="bg-blue-50 dark:bg-blue-950/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4 mb-4">
       <p className="text-blue-800 dark:text-blue-200 text-sm">
-        <strong>MDX Renderer:</strong> This is a placeholder. Integrate with @mdx-js/react for full MDX rendering.
+        <strong>MDX Renderer:</strong> This is a placeholder. Integrate with @mdx-js/react for full
+        MDX rendering.
       </p>
     </div>
     {defaultMarkdownRenderer(content)}
@@ -60,7 +89,7 @@ const defaultMDXRenderer = (content: string): ReactNode => (
 export interface DocumentRenderers {
   markdown?: (content: string) => ReactNode
   mdx?: (content: string) => ReactNode
-  richtext?: (content: string) => ReactNode
+  richText?: (content: string) => ReactNode
   text?: (content: string) => ReactNode
 }
 
@@ -68,27 +97,34 @@ interface DocumentPreviewProps {
   document: KnowledgeDocument
   onDocumentUpdate?: (document: KnowledgeDocument) => void
   editable?: boolean
+  mode?: 'create' | 'view'
   renderers?: DocumentRenderers
   availableDocuments?: KnowledgeDocument[]
   knowledgeContexts?: KnowledgeContext[]
 }
 
-export function DocumentPreview({ 
-  document, 
-  onDocumentUpdate, 
-  editable = true, 
+export function DocumentPreview({
+  document: initialDocument,
+  onDocumentUpdate,
+  editable = true,
+  mode = 'view',
   renderers,
   availableDocuments = [],
-  knowledgeContexts = []
+  knowledgeContexts = [],
 }: DocumentPreviewProps) {
   const [isEditing, setIsEditing] = useState(false)
+  const [document, setDocument] = useState<KnowledgeDocument>(initialDocument)
+
+  useEffect(() => {
+    setDocument(initialDocument)
+  }, [initialDocument])
 
   const formatIcon = (format: string) => {
     switch (format) {
       case 'markdown':
       case 'mdx':
         return <FileText className="h-6 w-6 text-primary" />
-      case 'richtext':
+      case 'richText':
         return <File className="h-6 w-6 text-success" />
       case 'text':
         return <Type className="h-6 w-6 text-muted-foreground" />
@@ -103,7 +139,7 @@ export function DocumentPreview({
         return 'bg-primary/10 text-primary border-primary/20'
       case 'mdx':
         return 'bg-secondary/10 text-secondary border-secondary/20'
-      case 'richtext':
+      case 'richText':
         return 'bg-success/10 text-success border-success/20'
       case 'text':
         return 'bg-muted/50 text-muted-foreground border-muted-foreground/20'
@@ -112,36 +148,49 @@ export function DocumentPreview({
     }
   }
 
-  const renderContent = (content: string, format: string): ReactNode => {
+  const renderContent = (
+    content: string | Knowledge['richTextContent'],
+    format: string,
+  ): ReactNode => {
     const defaultRenderers = {
       markdown: defaultMarkdownRenderer,
       mdx: defaultMDXRenderer,
-      richtext: defaultRichTextRenderer,
-      text: defaultTextRenderer
+      // richText: defaultRichTextRenderer,
+      text: defaultTextRenderer,
     }
 
-    const renderer = renderers?.[format as keyof DocumentRenderers] || defaultRenderers[format as keyof typeof defaultRenderers]
-    
+    const renderer =
+      renderers?.[format as keyof DocumentRenderers] ||
+      defaultRenderers[format as keyof typeof defaultRenderers]
+
+    if (format === 'richText' && typeof content === 'object') {
+      return defaultRichTextRenderer(content)
+    }
+
     if (renderer) {
-      return renderer(content)
+      if (typeof content === 'string') return renderer(content)
     }
 
     // Fallback to text rendering
-    return defaultTextRenderer(content)
+    if (typeof content === 'string') {
+      return defaultTextRenderer(content)
+    }
   }
 
   const handleSave = (updatedDocument: KnowledgeDocument) => {
     setIsEditing(false)
     onDocumentUpdate?.(updatedDocument)
+    setDocument(updatedDocument)
   }
 
   const handleCancel = () => {
     setIsEditing(false)
   }
 
-  if (isEditing) {
+  if (isEditing || mode === 'create') {
     return (
       <DocumentEdit
+        mode={mode === 'create' ? 'create' : 'edit'}
         document={document}
         onSave={handleSave}
         onCancel={handleCancel}
@@ -152,7 +201,7 @@ export function DocumentPreview({
   }
 
   return (
-    <motion.div 
+    <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.3 }}
@@ -165,12 +214,12 @@ export function DocumentPreview({
             <div className="flex-shrink-0 p-3 rounded-xl bg-muted border border-border">
               {formatIcon(document.format)}
             </div>
-            
+
             <div className="flex-1 min-w-0">
               <h1 className="text-2xl font-bold text-foreground mb-2 leading-tight">
                 {document.title}
               </h1>
-              
+
               {document.description && (
                 <p className="text-muted-foreground text-lg leading-relaxed mb-4">
                   {document.description}
@@ -193,14 +242,21 @@ export function DocumentPreview({
             </div>
           )}
         </div>
-        
+
         <div className="flex flex-wrap gap-2">
-          <span className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium border ${formatBadgeColor(document.format)}`}>
+          <span
+            className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium border ${formatBadgeColor(
+              document.format,
+            )}`}
+          >
             {document.format.toUpperCase()}
           </span>
-          
+
           {document.tags?.map((tag) => (
-            <span key={tag} className="inline-flex items-center px-3 py-1 rounded-full text-sm bg-muted text-muted-foreground border border-border">
+            <span
+              key={tag}
+              className="inline-flex items-center px-3 py-1 rounded-full text-sm bg-muted text-muted-foreground border border-border"
+            >
               #{tag}
             </span>
           ))}
@@ -221,9 +277,7 @@ export function DocumentPreview({
                       <span className="text-muted-foreground font-medium">
                         {key.replace(/([A-Z])/g, ' $1').trim()}:
                       </span>
-                      <span className="text-foreground truncate">
-                        {String(value)}
-                      </span>
+                      <span className="text-foreground truncate">{String(value)}</span>
                     </div>
                   ))}
                 </div>
@@ -233,10 +287,13 @@ export function DocumentPreview({
 
           {/* Content Preview */}
           <div className="space-y-4">
-            {document.content ? (
+            {document.content || document.richTextContent ? (
               <div className="relative">
                 <div className="bg-card border border-border rounded-xl p-6 overflow-hidden">
-                  {renderContent(document.content, document.format)}
+                  {renderContent(
+                    document.format === 'richText' ? document.richTextContent : document.content,
+                    document.format,
+                  )}
                 </div>
               </div>
             ) : (
@@ -245,7 +302,9 @@ export function DocumentPreview({
                   <FileText className="h-8 w-8 text-muted-foreground" />
                 </div>
                 <h4 className="text-foreground font-medium mb-1">No content available</h4>
-                <p className="text-muted-foreground text-sm">This document doesn't have preview content</p>
+                <p className="text-muted-foreground text-sm">
+                  This document doesn't have preview content
+                </p>
               </div>
             )}
           </div>

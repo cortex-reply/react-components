@@ -21,6 +21,7 @@ import { ColleagueTypeSelection } from '../colleague-type-selection'
 import { DigitalColleagueOptions } from '../foundary-options'
 import {
   HumanColleague,
+  Knowledge,
   TypedDigitalColleague,
   type Colleague,
   // type HumanColleague,
@@ -41,6 +42,7 @@ interface ColleaguesViewProps {
   // New props for user and colleague selection
   availableUsers?: UserType[]
   existingDigitalColleagues?: DigitalColleague[]
+  availableKnowledgeDocuments?: Knowledge[]
 }
 
 export default function ColleaguesView({
@@ -53,6 +55,7 @@ export default function ColleaguesView({
   className,
   availableUsers = [],
   existingDigitalColleagues = [],
+  availableKnowledgeDocuments = [],
 }: ColleaguesViewProps) {
   const [colleagues, setColleagues] = useState<Colleague[]>(initialColleagues || [])
   const [searchTerm, setSearchTerm] = useState('')
@@ -311,6 +314,7 @@ export default function ColleaguesView({
         colleague={editingColleague || undefined}
         onSave={handleSaveColleague}
         onCancel={handleCancelForm}
+        availableKnowledgeDocuments={availableKnowledgeDocuments}
         // availableKnowledgeDocuments={getAllAvailableKnowledgeDocuments()}
       />
     )
@@ -323,6 +327,7 @@ export default function ColleaguesView({
         onSave={handleSaveColleague}
         onCancel={handleCancelView}
         readOnly={true}
+        availableKnowledgeDocuments={availableKnowledgeDocuments}
         // availableKnowledgeDocuments={getAllAvailableKnowledgeDocuments()}
       />
     )

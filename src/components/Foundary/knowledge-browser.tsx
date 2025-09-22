@@ -1,14 +1,14 @@
-"use client"
+'use client'
 
-import { motion } from "motion/react"
-import { ChevronDown, ChevronRight, File, FileText, Folder, Search } from "lucide-react"
-import { useState, useMemo } from "react"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Badge } from "@/components/ui/badge"
-import { ScrollArea } from "@/components/ui/scroll-area"
-import { DocumentPreview } from "./document-preview"
-import type { KnowledgeDocument, KnowledgeMenuConfig, KnowledgeHierarchy } from "./types"
+import { motion } from 'motion/react'
+import { ChevronDown, ChevronRight, File, FileText, Folder, Search } from 'lucide-react'
+import { useState, useMemo, useEffect } from 'react'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Badge } from '@/components/ui/badge'
+import { ScrollArea } from '@/components/ui/scroll-area'
+import { DocumentPreview } from './document-preview'
+import type { KnowledgeDocument, KnowledgeMenuConfig, KnowledgeHierarchy } from './types'
 
 interface KnowledgeBrowserProps {
   documents: KnowledgeDocument[]
@@ -31,25 +31,27 @@ interface MenuItemProps {
   showDocumentCount?: boolean
 }
 
-function MenuItem({ 
-  label, 
-  documents, 
-  children, 
-  level, 
-  onDocumentClick, 
+function MenuItem({
+  label,
+  documents,
+  children,
+  level,
+  onDocumentClick,
   selectedDocumentId,
-  showDocumentCount = true 
+  showDocumentCount = true,
 }: MenuItemProps) {
   const [isExpanded, setIsExpanded] = useState(level === 0)
   const hasChildren = children && Object.keys(children).length > 0
-  const totalDocuments = documents.length + (children ? Object.values(children).reduce((acc, child) => acc + child.documents.length, 0) : 0)
+  const totalDocuments =
+    documents.length +
+    (children ? Object.values(children).reduce((acc, child) => acc + child.documents.length, 0) : 0)
 
   const formatDocumentIcon = (format: string) => {
     switch (format) {
       case 'markdown':
       case 'mdx':
         return <FileText className="h-3.5 w-3.5 text-muted-foreground" />
-      case 'richtext':
+      case 'richText':
         return <File className="h-3.5 w-3.5 text-muted-foreground" />
       default:
         return <File className="h-3.5 w-3.5 text-muted-foreground" />
@@ -57,12 +59,7 @@ function MenuItem({
   }
 
   const getCategoryColor = (level: number) => {
-    const colors = [
-      'bg-primary',
-      'bg-secondary', 
-      'bg-accent',
-      'bg-chart-1'
-    ]
+    const colors = ['bg-primary', 'bg-secondary', 'bg-accent', 'bg-chart-1']
     return colors[level % colors.length]
   }
 
@@ -70,10 +67,10 @@ function MenuItem({
     <div className="space-y-1">
       {/* Category Header */}
       {(hasChildren || documents.length > 0) && (
-        <motion.div 
+        <motion.div
           className={`group flex items-center gap-3 p-3 rounded-xl cursor-pointer transition-all duration-200 ${
-            isExpanded 
-              ? 'bg-card shadow-sm border border-border' 
+            isExpanded
+              ? 'bg-card shadow-sm border border-border'
               : 'hover:bg-muted/50 hover:shadow-sm'
           }`}
           style={{ marginLeft: `${level * 20}px` }}
@@ -83,7 +80,7 @@ function MenuItem({
         >
           {/* Gradient indicator */}
           <div className={`w-1 h-6 rounded-full ${getCategoryColor(level)}`} />
-          
+
           {/* Expand/Collapse button */}
           <motion.div
             animate={{ rotate: isExpanded ? 90 : 0 }}
@@ -92,13 +89,13 @@ function MenuItem({
           >
             <ChevronRight className="h-4 w-4 text-muted-foreground" />
           </motion.div>
-          
+
           {/* Category info */}
           <div className="flex-1 flex items-center justify-between min-w-0">
             <div className="flex items-center gap-2 min-w-0">
               <span className="font-medium text-foreground truncate">{label}</span>
             </div>
-            
+
             {showDocumentCount && totalDocuments > 0 && (
               <div className="flex-shrink-0 ml-2">
                 <span className="inline-flex items-center justify-center w-6 h-6 text-xs font-medium bg-muted text-muted-foreground rounded-full">
@@ -113,9 +110,9 @@ function MenuItem({
       {/* Expanded Content */}
       <motion.div
         initial={false}
-        animate={{ 
+        animate={{
           height: isExpanded ? 'auto' : 0,
-          opacity: isExpanded ? 1 : 0
+          opacity: isExpanded ? 1 : 0,
         }}
         transition={{ duration: 0.2, ease: 'easeInOut' }}
         className="overflow-hidden"
@@ -129,8 +126,8 @@ function MenuItem({
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: index * 0.05, duration: 0.2 }}
               className={`group flex items-center gap-3 p-2.5 mx-2 rounded-lg cursor-pointer transition-all duration-150 ${
-                selectedDocumentId === doc.id 
-                  ? 'bg-primary/10 border-l-2 border-primary shadow-sm' 
+                selectedDocumentId === doc.id
+                  ? 'bg-primary/10 border-l-2 border-primary shadow-sm'
                   : 'hover:bg-muted/50 hover:translate-x-1'
               }`}
               style={{ marginLeft: `${level * 20 + 20}px` }}
@@ -138,25 +135,23 @@ function MenuItem({
               whileHover={{ scale: 1.01 }}
               whileTap={{ scale: 0.99 }}
             >
-              <div className="flex-shrink-0">
-                {formatDocumentIcon(doc.format)}
-              </div>
-              
+              <div className="flex-shrink-0">{formatDocumentIcon(doc.format)}</div>
+
               <div className="flex-1 min-w-0">
-                <p className={`text-sm truncate transition-colors ${
-                  selectedDocumentId === doc.id 
-                    ? 'text-primary font-medium' 
-                    : 'text-foreground group-hover:text-foreground'
-                }`}>
+                <p
+                  className={`text-sm truncate transition-colors ${
+                    selectedDocumentId === doc.id
+                      ? 'text-primary font-medium'
+                      : 'text-foreground group-hover:text-foreground'
+                  }`}
+                >
                   {doc.title}
                 </p>
                 {doc.description && (
-                  <p className="text-xs text-muted-foreground truncate mt-0.5">
-                    {doc.description}
-                  </p>
+                  <p className="text-xs text-muted-foreground truncate mt-0.5">{doc.description}</p>
                 )}
               </div>
-              
+
               {doc.tags && doc.tags.length > 0 && (
                 <div className="flex-shrink-0">
                   <span className="inline-flex items-center px-2 py-1 rounded-md text-xs font-medium bg-muted text-muted-foreground group-hover:bg-muted/80 transition-colors">
@@ -168,18 +163,19 @@ function MenuItem({
           ))}
 
           {/* Child Categories */}
-          {children && Object.entries(children).map(([childLabel, childData]) => (
-            <MenuItem
-              key={childLabel}
-              label={childLabel}
-              documents={childData.documents}
-              children={childData.children}
-              level={level + 1}
-              onDocumentClick={onDocumentClick}
-              selectedDocumentId={selectedDocumentId}
-              showDocumentCount={showDocumentCount}
-            />
-          ))}
+          {children &&
+            Object.entries(children).map(([childLabel, childData]) => (
+              <MenuItem
+                key={childLabel}
+                label={childLabel}
+                documents={childData.documents}
+                children={childData.children}
+                level={level + 1}
+                onDocumentClick={onDocumentClick}
+                selectedDocumentId={selectedDocumentId}
+                showDocumentCount={showDocumentCount}
+              />
+            ))}
         </div>
       </motion.div>
     </div>
@@ -187,29 +183,35 @@ function MenuItem({
 }
 
 export function KnowledgeBrowser({
-  documents,
+  documents: initialDocuments,
   menuConfig,
   onDocumentClick,
   onDocumentShare,
   onDocumentUpdate,
   selectedDocumentId,
   className,
-  editable = true
+  editable = true,
 }: KnowledgeBrowserProps) {
-  const [searchQuery, setSearchQuery] = useState("")
+  const [searchQuery, setSearchQuery] = useState('')
   const [selectedDocument, setSelectedDocument] = useState<KnowledgeDocument | null>(null)
+  const [documents, setDocuments] = useState<KnowledgeDocument[]>(initialDocuments)
+
+  useEffect(() => {
+    setDocuments(initialDocuments)
+  }, [initialDocuments])
 
   // Filter documents based on search
   const filteredDocuments = useMemo(() => {
     if (!searchQuery) return documents
-    
-    return documents.filter(doc => 
-      doc.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      doc.description?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      doc.tags?.some(tag => tag.toLowerCase().includes(searchQuery.toLowerCase())) ||
-      Object.values(doc.metadata || {}).some(value => 
-        String(value).toLowerCase().includes(searchQuery.toLowerCase())
-      )
+
+    return documents.filter(
+      (doc) =>
+        doc.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        doc.description?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        doc.tags?.some((tag) => tag.toLowerCase().includes(searchQuery.toLowerCase())) ||
+        Object.values(doc.metadata || {}).some((value) =>
+          String(value).toLowerCase().includes(searchQuery.toLowerCase()),
+        ),
     )
   }, [documents, searchQuery])
 
@@ -224,11 +226,11 @@ export function KnowledgeBrowser({
       const grouped = docs.reduce((acc, doc) => {
         const value = doc.metadata?.[currentKey] || 'Uncategorized'
         const key = String(value)
-        
+
         if (!acc[key]) {
           acc[key] = { documents: [], children: {} }
         }
-        
+
         if (remainingKeys.length === 0) {
           acc[key].documents.push(doc)
         } else {
@@ -243,7 +245,7 @@ export function KnowledgeBrowser({
             }
           }
         }
-        
+
         return acc
       }, {} as KnowledgeHierarchy)
 
@@ -259,7 +261,7 @@ export function KnowledgeBrowser({
   }
 
   return (
-    <div className={`flex h-full ${className || ""}`}>
+    <div className={`flex h-full ${className || ''}`}>
       {/* Left Sidebar - Menu */}
       <div className="w-1/3 border-r border-border bg-muted/20">
         {/* Search Header */}
@@ -276,7 +278,7 @@ export function KnowledgeBrowser({
             />
           </div>
         </div>
-        
+
         {/* Menu Content */}
         <ScrollArea className="h-[calc(100%-100px)]">
           <div className="p-4 space-y-3">
@@ -292,9 +294,9 @@ export function KnowledgeBrowser({
                 showDocumentCount={menuConfig.showDocumentCount}
               />
             ))}
-            
+
             {Object.keys(hierarchy).length === 0 && (
-              <motion.div 
+              <motion.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 className="text-center text-muted-foreground py-12"
@@ -313,8 +315,8 @@ export function KnowledgeBrowser({
       {/* Right Content - Document Preview */}
       <div className="flex-1 bg-background">
         {selectedDocument ? (
-          <DocumentPreview 
-            document={selectedDocument} 
+          <DocumentPreview
+            document={selectedDocument}
             onDocumentUpdate={onDocumentUpdate}
             editable={editable}
           />
@@ -330,7 +332,9 @@ export function KnowledgeBrowser({
                 <FileText className="h-10 w-10 text-primary" />
               </div>
               <h3 className="text-xl font-semibold text-foreground mb-2">Select a document</h3>
-              <p className="text-muted-foreground leading-relaxed">Choose any document from the knowledge base to view its content and details</p>
+              <p className="text-muted-foreground leading-relaxed">
+                Choose any document from the knowledge base to view its content and details
+              </p>
             </motion.div>
           </div>
         )}

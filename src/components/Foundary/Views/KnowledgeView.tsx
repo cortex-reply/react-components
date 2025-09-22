@@ -1,7 +1,9 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { DashboardHero } from '../../Heros/DashboardHero/DashboardHero'
-import type { KnowledgeDocument, KnowledgeContext } from '../types'
+import type { KnowledgeDocument, KnowledgeContext, Knowledge, TeamKnowledgeContext } from '../types'
 import { KnowledgeBrowser } from '../knowledge-browser'
+import { AddKnowledgeModal } from '../Knowledge/add-knowledge-modal'
+import { AddTeamContext } from '../Knowledge/add-team-context'
 
 interface KnowledgeViewProps {
   documents?: KnowledgeDocument[]
@@ -10,6 +12,9 @@ interface KnowledgeViewProps {
   onDocumentShare?: (document: KnowledgeDocument) => void
   onLoadDocumentContent?: (documentId: string) => Promise<string>
   selectedDocumentId?: string
+  onAddKnowledge?: (knowledge: Omit<Knowledge, 'id'>) => void
+  onAddTeamContext?: (teamContext: TeamKnowledgeContext) => void
+  onDocumentUpdate?: (document: KnowledgeDocument) => void
 }
 
 export default function KnowledgeView({
@@ -19,27 +24,82 @@ export default function KnowledgeView({
   onDocumentShare = (document: KnowledgeDocument) => console.log('Share document:', document),
   onLoadDocumentContent,
   selectedDocumentId,
+  onAddKnowledge,
+  onAddTeamContext,
+  onDocumentUpdate,
 }: KnowledgeViewProps) {
   const [activeContext, setActiveContext] = useState(contexts[0])
+  const [isAddKnowledgeModalOpen, setIsAddKnowledgeModalOpen] = useState(false)
+  const [isAddTeamContextModalOpen, setIsAddTeamContextModalOpen] = useState(false)
+
+  const handleAddKnowledge = (knowledge: Omit<Knowledge, 'id'>) => {
+    if (onAddKnowledge) {
+      onAddKnowledge(knowledge)
+    }
+    setIsAddKnowledgeModalOpen(false)
+  }
+
+  const handleAddTeamContext = (teamContext: TeamKnowledgeContext) => {
+    if (onAddTeamContext) {
+      onAddTeamContext(teamContext)
+    }
+    setIsAddTeamContextModalOpen(false)
+  }
+
+  const Hero = () => (
+    <DashboardHero
+      title="Knowledge"
+      description="Access, manage, and share all your team knowledge in one place."
+      gradient="bg-gradient-to-r from-teal-600 via-cyan-600 to-blue-600"
+      primaryAction={
+        onAddKnowledge
+          ? {
+              label: 'Create',
+              onClick: () => setIsAddKnowledgeModalOpen(true),
+            }
+          : undefined
+      }
+      secondaryAction={
+        onAddTeamContext
+          ? {
+              label: 'Add Context',
+              onClick: () => setIsAddTeamContextModalOpen(true),
+            }
+          : undefined
+      }
+    />
+  )
+
+  const Modals = () => {
+    return (
+      <>
+        <AddTeamContext
+          isOpen={isAddTeamContextModalOpen}
+          onClose={() => setIsAddTeamContextModalOpen(false)}
+          onAddTeamContext={handleAddTeamContext}
+        />
+
+        <AddKnowledgeModal
+          isOpen={isAddKnowledgeModalOpen}
+          onClose={() => setIsAddKnowledgeModalOpen(false)}
+          onAddKnowledge={handleAddKnowledge}
+          knowledgeContexts={contexts}
+        />
+      </>
+    )
+  }
 
   // Return early if no contexts are provided
   if (!contexts || contexts.length === 0) {
     return (
       <div className="flex flex-col h-full max-h-[calc(100vh-8rem)]">
         <div className="px-2 md:px-4 py-4 flex-shrink-0">
-          <DashboardHero
-            title="Knowledge"
-            description="Access, manage, and share all your team knowledge in one place."
-            gradient="bg-gradient-to-r from-teal-600 via-cyan-600 to-blue-600"
-            primaryAction={{
-              label: 'Create',
-              onClick: () => console.log('Create document clicked'),
-            }}
-          />
+          <Hero />
         </div>
         <div className="flex-1 min-h-0 px-2 md:px-4 pb-4 flex items-center justify-center">
           <p className="text-muted-foreground">No contexts available</p>
         </div>
+        <Modals />
       </div>
     )
   }
@@ -47,15 +107,7 @@ export default function KnowledgeView({
   return (
     <div className="flex flex-col h-full max-h-[calc(100vh-8rem)]">
       <div className="px-2 md:px-4 py-4 flex-shrink-0">
-        <DashboardHero
-          title="Knowledge"
-          description="Access, manage, and share all your team knowledge in one place."
-          gradient="bg-gradient-to-r from-teal-600 via-cyan-600 to-blue-600"
-          primaryAction={{
-            label: 'Create',
-            onClick: () => console.log('Create document clicked'),
-          }}
-        />
+        <Hero />
 
         {/* Context Tabs */}
         <div className="mt-6">
@@ -95,9 +147,11 @@ export default function KnowledgeView({
             onDocumentClick={onDocumentClick}
             onDocumentShare={onDocumentShare}
             selectedDocumentId={selectedDocumentId}
+            onDocumentUpdate={onDocumentUpdate}
           />
         </div>
       </div>
+      <Modals />
     </div>
   )
 }
