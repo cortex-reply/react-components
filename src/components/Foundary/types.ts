@@ -269,11 +269,30 @@ export interface Knowledge {
    * Select the team this knowledge belongs to
    */
   team?: (number | null) | Team
+  initialized?: boolean | null
   /**
    * Set visibility for this knowledge. Public knowledge is accessible to all users, while private knowledge is restricted to team members.
    */
   visibility?: ('public' | 'private') | null
   source: 'payload' | 'github'
+  content?: string | null
+  richTextContent?: {
+    root: {
+      type: string
+      children: {
+        type: string
+        version: number
+        [k: string]: unknown
+      }[]
+      direction: ('ltr' | 'rtl') | null
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | ''
+      indent: number
+      version: number
+    }
+    [k: string]: unknown
+  } | null
+  format?: ('markdown' | 'richText') | null
+  description?: string | null
   metadata?: KnowledgeMetadata
   updatedAt: string
   createdAt: string
@@ -304,8 +323,33 @@ export interface Team {
   useKnowledge?: boolean | null
   useFiles?: boolean | null
   useChat?: boolean | null
+  knowledgeContexts?:
+    | {
+        id: string
+        label: string
+        description?: string | null
+        menuConfig?: {
+          groupBy?: string[] | null
+          sortBy?: string | null
+          sortOrder?: ('asc' | 'desc') | null
+          showDocumentCount?: boolean | null
+        }
+      }[]
+    | null
   updatedAt: string
   createdAt: string
+}
+
+export interface TeamKnowledgeContext {
+  id: string
+  label: string
+  description?: string | null
+  menuConfig?: {
+    groupBy?: string[] | null
+    sortBy?: string | null
+    sortOrder?: ('asc' | 'desc') | null
+    showDocumentCount?: boolean | null
+  }
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -699,6 +743,21 @@ export interface TeamsSelect<T extends boolean = true> {
   useKnowledge?: T
   useFiles?: T
   useChat?: T
+  knowledgeContexts?:
+    | T
+    | {
+        id?: T
+        label?: T
+        description?: T
+        menuConfig?:
+          | T
+          | {
+              groupBy?: T
+              sortBy?: T
+              sortOrder?: T
+              showDocumentCount?: T
+            }
+      }
   updatedAt?: T
   createdAt?: T
 }
@@ -877,8 +936,13 @@ export interface DocumentsSelect<T extends boolean = true> {
 export interface KnowledgeSelect<T extends boolean = true> {
   name?: T
   team?: T
+  initialized?: T
   visibility?: T
   source?: T
+  content?: T
+  richTextContent?: T
+  format?: T
+  description?: T
   metadata?: T | KnowledgeMetadataSelect<T>
   updatedAt?: T
   createdAt?: T
@@ -1006,7 +1070,8 @@ export interface KnowledgeDocument {
   description?: string
   metadata?: Record<string, any>
   content?: string
-  format: 'markdown' | 'mdx' | 'richtext' | 'text'
+  richTextContent?: Knowledge['richTextContent']
+  format: 'markdown' | 'mdx' | 'richText' | 'text'
   tags?: string[]
   createdAt: Date
   updatedAt?: Date

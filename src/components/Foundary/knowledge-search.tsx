@@ -1,14 +1,14 @@
-"use client"
+'use client'
 
-import { useState, useEffect } from "react"
-import { Search, Plus, X, FileText, Tag } from "lucide-react"
-import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent } from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { ScrollArea } from "@/components/ui/scroll-area"
-import type { KnowledgeDocument } from "./types"
+import { useState, useEffect, use } from 'react'
+import { Search, Plus, X, FileText, Tag } from 'lucide-react'
+import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
+import { Card, CardContent } from '@/components/ui/card'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { ScrollArea } from '@/components/ui/scroll-area'
+import type { KnowledgeDocument } from './types'
 
 interface KnowledgeSearchProps {
   selectedDocuments: KnowledgeDocument[]
@@ -25,11 +25,11 @@ export function KnowledgeSearch({
   onDocumentsChange,
   availableDocuments,
   label,
-  placeholder = "Search knowledge documents...",
+  placeholder = 'Search knowledge documents...',
   maxSelections,
   disabled = false,
 }: KnowledgeSearchProps) {
-  const [searchTerm, setSearchTerm] = useState("")
+  const [searchTerm, setSearchTerm] = useState('')
   const [filteredDocuments, setFilteredDocuments] = useState<KnowledgeDocument[]>([])
   const [showResults, setShowResults] = useState(false)
 
@@ -50,7 +50,7 @@ export function KnowledgeSearch({
         doc.description?.toLowerCase().includes(searchLower) ||
         doc.tags?.some((tag) => tag.toLowerCase().includes(searchLower)) ||
         Object.values(doc.metadata || {}).some((value) =>
-          String(value).toLowerCase().includes(searchLower)
+          String(value).toLowerCase().includes(searchLower),
         )
       )
     })
@@ -61,15 +61,16 @@ export function KnowledgeSearch({
 
   const handleSelectDocument = (document: KnowledgeDocument) => {
     if (maxSelections && selectedDocuments.length >= maxSelections) {
-      return
+      selectedDocuments.pop()
     }
 
     onDocumentsChange([...selectedDocuments, document])
-    setSearchTerm("")
+    setSearchTerm('')
     setShowResults(false)
   }
 
   const handleRemoveDocument = (documentId: string) => {
+    console.log('doc', documentId, selectedDocuments)
     onDocumentsChange(selectedDocuments.filter((doc) => doc.id !== documentId))
   }
 
@@ -78,7 +79,7 @@ export function KnowledgeSearch({
   return (
     <div className="space-y-2">
       <Label>{label}</Label>
-      
+
       {/* Search Input */}
       <div className="relative">
         <div className="relative">
@@ -151,10 +152,10 @@ export function KnowledgeSearch({
       {/* Selected Documents */}
       {selectedDocuments.length > 0 && (
         <div className="space-y-2">
-          <div className="text-sm text-muted-foreground">
+          {/* <div className="text-sm text-muted-foreground">
             Selected ({selectedDocuments.length}
             {maxSelections && `/${maxSelections}`})
-          </div>
+          </div> */}
           <div className="space-y-2">
             {selectedDocuments.map((doc) => (
               <Card key={doc.id} className="p-3">
@@ -163,9 +164,7 @@ export function KnowledgeSearch({
                   <div className="flex-1 min-w-0">
                     <div className="font-medium text-sm">{doc.title}</div>
                     {doc.description && (
-                      <div className="text-xs text-muted-foreground mt-1">
-                        {doc.description}
-                      </div>
+                      <div className="text-xs text-muted-foreground mt-1">{doc.description}</div>
                     )}
                     {doc.tags && doc.tags.length > 0 && (
                       <div className="flex flex-wrap gap-1 mt-2">
@@ -196,12 +195,7 @@ export function KnowledgeSearch({
       )}
 
       {/* Click outside to close results */}
-      {showResults && (
-        <div
-          className="fixed inset-0 z-0"
-          onClick={() => setShowResults(false)}
-        />
-      )}
+      {showResults && <div className="fixed inset-0 z-0" onClick={() => setShowResults(false)} />}
     </div>
   )
 }

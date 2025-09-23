@@ -1,63 +1,76 @@
-"use client"
+'use client'
 
-import { motion } from "motion/react"
-import { Edit3, Save, X, Plus } from "lucide-react"
-import { useState } from "react"
-import { Button } from "@/components/ui/button"
-import { Textarea } from "@/components/ui/textarea"
-import { Input } from "@/components/ui/input"
-import { Badge } from "@/components/ui/badge"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import type { KnowledgeDocument, KnowledgeContext } from "./types"
+import { motion } from 'motion/react'
+import { Edit3, Save, X, Plus } from 'lucide-react'
+import { useEffect, useState } from 'react'
+import { Button } from '@/components/ui/button'
+import { Textarea } from '@/components/ui/textarea'
+import { Input } from '@/components/ui/input'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
+import type { KnowledgeDocument, KnowledgeContext } from './types'
+import RichText from './RichText'
 
 interface DocumentEditProps {
   document: KnowledgeDocument
   onSave: (document: KnowledgeDocument) => void
+  mode?: 'create' | 'edit'
   onCancel: () => void
   availableDocuments?: KnowledgeDocument[]
   knowledgeContexts?: KnowledgeContext[]
 }
 
-export function DocumentEdit({ 
-  document, 
-  onSave, 
+export function DocumentEdit({
+  document,
+  onSave,
+  mode = 'edit',
   onCancel,
   availableDocuments = [],
-  knowledgeContexts = []
+  knowledgeContexts = [],
 }: DocumentEditProps) {
   const [editedDocument, setEditedDocument] = useState<KnowledgeDocument>({
     ...document,
-    updatedAt: new Date()
+    updatedAt: new Date(),
   })
+  const [richTextContent, setRichTextContent] = useState<any>(editedDocument.richTextContent)
+
+  useEffect(() => {
+    setEditedDocument(document)
+  }, [document])
 
   // Extract suggested metadata keys from knowledge contexts and existing documents
   const getSuggestedMetadataKeys = () => {
     const keysFromContexts = new Set<string>()
     const keysFromDocuments = new Set<string>()
-    
+
     // Get keys from knowledge contexts (used for grouping)
-    knowledgeContexts.forEach(context => {
-      context.menuConfig.groupBy.forEach(key => keysFromContexts.add(key))
+    knowledgeContexts.forEach((context) => {
+      context.menuConfig.groupBy.forEach((key) => keysFromContexts.add(key))
     })
-    
+
     // Get keys from existing documents
-    availableDocuments.forEach(doc => {
+    availableDocuments.forEach((doc) => {
       if (doc.metadata) {
-        Object.keys(doc.metadata).forEach(key => keysFromDocuments.add(key))
+        Object.keys(doc.metadata).forEach((key) => keysFromDocuments.add(key))
       }
     })
-    
+
     return {
       contextKeys: Array.from(keysFromContexts).sort(),
       documentKeys: Array.from(keysFromDocuments).sort(),
-      allKeys: Array.from(new Set([...keysFromContexts, ...keysFromDocuments])).sort()
+      allKeys: Array.from(new Set([...keysFromContexts, ...keysFromDocuments])).sort(),
     }
   }
 
   // Get suggested values for a specific metadata key
   const getSuggestedValues = (key: string) => {
     const values = new Set<string>()
-    availableDocuments.forEach(doc => {
+    availableDocuments.forEach((doc) => {
       if (doc.metadata?.[key]) {
         values.add(String(doc.metadata[key]))
       }
@@ -68,16 +81,16 @@ export function DocumentEdit({
   const suggestedKeys = getSuggestedMetadataKeys()
 
   const handleSave = () => {
-    onSave(editedDocument)
+    onSave({ ...editedDocument, richTextContent })
   }
 
   const handleMetadataChange = (key: string, value: string) => {
-    setEditedDocument(prev => ({
+    setEditedDocument((prev) => ({
       ...prev,
       metadata: {
         ...prev.metadata,
-        [key]: value
-      }
+        [key]: value,
+      },
     }))
   }
 
@@ -96,7 +109,7 @@ export function DocumentEdit({
   }
 
   const handleRemoveMetadataField = (key: string) => {
-    setEditedDocument(prev => {
+    setEditedDocument((prev) => {
       const newMetadata = { ...prev.metadata }
       delete newMetadata[key]
       return { ...prev, metadata: newMetadata }
@@ -104,7 +117,7 @@ export function DocumentEdit({
   }
 
   return (
-    <motion.div 
+    <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.3 }}
@@ -117,24 +130,17 @@ export function DocumentEdit({
             <div className="flex-shrink-0 p-3 rounded-xl bg-primary/10 border border-primary/20">
               <Edit3 className="h-6 w-6 text-primary" />
             </div>
-            <h1 className="text-2xl font-bold text-foreground">Edit Document</h1>
+            <h1 className="text-2xl font-bold text-foreground">
+              {mode === 'edit' ? 'Edit Document' : 'Create Document'}
+            </h1>
           </div>
-          
+
           <div className="flex gap-2">
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={onCancel}
-              className="gap-2"
-            >
+            <Button variant="outline" size="sm" onClick={onCancel} className="gap-2">
               <X className="h-4 w-4" />
               Cancel
             </Button>
-            <Button
-              size="sm"
-              onClick={handleSave}
-              className="gap-2"
-            >
+            <Button size="sm" onClick={handleSave} className="gap-2">
               <Save className="h-4 w-4" />
               Save Changes
             </Button>
@@ -144,12 +150,10 @@ export function DocumentEdit({
         <div className="space-y-4">
           {/* Title */}
           <div>
-            <label className="block text-sm font-medium text-foreground mb-2">
-              Title
-            </label>
+            <label className="block text-sm font-medium text-foreground mb-2">Title</label>
             <Input
               value={editedDocument.title}
-              onChange={(e) => setEditedDocument(prev => ({ ...prev, title: e.target.value }))}
+              onChange={(e) => setEditedDocument((prev) => ({ ...prev, title: e.target.value }))}
               className="text-lg font-semibold"
               placeholder="Document title..."
             />
@@ -157,12 +161,13 @@ export function DocumentEdit({
 
           {/* Description */}
           <div>
-            <label className="block text-sm font-medium text-foreground mb-2">
-              Description
-            </label>
+            <label className="block text-sm font-medium text-foreground mb-2">Description</label>
+
             <Textarea
               value={editedDocument.description || ''}
-              onChange={(e) => setEditedDocument(prev => ({ ...prev, description: e.target.value }))}
+              onChange={(e) =>
+                setEditedDocument((prev) => ({ ...prev, description: e.target.value }))
+              }
               placeholder="Document description..."
               rows={2}
             />
@@ -172,13 +177,12 @@ export function DocumentEdit({
           <div>
             <div className="flex items-center justify-between mb-3">
               <div>
-                <label className="block text-sm font-medium text-foreground">
-                  Metadata
-                </label>
+                <label className="block text-sm font-medium text-foreground">Metadata</label>
                 {suggestedKeys.contextKeys.length > 0 && (
                   <p className="text-xs text-muted-foreground">
                     Suggested: {suggestedKeys.contextKeys.slice(0, 4).join(', ')}
-                    {suggestedKeys.contextKeys.length > 4 && ` +${suggestedKeys.contextKeys.length - 4}`}
+                    {suggestedKeys.contextKeys.length > 4 &&
+                      ` +${suggestedKeys.contextKeys.length - 4}`}
                   </p>
                 )}
               </div>
@@ -193,7 +197,7 @@ export function DocumentEdit({
                 Add
               </Button>
             </div>
-            
+
             {editedDocument.metadata && Object.keys(editedDocument.metadata).length > 0 ? (
               <div className="space-y-2">
                 {Object.entries(editedDocument.metadata).map(([key, value]) => {
@@ -205,7 +209,7 @@ export function DocumentEdit({
                         onChange={(e) => {
                           const newKey = e.target.value
                           const oldValue = editedDocument.metadata?.[key]
-                          setEditedDocument(prev => {
+                          setEditedDocument((prev) => {
                             const newMetadata = { ...prev.metadata }
                             delete newMetadata[key]
                             if (newKey) {
@@ -219,23 +223,23 @@ export function DocumentEdit({
                         list={`metadata-keys-${key}`}
                       />
                       <datalist id={`metadata-keys-${key}`}>
-                        {suggestedKeys.allKeys.map(suggestedKey => (
+                        {suggestedKeys.allKeys.map((suggestedKey) => (
                           <option key={suggestedKey} value={suggestedKey} />
                         ))}
                       </datalist>
-                      
+
                       <span className="text-muted-foreground text-sm">=</span>
-                      
+
                       {suggestedValues.length > 0 ? (
-                        <Select 
-                          value={String(value || '')} 
+                        <Select
+                          value={String(value || '')}
                           onValueChange={(newValue) => handleMetadataValueSelect(key, newValue)}
                         >
                           <SelectTrigger className="flex-1 h-8 text-sm">
                             <SelectValue placeholder="Value" />
                           </SelectTrigger>
                           <SelectContent>
-                            {suggestedValues.map(suggestedValue => (
+                            {suggestedValues.map((suggestedValue) => (
                               <SelectItem key={suggestedValue} value={suggestedValue}>
                                 {suggestedValue}
                               </SelectItem>
@@ -253,7 +257,7 @@ export function DocumentEdit({
                           className="flex-1 h-8 text-sm"
                         />
                       )}
-                      
+
                       <Button
                         type="button"
                         variant="ghost"
@@ -278,10 +282,21 @@ export function DocumentEdit({
 
           {/* Format Display */}
           <div className="flex items-center gap-2">
-            <span className="text-sm font-medium text-foreground">Format:</span>
-            <Badge variant="secondary" className="font-mono">
-              {editedDocument.format.toUpperCase()}
-            </Badge>
+            <span className="text-sm font-medium text-foreground">Format</span>
+            <Select
+              value={editedDocument.format}
+              onValueChange={(value) =>
+                setEditedDocument((prev) => ({ ...prev, format: value as 'markdown' | 'richText' }))
+              }
+            >
+              <SelectTrigger className="flex-1 h-8 text-sm">
+                <SelectValue placeholder="Format" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="markdown">Markdown</SelectItem>
+                <SelectItem value="richText">Rich Text</SelectItem>
+              </SelectContent>
+            </Select>
           </div>
         </div>
       </div>
@@ -289,16 +304,22 @@ export function DocumentEdit({
       {/* Content Editor */}
       <div className="flex-1 overflow-auto">
         <div className="p-8">
-          <label className="block text-sm font-medium text-foreground mb-4">
-            Content
-          </label>
-          <Textarea
-            value={editedDocument.content || ''}
-            onChange={(e) => setEditedDocument(prev => ({ ...prev, content: e.target.value }))}
-            placeholder="Document content..."
-            className="min-h-[400px] font-mono text-sm"
-            style={{ resize: 'vertical' }}
-          />
+          <label className="block text-sm font-medium text-foreground mb-4">Content</label>
+          {editedDocument.format === 'richText' ? (
+            <RichText
+              setValue={setRichTextContent}
+              value={richTextContent}
+              name="richTextContent"
+            />
+          ) : (
+            <Textarea
+              value={editedDocument.content || ''}
+              onChange={(e) => setEditedDocument((prev) => ({ ...prev, content: e.target.value }))}
+              placeholder="Document content..."
+              className="min-h-[400px] font-mono text-sm"
+              style={{ resize: 'vertical' }}
+            />
+          )}
         </div>
       </div>
     </motion.div>
