@@ -469,7 +469,7 @@ export default function ToolbarPlugin() {
             ))}
           </DropdownMenuContent>
         </DropdownMenu>
-        <DropdownMenu>
+        {/* <DropdownMenu>
           <DropdownMenuTrigger className="flex items-center justify-center gap-2 px-2 py-1 rounded hover:bg-[#3c3c3c] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-[#3a3a3a] focus:ring-[#3c3c3c] text-[#b5b5b5] text-xs">
             <Plus width={15} height={15} />
             <ChevronDown width={15} height={15} />
@@ -487,7 +487,7 @@ export default function ToolbarPlugin() {
               </DropdownMenuItem>
             ))}
           </DropdownMenuContent>
-        </DropdownMenu>
+        </DropdownMenu> */}
         {/* {imageDialogOpen && (
           <InsertInlineImageDialog
             activeEditor={editor}
