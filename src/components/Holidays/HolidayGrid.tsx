@@ -4,6 +4,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Holiday } from '../../model/Holiday'
 import { Employee } from '../../model/Employee'
 import { isDayOff } from '@/lib/utils/DaysUtil'
+import { TimeUtil } from '@/lib/utils/TimeUtil'
 
 interface HolidayGridProps {
   currentDate: Date
@@ -38,6 +39,19 @@ export function HolidayGrid({
   const getDayInitial = (date: Date) => {
     return date.toLocaleString('default', { weekday: 'short' }).charAt(0)
   }
+
+  const correctedHolidays = holidays.map((holiday) => {
+    return {
+      ...holiday,
+      startDate: TimeUtil.toUtcMidnight(holiday.startDate).toISOString(),
+      endDate: TimeUtil.toUtcMidnight(holiday.endDate).toISOString(),
+    }
+  })
+
+  console.log(
+    'employeeIds',
+    employees.map((employee) => employee.id),
+  )
 
   return (
     <div className="px-4 sm:px-6 lg:px-8">
@@ -144,18 +158,21 @@ export function HolidayGrid({
 
                     {/* Scrollable Days */}
                     {[...Array(daysInMonth)].map((_, day) => {
+                      // date 2025-08-01T23:00:00.000Z so we need to add 1 hour
                       const date = new Date(
                         currentDate.getFullYear(),
                         currentDate.getMonth(),
                         day + 1,
+                        1,
                       )
 
-                      const holiday = holidays.find(
+                      const holiday = correctedHolidays.find(
                         (h) =>
                           h.userId === employee.id &&
                           new Date(h.startDate) <= date &&
                           new Date(h.endDate) >= date,
                       )
+
                       return (
                         <td
                           key={`${employee.id}-${day}`}
