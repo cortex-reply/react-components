@@ -13,6 +13,7 @@ import { format, parseISO } from 'date-fns'
 import { Holiday } from '../../model/Holiday'
 import { LeaveRequest } from '../../model/LeaveRequest'
 import { Employee } from '../../model/Employee'
+import { TimeUtil } from '@/lib/utils/TimeUtil'
 
 interface HolidayTrackerProps {
   holidays: Holiday[]
@@ -44,7 +45,7 @@ export function HolidayTracker({
 
   const isLoading = false
 
-  const parsedCurrentDate = parseISO(currentDate)
+  const parsedCurrentDate = TimeUtil.toUtcMidnight(parseISO(currentDate))
 
   const setCurrentDate = async (date: Date) => {
     const formattedDate = format(date, 'dd-MM-yyyy')
