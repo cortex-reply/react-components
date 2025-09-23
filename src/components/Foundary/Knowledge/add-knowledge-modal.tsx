@@ -196,10 +196,10 @@ export const AddKnowledgeModal: React.FC<AddKnowledgeModalProps> = ({
 
               {formData.metadata && formData.metadata.length > 0 ? (
                 <div className="space-y-2">
-                  {formData.metadata.map(({ key, value }) => {
+                  {formData.metadata.map(({ key, value }, index) => {
                     const suggestedValues = getSuggestedValues(key)
                     return (
-                      <div key={key} className="flex gap-2 items-center">
+                      <div key={`metadata-key-${index}`} className="flex gap-2 items-center">
                         <Input
                           value={key}
                           onChange={(e) => {
@@ -222,6 +222,7 @@ export const AddKnowledgeModal: React.FC<AddKnowledgeModalProps> = ({
                               }
                               return { ...prev, metadata: newMetadata }
                             })
+                            e.target.focus()
                           }}
                           placeholder="Key"
                           className="w-32 h-8 text-sm"
