@@ -36,12 +36,22 @@ export function CalendarView({ currentDate, setCurrentDate, holidays }: Calendar
     (new Date(currentDate.getFullYear(), currentDate.getMonth(), 1).getDay() + 6) % 7
 
   const days = Array.from({ length: 42 }, (_, i) => {
-    const day = new Date(currentDate.getFullYear(), currentDate.getMonth(), i - firstDayOfMonth + 1)
+    const day = new Date(
+      currentDate.getFullYear(),
+      currentDate.getMonth(),
+      i - firstDayOfMonth + 1,
+      currentDate.getHours(),
+    )
+    const filteredHolidays = holidays.filter(
+      (h) =>
+        TimeUtil.toUtcMidnight(new Date(h.startDate)) <= day &&
+        TimeUtil.toUtcMidnight(new Date(h.endDate)) >= day,
+    )
     return {
       date: day,
       isCurrentMonth: day.getMonth() === currentDate.getMonth(),
       isToday: day.toDateString() === new Date().toDateString(),
-      holidays: holidays.filter((h) => new Date(h.startDate) <= day && new Date(h.endDate) >= day),
+      holidays: filteredHolidays,
     }
   })
 

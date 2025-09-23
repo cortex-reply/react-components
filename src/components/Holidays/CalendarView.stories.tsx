@@ -81,8 +81,8 @@ const mockHolidays: Holiday[] = [
 export const Default: Story = {
   render: () => {
     const [currentDate, setCurrentDate] = useState(new Date(2025, 0, 1)) // January 2025
-    const correctedCurrentDate = TimeUtil.toUtcMidnight(currentDate)
 
+    const correctedCurrentDate = TimeUtil.toUtcMidnight(currentDate)
     return (
       <CalendarView
         currentDate={correctedCurrentDate}
