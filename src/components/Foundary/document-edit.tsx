@@ -104,8 +104,7 @@ export function DocumentEdit({
   }
 
   const handleAddMetadataField = () => {
-    const newKey = `field_${Date.now()}`
-    handleMetadataChange(newKey, '')
+    handleMetadataChange('', '')
   }
 
   const handleRemoveMetadataField = (key: string) => {
@@ -200,14 +199,15 @@ export function DocumentEdit({
 
             {editedDocument.metadata && Object.keys(editedDocument.metadata).length > 0 ? (
               <div className="space-y-2">
-                {Object.entries(editedDocument.metadata).map(([key, value]) => {
+                {Object.entries(editedDocument.metadata).map(([key, value], index) => {
                   const suggestedValues = getSuggestedValues(key)
                   return (
-                    <div key={key} className="flex gap-2 items-center">
+                    <div key={`metadata-key-${index}`} className="flex gap-2 items-center">
                       <Input
                         value={key}
                         onChange={(e) => {
-                          const newKey = e.target.value
+                          const newKey = e.target.value || ''
+
                           const oldValue = editedDocument.metadata?.[key]
                           setEditedDocument((prev) => {
                             const newMetadata = { ...prev.metadata }
