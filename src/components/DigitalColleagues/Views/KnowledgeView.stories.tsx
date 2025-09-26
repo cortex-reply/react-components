@@ -771,6 +771,36 @@ This example shows a "Priority View" that groups documents by difficulty and pri
   },
 }
 
+export const DefaultContextExample: Story = {
+  name: 'Default Context Configuration',
+  parameters: {
+    docs: {
+      description: {
+        story: `Demonstrates the default context configuration with basic grouping and sorting rules.`
+      }
+    }
+  },
+  args: {
+    documents: sampleDocuments,
+    contexts: [
+      {
+        id: 'default',
+        label: 'Default View',
+        description: 'Documents organized by default grouping and sorting',
+        // icon: <ViewList className="h-4 w-4" />,
+        menuConfig: {
+          groupBy: [],
+          sortBy: 'name',
+          sortOrder: 'asc',
+          showDocumentCount: true
+        }
+      }
+    ],
+  },
+}
+
+    
+
 export const DocumentSwitchingWithPreview: Story = {
   name: 'Document Selection with Preview',
   parameters: {

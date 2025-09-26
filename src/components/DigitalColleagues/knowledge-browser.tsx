@@ -250,6 +250,16 @@ export function KnowledgeBrowser({
       return grouped
     }
 
+    // If no groupBy is configured, return a flat structure with all documents
+    if (!menuConfig.groupBy || menuConfig.groupBy.length === 0) {
+      return {
+        'All Documents': {
+          documents: filteredDocuments,
+          children: {}
+        }
+      }
+    }
+
     return buildHierarchy(filteredDocuments, menuConfig.groupBy)
   }, [filteredDocuments, menuConfig.groupBy])
 

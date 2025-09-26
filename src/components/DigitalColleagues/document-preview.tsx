@@ -1,7 +1,7 @@
 "use client"
 
 import { motion } from "motion/react"
-import { File, FileText, Edit3, Type } from "lucide-react"
+import { File, FileText, Edit3, Type, ChevronDown, ChevronRight, Info } from "lucide-react"
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
@@ -82,6 +82,7 @@ export function DocumentPreview({
   knowledgeContexts = []
 }: DocumentPreviewProps) {
   const [isEditing, setIsEditing] = useState(false)
+  const [isMetadataExpanded, setIsMetadataExpanded] = useState(false)
 
   const formatIcon = (format: string) => {
     switch (format) {
@@ -159,7 +160,7 @@ export function DocumentPreview({
       className="h-full flex flex-col"
     >
       {/* Header */}
-      <div className="border-b border-border bg-card p-8">
+      <div className="border-b border-border bg-card p-8 pb-6">
         <div className="flex items-start justify-between gap-4 mb-4">
           <div className="flex items-start gap-4 flex-1 min-w-0">
             <div className="flex-shrink-0 p-3 rounded-xl bg-muted border border-border">
@@ -169,18 +170,39 @@ export function DocumentPreview({
             <div className="flex-1 min-w-0">
               <h1 className="text-2xl font-bold text-foreground mb-2 leading-tight">
                 {document.title}
+                <span className={`inline-flex ml-4 items-center px-3 py-1 rounded-full text-sm font-medium border ${formatBadgeColor(document.format)}`}>
+            {document.format.toUpperCase()}
+          </span>
               </h1>
               
               {document.description && (
-                <p className="text-muted-foreground text-lg leading-relaxed mb-4">
+                <p className="text-muted-foreground text-lg leading-relaxed">
                   {document.description}
                 </p>
               )}
             </div>
           </div>
 
-          {editable && (
-            <div className="flex-shrink-0">
+          <div className="flex items-center gap-2 flex-shrink-0">
+            {/* Metadata Toggle */}
+            {document.metadata && Object.keys(document.metadata).length > 0 && (
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setIsMetadataExpanded(!isMetadataExpanded)}
+                className="gap-2"
+              >
+                <Info className="h-4 w-4" />
+                Metadata
+                {isMetadataExpanded ? (
+                  <ChevronDown className="h-4 w-4" />
+                ) : (
+                  <ChevronRight className="h-4 w-4" />
+                )}
+              </Button>
+            )}
+
+            {editable && (
               <Button
                 variant="outline"
                 size="sm"
@@ -190,38 +212,34 @@ export function DocumentPreview({
                 <Edit3 className="h-4 w-4" />
                 Edit
               </Button>
-            </div>
-          )}
+            )}
+          </div>
         </div>
-        
-        <div className="flex flex-wrap gap-2">
-          <span className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium border ${formatBadgeColor(document.format)}`}>
-            {document.format.toUpperCase()}
-          </span>
-          
-          {document.tags?.map((tag) => (
-            <span key={tag} className="inline-flex items-center px-3 py-1 rounded-full text-sm bg-muted text-muted-foreground border border-border">
-              #{tag}
-            </span>
-          ))}
-        </div>
-      </div>
 
-      {/* Content */}
-      <div className="flex-1 overflow-auto">
-        <div className="p-8">
-          {/* Metadata Section */}
-          {document.metadata && Object.keys(document.metadata).length > 0 && (
-            <div className="mb-6">
-              <h3 className="text-sm font-semibold text-foreground mb-2">Metadata</h3>
-              <div className="bg-muted rounded-lg p-3 border border-border">
-                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-4 gap-y-1 text-xs">
+        {/* Collapsible Metadata Section */}
+        {document.metadata && Object.keys(document.metadata).length > 0 && (
+          <motion.div
+            initial={false}
+            animate={{ 
+              height: isMetadataExpanded ? 'auto' : 0,
+              opacity: isMetadataExpanded ? 1 : 0
+            }}
+            transition={{ duration: 0.2, ease: 'easeInOut' }}
+            className="overflow-hidden"
+          >
+            <div className="pt-4 border-t border-border mt-4">
+              <h3 className="text-sm font-semibold text-foreground mb-3 flex items-center gap-2">
+                <Info className="h-4 w-4" />
+                Document Metadata
+              </h3>
+              <div className="bg-muted rounded-lg p-4 border border-border">
+                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-6 gap-y-2 text-sm">
                   {Object.entries(document.metadata).map(([key, value]) => (
-                    <div key={key} className="flex gap-1">
-                      <span className="text-muted-foreground font-medium">
-                        {key.replace(/([A-Z])/g, ' $1').trim()}:
+                    <div key={key} className="flex flex-col gap-1">
+                      <span className="text-muted-foreground font-medium text-xs uppercase tracking-wide">
+                        {key.replace(/([A-Z])/g, ' $1').trim()}
                       </span>
-                      <span className="text-foreground truncate">
+                      <span className="text-foreground font-medium">
                         {String(value)}
                       </span>
                     </div>
@@ -229,8 +247,13 @@ export function DocumentPreview({
                 </div>
               </div>
             </div>
-          )}
+          </motion.div>
+        )}
+      </div>
 
+      {/* Content */}
+      <div className="flex-1 overflow-auto">
+        <div className="p-8">
           {/* Content Preview */}
           <div className="space-y-4">
             {document.content ? (
