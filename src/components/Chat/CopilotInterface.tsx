@@ -140,10 +140,10 @@ export function CopilotInterface({
       ? (toolCallId: string, tool: string, output: any) => {
           // Call the AI SDK's addToolResult with the correct argument shape
           // Ignore the returned promise for compatibility
-          void chatHook.addToolResult({ tool, toolCallId, output })
-          void chatHook.sendMessage()
+          chatHook.addToolResult({ tool, toolCallId, output })
+          chatHook.sendMessage()
         }
-      : () => {}
+      : () => { console.log("addToolResult not available") }
   // Safe initialization of business units with fallback
   const safeBusinessUnits = businessUnits || []
   const fallbackBusinessUnit: BusinessUnit = {
