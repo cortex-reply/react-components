@@ -6,6 +6,7 @@ import { set } from "date-fns"
 
 interface TaskToolPart {
   type: string
+  toolCallId: string
   state: 'input-available' | 'output-available' | 'output-error'
   input?: any
   output?: any
@@ -26,12 +27,12 @@ export const PartApprovalTool: React.FC<ChatTaskToolRendererProps> = ({
   const [open, setOpen] = React.useState(true)
   const [action, setAction] = React.useState<'approve' | 'deny' | null>(null)
   const handleApprove = () => {
-    addToolResult(toolPart.input?.toolCallId, toolPart.input?.tool, "Approved")
+    addToolResult(toolPart.toolCallId, toolPart.type, "Approved")
     setOpen(false)
     setAction('approve')
   }
   const handleDeny = () => {
-    addToolResult(toolPart.input?.toolCallId, toolPart.input?.tool, "Denied")
+    addToolResult(toolPart.toolCallId, toolPart.type, "Denied")
     setOpen(false)
     setAction('deny')
   }
