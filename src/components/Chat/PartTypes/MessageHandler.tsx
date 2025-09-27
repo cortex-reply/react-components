@@ -342,7 +342,7 @@ return(
         </Tool>
       )
     }
-    return <>Unknown part type: {part.type}</>
+    // return <>Unknown part type: {part.type}</>
   })
 )
  
