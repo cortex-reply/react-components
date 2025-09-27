@@ -4,7 +4,7 @@ import { ChatInterfaceMessages } from './ChatInterfaceMessages'
 import { type ChatMessageProps } from './ChatMessage'
 import { delay, http, HttpResponse } from 'msw'
 import type { StoryObj } from '@storybook/react'
-import { chatCardTestData } from './ChatCardTask.stories'
+import { chatCardTestData } from './Components/ChatCardTask.stories'
 
 export default {
   title: 'Chat/ChatInterface',

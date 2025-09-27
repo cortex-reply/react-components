@@ -11,7 +11,7 @@ import { Badge } from '@/components/ui/badge'
 import { CalendarIcon, CheckCircle2, Clock, RefreshCw } from 'lucide-react'
 import { formatDistanceToNow } from 'date-fns'
 import { TaskData } from '@/common-types'
-import { useTask } from './hooks/useTask'
+import { useTask } from '../hooks/useTask'
 import { cn } from '@/lib/utils'
 
 interface ChatCardTaskProps {

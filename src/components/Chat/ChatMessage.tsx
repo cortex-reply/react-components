@@ -1,7 +1,7 @@
 import React from 'react'
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar'
-import { ChatCardTask } from './ChatCardTask'
-import { ChatCardArtefact } from './ChatCardArtefact'
+import { ChatCardTask } from './Components/ChatCardTask'
+import { ChatCardArtefact } from './Components/ChatCardArtefact'
 
 const tools = {
   task: ChatCardTask,

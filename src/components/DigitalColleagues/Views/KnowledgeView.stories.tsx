@@ -157,7 +157,7 @@ export default meta
 type Story = StoryObj<typeof meta>
 
 // Sample knowledge documents
-export const sampleDocuments: KnowledgeDocument[] = [
+const sampleDocuments: KnowledgeDocument[] = [
   {
     id: '1',
     title: 'API Authentication Guide',
@@ -386,7 +386,7 @@ Our Q1 campaigns showed a 25% increase in engagement...
 ]
 
 // Default contexts that can be used as fallback or example configurations
-export const defaultContexts: KnowledgeContext[] = [
+const defaultContexts: KnowledgeContext[] = [
   {
     id: 'all',
     label: 'All Documentation',
@@ -461,6 +461,160 @@ export const Default: Story = {
   args: {
     documents: sampleDocuments,
     contexts: defaultContexts,
+  },
+}
+
+const docs = [
+    {
+        "id": 3,
+        "name": "test document",
+        "team": {
+            "id": 2,
+            "name": "Marketing",
+            "description": "Marketing Department",
+            "systemMsg": null,
+            "members": [],
+            "knowledgeBase": null,
+            "useProjects": true,
+            "useKnowledge": true,
+            "useFiles": true,
+            "useChat": true,
+            "knowledgeContexts": [
+                {
+                    "id": "Default",
+                    "label": "Default",
+                    "description": "",
+                    "menuConfig": {
+                        "groupBy": [],
+                        "sortBy": "title",
+                        "sortOrder": "asc",
+                        "showDocumentCount": true
+                    }
+                }
+            ],
+            "updatedAt": "2025-09-26T18:56:19.940Z",
+            "createdAt": "2025-09-23T09:08:44.862Z"
+        },
+        "initialized": false,
+        "visibility": "public",
+        "source": "payload",
+        "content": null,
+        "richTextContent": {
+            "root": {
+                "type": "root",
+                "format": "",
+                "indent": 0,
+                "version": 1,
+                "children": [
+                    {
+                        "type": "paragraph",
+                        "format": "",
+                        "indent": 0,
+                        "version": 1,
+                        "children": [
+                            {
+                                "mode": "normal",
+                                "text": "test",
+                                "type": "text",
+                                "style": "",
+                                "detail": 0,
+                                "format": 0,
+                                "version": 1
+                            }
+                        ],
+                        "direction": "ltr",
+                        "textStyle": "",
+                        "textFormat": 0
+                    }
+                ],
+                "direction": "ltr"
+            }
+        },
+        "format": "richText",
+        "description": "test document",
+        "metadata": [
+            {
+                "id": "68d6b8ab97814397b8677295",
+                "key": " type",
+                "value": "Guide"
+            }
+        ],
+        "updatedAt": "2025-09-26T16:00:43.734Z",
+        "createdAt": "2025-09-26T16:00:32.325Z"
+    },
+    {
+        "id": 1,
+        "name": "Style Guide",
+        "team": {
+            "id": 2,
+            "name": "Marketing",
+            "description": "Marketing Department",
+            "systemMsg": null,
+            "members": [],
+            "knowledgeBase": null,
+            "useProjects": true,
+            "useKnowledge": true,
+            "useFiles": true,
+            "useChat": true,
+            "knowledgeContexts": [
+                {
+                    "id": "Default",
+                    "label": "Default",
+                    "description": "",
+                    "menuConfig": {
+                        "groupBy": [],
+                        "sortBy": "title",
+                        "sortOrder": "asc",
+                        "showDocumentCount": true
+                    }
+                }
+            ],
+            "updatedAt": "2025-09-26T18:56:19.940Z",
+            "createdAt": "2025-09-23T09:08:44.862Z"
+        },
+        "initialized": false,
+        "visibility": "public",
+        "source": "payload",
+        "content": null,
+        "richTextContent": null,
+        "format": "markdown",
+        "description": "Cortex Style Guide",
+        "metadata": [
+            {
+                "id": "68d26413822bc434aea5688d",
+                "key": " type",
+                "value": "guide"
+            }
+        ],
+        "updatedAt": "2025-09-23T09:12:30.785Z",
+        "createdAt": "2025-09-23T09:10:43.774Z"
+    }
+]
+
+
+export const DefaultContextOnly: Story = {
+  name: 'Default Context Only',
+  parameters: {
+    docs: {
+      description: {
+        story: 'Shows the KnowledgeView with all default contexts and sample documentation. This is the most comprehensive view showing all features including context switching, document browsing, and metadata display.'
+      }
+    }
+  },
+  args: {
+    documents: docs,
+    contexts: [{
+    id: '1',
+    label: 'Default',
+    description: 'All Documents',
+    icon: <BookOpen className="h-4 w-4" />,
+    menuConfig: {
+      groupBy: [],
+      sortBy: 'title',
+      sortOrder: 'asc',
+      showDocumentCount: true
+    }
+  },],
   },
 }
 
@@ -790,7 +944,7 @@ export const DefaultContextExample: Story = {
         // icon: <ViewList className="h-4 w-4" />,
         menuConfig: {
           groupBy: [],
-          sortBy: 'name',
+          sortBy: 'title',
           sortOrder: 'asc',
           showDocumentCount: true
         }

@@ -1,3 +1,5 @@
+import { UIMessagePart } from "ai"
+
 export * from "./PartAuthenticateTool"
 export * from "./PartText"
 export * from "./PartApprovalTool"

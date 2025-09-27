@@ -116,6 +116,65 @@ const extendedMockDocuments: KnowledgeDocument[] = [
   }
 ]
 
+
+const brokenDocs = [
+  {
+    "id": "3",
+    "format": "richText",
+    "title": "test document",
+    "description": "test document",
+    "content": "",
+    "richTextContent": {
+      "root": {
+        "type": "root",
+        "format": "",
+        "indent": 0,
+        "version": 1,
+        "children": [
+          {
+            "type": "paragraph",
+            "format": "",
+            "indent": 0,
+            "version": 1,
+            "children": [
+              {
+                "mode": "normal",
+                "text": "test",
+                "type": "text",
+                "style": "",
+                "detail": 0,
+                "format": 0,
+                "version": 1
+              }
+            ],
+            "direction": "ltr",
+            "textStyle": "",
+            "textFormat": 0
+          }
+        ],
+        "direction": "ltr"
+      }
+    },
+    "metadata": {
+      " type": "Guide"
+    },
+    "createdAt": "2025-09-26T18:56:30.873Z",
+    "updatedAt": "2025-09-26T18:56:30.873Z"
+  },
+  {
+    "id": "1",
+    "format": "markdown",
+    "title": "Style Guide",
+    "description": "Cortex Style Guide",
+    "content": "",
+    "metadata": {
+      " type": "guide"
+    },
+    "createdAt": "2025-09-26T18:56:30.873Z",
+    "updatedAt": "2025-09-26T18:56:30.873Z"
+  }
+]
+
 const meta: Meta<typeof KnowledgeBrowser> = {
   title: 'Digital Colleagues/KnowledgeBrowser',
   component: KnowledgeBrowser,
@@ -203,7 +262,7 @@ export const Default: Story = {
   args: {
     documents: extendedMockDocuments,
     menuConfig: {
-      groupBy: ['category'],
+      groupBy: [],
       sortBy: 'title',
       sortOrder: 'asc',
       showDocumentCount: true
@@ -442,6 +501,29 @@ export const CustomStyling: Story = {
     docs: {
       description: {
         story: 'Knowledge browser with custom styling applied via className prop.'
+      }
+    }
+  }
+}
+
+
+export const WithBrokenDocuments: Story = {
+  render: KnowledgeBrowserWrapper,
+  args: {
+    documents: brokenDocs as unknown as KnowledgeDocument[],
+    selectedDocumentId: '1',
+    editable: true,
+    menuConfig: {
+      groupBy: [],
+      sortBy: 'title',
+      sortOrder: 'asc',
+      showDocumentCount: true
+    }
+  },
+  parameters: {
+    docs: {
+      description: {
+        story: 'Knowledge browser with some documents having missing or malformed content to test error handling.'
       }
     }
   }

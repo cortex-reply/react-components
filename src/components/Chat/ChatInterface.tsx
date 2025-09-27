@@ -3,55 +3,25 @@ import * as motion from 'motion/react-client'
 import {
   Send,
   Bot,
-  User,
   Menu,
-  Upload,
   Paperclip,
   X,
   FileText,
   Image as ImageIcon,
   File,
-  Download,
-  ExternalLink,
 } from 'lucide-react'
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { ScrollArea } from '@/components/ui/scroll-area'
-import { Badge } from '@/components/ui/badge'
-import { Separator } from '@/components/ui/separator'
 import { cn } from '@/lib/utils'
 import { CapabilityMenu } from './capability-menu'
 import { getContextualActions } from '../../test-data/capabilities'
 import type { CapabilityContext, Capability } from '../../test-data/capabilities'
-import { ChatCardTask } from './ChatCardTask'
-import { ChatCardArtefact } from './ChatCardArtefact'
 import type { UIMessage, FileUpload } from './types'
-import {
-  getTextContent,
-  hasToolPart,
-  getToolPart,
-  hasFilePart,
-  getFileParts,
-  hasDataPart,
-  getDataPart,
-} from './types'
 
-import {
-  PartAuthenticateTool,
-  PartText,
-  PartApprovalTool,
-  Reasoning,
-  ReasoningContent,
-  ReasoningTrigger,
-  Tool,
-  ToolHeader,
-  ToolContent,
-  ToolInput,
-  ToolOutput,
-  Response 
-} from './PartTypes'
+import { messageHandler } from './PartTypes/MessageHandler'
+import { Message, MessageContent, MessageAvatar } from './Components/Message'
 
 interface ChatInterfaceProps {
   messages: UIMessage[]
@@ -70,6 +40,7 @@ interface ChatInterfaceProps {
   onRemoveFile: (id: string) => void
   onDragOver: (isDragOver: boolean) => void
   className?: string
+  status?: 'submitted' | 'streaming' | 'ready' | 'error'
 }
 
 export function ChatInterface({
@@ -89,6 +60,7 @@ export function ChatInterface({
   onRemoveFile,
   onDragOver,
   className,
+  status = 'ready',
 }: ChatInterfaceProps) {
   const messagesEndRef = useRef<HTMLDivElement>(null)
   const scrollAreaRef = useRef<HTMLDivElement>(null)
@@ -211,339 +183,356 @@ export function ChatInterface({
     return <File className="h-4 w-4" />
   }
 
-  const renderMessage = (message: UIMessage) => {
-    const isAssistant = message.role === 'assistant'
-    const isUser = message.role === 'user'
-    // const textContent = getTextContent(message)
+  // const renderMessage = (message: UIMessage) => {
+  //   const isAssistant = message.role === 'assistant'
+  //   const isUser = message.role === 'user'
+  //   // const textContent = getTextContent(message)
 
-    return (
-      <div className={cn('flex my-2 items-start gap-3', isUser ? 'flex-row-reverse' : '')}>
-        <Avatar className="h-8 w-8 shrink-0">
-          <AvatarFallback
-            className={cn(
-              isUser
-                ? 'bg-primary text-primary-foreground'
-                : 'bg-gradient-to-br from-purple-600 to-blue-600 text-white',
-            )}
-          >
-            {isUser ? <User className="h-4 w-4" /> : <Bot className="h-4 w-4" />}
-          </AvatarFallback>
-        </Avatar>
-        <div
-          className={cn(
-            'max-w-[80%] rounded-2xl px-4 py-3 shadow-sm',
-            isUser ? 'bg-primary text-primary-foreground' : 'bg-muted',
-          )}
-        >
-          {/* Render text content if present */}
-          {/* {textContent && (
-            <div className="mb-2 last:mb-0">
-              <p className="text-sm">{textContent}</p>
-            </div>
-          )} */}
+  //   return (
+  //     <div className={cn('flex my-2 items-start gap-3', isUser ? 'flex-row-reverse' : '')}>
+  //       <Avatar className="h-8 w-8 shrink-0">
+  //         <AvatarFallback
+  //           className={cn(
+  //             isUser
+  //               ? 'bg-primary text-primary-foreground'
+  //               : 'bg-gradient-to-br from-purple-600 to-blue-600 text-white',
+  //           )}
+  //         >
+  //           {isUser ? <User className="h-4 w-4" /> : <Bot className="h-4 w-4" />}
+  //         </AvatarFallback>
+  //       </Avatar>
+  //       <div
+  //         className={cn(
+  //           'max-w-[80%] rounded-2xl px-4 py-3 shadow-sm',
+  //           isUser ? 'bg-primary text-primary-foreground' : 'bg-muted',
+  //         )}
+  //       >
+  //         {/* Render text content if present */}
+  //         {/* {textContent && (
+  //           <div className="mb-2 last:mb-0">
+  //             <p className="text-sm">{textContent}</p>
+  //           </div>
+  //         )} */}
 
-          {/* Render each part */}
-          {message.parts.map((part, index) => {
-            // Skip text parts as they're already rendered above
-            // if (part.type === 'text') {
-            //   return null
-            // }
+  //         {/* Render each part */}
+  //         {message.parts.map((part, index) => {
+  //           // Skip text parts as they're already rendered above
+  //           // if (part.type === 'text') {
+  //           //   return null
+  //           // }
 
-            if (part.type === 'text') {
-              return <PartText key={`${message.id}-text`} id={message.id} content={part.text} />
-            }
+  //           if (part.type === 'text') {
+  //             return <PartText key={`${message.id}-text`} id={message.id} content={part.text} />
+  //           }
 
-            // Handle file parts
-            if (part.type === 'file') {
-              const filePart = part as any
-              return (
-                <div key={index} className="mb-2 p-2 bg-background/50 rounded-lg">
-                  <div className="flex items-center gap-2">
-                    {getFileIcon(filePart.mediaType || 'application/octet-stream')}
-                    <div className="flex-1 min-w-0">
-                      <p className="text-sm font-medium truncate">
-                        {filePart.filename || filePart.url?.split('/').pop() || 'File'}
-                      </p>
-                      {/* {filePart.size && (
-                        <p className="text-xs opacity-70">{formatFileSize(filePart.size)}</p>
-                      )}
-                      {filePart.mimeType && (
-                        <p className="text-xs opacity-70">{filePart.mimeType}</p>
-                      )} */}
-                    </div>
-                    {filePart.url && (
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => window.open(filePart.url, '_blank')}
-                        className="h-8 w-8 p-0"
-                      >
-                        <Download className="h-4 w-4" />
-                      </Button>
-                    )}
-                  </div>
-                </div>
-              )
-            }
+  //           // Handle file parts
+  //           if (part.type === 'file') {
+  //             const filePart = part as any
+  //             return (
+  //               <div key={index} className="mb-2 p-2 bg-background/50 rounded-lg">
+  //                 <div className="flex items-center gap-2">
+  //                   {getFileIcon(filePart.mediaType || 'application/octet-stream')}
+  //                   <div className="flex-1 min-w-0">
+  //                     <p className="text-sm font-medium truncate">
+  //                       {filePart.filename || filePart.url?.split('/').pop() || 'File'}
+  //                     </p>
+  //                     {/* {filePart.size && (
+  //                       <p className="text-xs opacity-70">{formatFileSize(filePart.size)}</p>
+  //                     )}
+  //                     {filePart.mimeType && (
+  //                       <p className="text-xs opacity-70">{filePart.mimeType}</p>
+  //                     )} */}
+  //                   </div>
+  //                   {filePart.url && (
+  //                     <Button
+  //                       variant="ghost"
+  //                       size="sm"
+  //                       onClick={() => window.open(filePart.url, '_blank')}
+  //                       className="h-8 w-8 p-0"
+  //                     >
+  //                       <Download className="h-4 w-4" />
+  //                     </Button>
+  //                   )}
+  //                 </div>
+  //               </div>
+  //             )
+  //           }
 
-            // Handle tool parts (following AI SDK v5 pattern)
-            if (part.type.startsWith('tool-')) {
-              const toolPart = part as any
-              const toolName = part.type.replace('tool-', '')
+  //           // Handle tool parts (following AI SDK v5 pattern)
+  //           if (part.type.startsWith('tool-')) {
+  //             const toolPart = part as any
+  //             const toolName = part.type.replace('tool-', '')
 
-              // Handle task tool
-              if (toolName === 'task') {
-                switch (toolPart.state) {
-                  case 'input-available':
-                    return (
-                      <div key={index} className="text-sm opacity-70">
-                        Loading task...
-                      </div>
-                    )
-                  case 'output-available':
-                    return (
-                      <div key={index} className="mb-2">
-                        <ChatCardTask
-                          data={{
-                            id: toolPart.output?.id || toolPart.input?.id,
-                            fetchLatest: false,
-                            taskData: toolPart.output || toolPart.input,
-                          }}
-                        />
-                      </div>
-                    )
-                  case 'output-error':
-                    return (
-                      <div key={index} className="text-sm text-red-500">
-                        Error: {toolPart.errorText}
-                      </div>
-                    )
-                  default:
-                    return null
-                }
-              }
+  //             // Handle task tool
+  //             if (toolName === 'task') {
+  //               switch (toolPart.state) {
+  //                 case 'input-available':
+  //                   return (
+  //                     <div key={index} className="text-sm opacity-70">
+  //                       Loading task...
+  //                     </div>
+  //                   )
+  //                 case 'output-available':
+  //                   return (
+  //                     <div key={index} className="mb-2">
+  //                       <ChatCardTask
+  //                         data={{
+  //                           id: toolPart.output?.id || toolPart.input?.id,
+  //                           fetchLatest: false,
+  //                           taskData: toolPart.output || toolPart.input,
+  //                         }}
+  //                       />
+  //                     </div>
+  //                   )
+  //                 case 'output-error':
+  //                   return (
+  //                     <div key={index} className="text-sm text-red-500">
+  //                       Error: {toolPart.errorText}
+  //                     </div>
+  //                   )
+  //                 default:
+  //                   return null
+  //               }
+  //             }
 
-              if (part.type === 'tool-requestEndpointLogin') {
-                return (
-                  <div key={index} className="mb-2">
-                    <PartAuthenticateTool
-                      toolPart={toolPart}
-                      index={index}
-                      addToolResult={addToolResult ?? (() => {})}
-                    />
-                  </div>
-                )
-              }
-              if (part.type === 'tool-authenticate') {
-                return (
-                  <div key={index} className="mb-2">
-                    <PartAuthenticateTool
-                      toolPart={toolPart}
-                      index={index}
-                      addToolResult={addToolResult ?? (() => {})}
-                    />
-                  </div>
-                )
-              }
-              if (part.type === 'tool-requestApproval') {
-                return (
-                  <div key={index} className="mb-2">
-                    <PartApprovalTool
-                      toolPart={toolPart}
-                      index={index}
-                      addToolResult={addToolResult ?? (() => {})}
-                    />
-                  </div>
-                )
-              }
+  //             if (part.type === 'tool-requestEndpointLogin') {
+  //               return (
+  //                 <div key={index} className="mb-2">
+  //                   <PartAuthenticateTool
+  //                     toolPart={toolPart}
+  //                     index={index}
+  //                     addToolResult={addToolResult ?? (() => {})}
+  //                   />
+  //                 </div>
+  //               )
+  //             }
+  //             if (part.type === 'tool-authenticate') {
+  //               return (
+  //                 <div key={index} className="mb-2">
+  //                   <PartAuthenticateTool
+  //                     toolPart={toolPart}
+  //                     index={index}
+  //                     addToolResult={addToolResult ?? (() => {})}
+  //                   />
+  //                 </div>
+  //               )
+  //             }
+  //             if (part.type === 'tool-requestApproval') {
+  //               return (
+  //                 <div key={index} className="mb-2">
+  //                   <PartApprovalTool
+  //                     toolPart={toolPart}
+  //                     index={index}
+  //                     addToolResult={addToolResult ?? (() => {})}
+  //                   />
+  //                 </div>
+  //               )
+  //             }
 
-              // Handle artefact tool
-              if (toolName === 'artefact') {
-                switch (toolPart.state) {
-                  case 'input-available':
-                    return (
-                      <div key={index} className="text-sm opacity-70">
-                        Loading artefact...
-                      </div>
-                    )
-                  case 'output-available':
-                    return (
-                      <div key={index} className="mb-2">
-                        <ChatCardArtefact
-                          artefact={toolPart.output?.description || ''}
-                          taskId={toolPart.output?.id || toolPart.input?.id}
-                          taskData={toolPart.output || toolPart.input}
-                        />
-                      </div>
-                    )
-                  case 'output-error':
-                    return (
-                      <div key={index} className="text-sm text-red-500">
-                        Error: {toolPart.errorText}
-                      </div>
-                    )
-                  default:
-                    return null
-                }
-              }
+  //             // Handle artefact tool
+  //             if (toolName === 'artefact') {
+  //               switch (toolPart.state) {
+  //                 case 'input-available':
+  //                   return (
+  //                     <div key={index} className="text-sm opacity-70">
+  //                       Loading artefact...
+  //                     </div>
+  //                   )
+  //                 case 'output-available':
+  //                   return (
+  //                     <div key={index} className="mb-2">
+  //                       <ChatCardArtefact
+  //                         artefact={toolPart.output?.description || ''}
+  //                         taskId={toolPart.output?.id || toolPart.input?.id}
+  //                         taskData={toolPart.output || toolPart.input}
+  //                       />
+  //                     </div>
+  //                   )
+  //                 case 'output-error':
+  //                   return (
+  //                     <div key={index} className="text-sm text-red-500">
+  //                       Error: {toolPart.errorText}
+  //                     </div>
+  //                   )
+  //                 default:
+  //                   return null
+  //               }
+  //             }
 
-              // Generic tool handling
-              return (
-                <div key={index} className="mb-2">
-                  <Card className="w-full max-w-md">
-                    <CardHeader>
-                      <CardTitle className="text-lg">{toolName}</CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                      {toolPart.state === 'input-available' && (
-                        <p className="text-sm">Processing {toolName}...</p>
-                      )}
-                      {toolPart.state === 'output-available' && (
-                        <pre className="text-sm">{JSON.stringify(toolPart.output, null, 2)}</pre>
-                      )}
-                      {toolPart.state === 'output-error' && (
-                        <p className="text-sm text-red-500">Error: {toolPart.errorText}</p>
-                      )}
-                    </CardContent>
-                  </Card>
-                </div>
-              )
-            }
+  //             // Generic tool handling
+  //             return (
+  //               <div key={index} className="mb-2">
+  //                 <Card className="w-full max-w-md">
+  //                   <CardHeader>
+  //                     <CardTitle className="text-lg">{toolName}</CardTitle>
+  //                   </CardHeader>
+  //                   <CardContent>
+  //                     {toolPart.state === 'input-available' && (
+  //                       <p className="text-sm">Processing {toolName}...</p>
+  //                     )}
+  //                     {toolPart.state === 'output-available' && (
+  //                       <pre className="text-sm">{JSON.stringify(toolPart.output, null, 2)}</pre>
+  //                     )}
+  //                     {toolPart.state === 'output-error' && (
+  //                       <p className="text-sm text-red-500">Error: {toolPart.errorText}</p>
+  //                     )}
+  //                   </CardContent>
+  //                 </Card>
+  //               </div>
+  //             )
+  //           }
 
-            // Handle custom data parts (for cards, references, menus, etc.)
-            if (part.type.startsWith('data-')) {
-              const dataPart = part as any
-              const dataType = part.type.replace('data-', '')
+  //           // Handle custom data parts (for cards, references, menus, etc.)
+  //           if (part.type.startsWith('data-')) {
+  //             const dataPart = part as any
+  //             const dataType = part.type.replace('data-', '')
 
-              if (dataType === 'reference') {
-                return (
-                  <div key={index} className="mb-2">
-                    <Card className="w-full">
-                      <CardContent className="p-4">
-                        <div className="space-y-2">
-                          {dataPart.data?.references?.map((ref: any, refIndex: number) => (
-                            <div
-                              key={refIndex}
-                              className="flex items-center gap-2 p-2 rounded-md bg-muted/50"
-                            >
-                              <Badge variant="outline">{ref.type || 'link'}</Badge>
-                              <div className="flex-1 min-w-0">
-                                <p className="text-sm font-medium truncate">{ref.title}</p>
-                                {ref.description && (
-                                  <p className="text-xs text-muted-foreground truncate">
-                                    {ref.description}
-                                  </p>
-                                )}
-                              </div>
-                              {ref.url && (
-                                <Button
-                                  variant="ghost"
-                                  size="sm"
-                                  onClick={() => window.open(ref.url, '_blank')}
-                                  className="h-8 w-8 p-0"
-                                >
-                                  <ExternalLink className="h-4 w-4" />
-                                </Button>
-                              )}
-                            </div>
-                          ))}
-                        </div>
-                      </CardContent>
-                    </Card>
-                  </div>
-                )
-              }
+  //             if (dataType === 'reference') {
+  //               return (
+  //                 <div key={index} className="mb-2">
+  //                   <Card className="w-full">
+  //                     <CardContent className="p-4">
+  //                       <div className="space-y-2">
+  //                         {dataPart.data?.references?.map((ref: any, refIndex: number) => (
+  //                           <div
+  //                             key={refIndex}
+  //                             className="flex items-center gap-2 p-2 rounded-md bg-muted/50"
+  //                           >
+  //                             <Badge variant="outline">{ref.type || 'link'}</Badge>
+  //                             <div className="flex-1 min-w-0">
+  //                               <p className="text-sm font-medium truncate">{ref.title}</p>
+  //                               {ref.description && (
+  //                                 <p className="text-xs text-muted-foreground truncate">
+  //                                   {ref.description}
+  //                                 </p>
+  //                               )}
+  //                             </div>
+  //                             {ref.url && (
+  //                               <Button
+  //                                 variant="ghost"
+  //                                 size="sm"
+  //                                 onClick={() => window.open(ref.url, '_blank')}
+  //                                 className="h-8 w-8 p-0"
+  //                               >
+  //                                 <ExternalLink className="h-4 w-4" />
+  //                               </Button>
+  //                             )}
+  //                           </div>
+  //                         ))}
+  //                       </div>
+  //                     </CardContent>
+  //                   </Card>
+  //                 </div>
+  //               )
+  //             }
 
-              if (dataType === 'menu') {
-                return (
-                  <div key={index} className="mb-2">
-                    <Card className="w-full">
-                      <CardHeader>
-                        <CardTitle className="text-lg">{dataPart.data?.title}</CardTitle>
-                      </CardHeader>
-                      <CardContent>
-                        <div className="space-y-2">
-                          {dataPart.data?.items?.map((item: any, itemIndex: number) => (
-                            <Button
-                              key={itemIndex}
-                              variant="outline"
-                              className="w-full justify-start"
-                              onClick={item.action}
-                            >
-                              <div className="text-left">
-                                <p className="font-medium">{item.label}</p>
-                                {item.description && (
-                                  <p className="text-xs text-muted-foreground">
-                                    {item.description}
-                                  </p>
-                                )}
-                              </div>
-                            </Button>
-                          ))}
-                        </div>
-                      </CardContent>
-                    </Card>
-                  </div>
-                )
-              }
+  //             if (dataType === 'menu') {
+  //               return (
+  //                 <div key={index} className="mb-2">
+  //                   <Card className="w-full">
+  //                     <CardHeader>
+  //                       <CardTitle className="text-lg">{dataPart.data?.title}</CardTitle>
+  //                     </CardHeader>
+  //                     <CardContent>
+  //                       <div className="space-y-2">
+  //                         {dataPart.data?.items?.map((item: any, itemIndex: number) => (
+  //                           <Button
+  //                             key={itemIndex}
+  //                             variant="outline"
+  //                             className="w-full justify-start"
+  //                             onClick={item.action}
+  //                           >
+  //                             <div className="text-left">
+  //                               <p className="font-medium">{item.label}</p>
+  //                               {item.description && (
+  //                                 <p className="text-xs text-muted-foreground">
+  //                                   {item.description}
+  //                                 </p>
+  //                               )}
+  //                             </div>
+  //                           </Button>
+  //                         ))}
+  //                       </div>
+  //                     </CardContent>
+  //                   </Card>
+  //                 </div>
+  //               )
+  //             }
 
-              // Generic data part handling
-              return (
-                <div key={index} className="mb-2">
-                  <Card className="w-full max-w-md">
-                    <CardHeader>
-                      <CardTitle className="text-lg">{dataType}</CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                      <pre className="text-sm">{JSON.stringify(dataPart.data, null, 2)}</pre>
-                    </CardContent>
-                  </Card>
-                </div>
-              )
-            }
+  //             // Generic data part handling
+  //             return (
+  //               <div key={index} className="mb-2">
+  //                 <Card className="w-full max-w-md">
+  //                   <CardHeader>
+  //                     <CardTitle className="text-lg">{dataType}</CardTitle>
+  //                   </CardHeader>
+  //                   <CardContent>
+  //                     <pre className="text-sm">{JSON.stringify(dataPart.data, null, 2)}</pre>
+  //                   </CardContent>
+  //                 </Card>
+  //               </div>
+  //             )
+  //           }
 
-            if (part.type === 'reasoning') {
-              return (
-                <Reasoning
-                  key={`${message.id}-${index}`}
-                  className="w-full"
-                  isStreaming={
-                    status === 'streaming' &&
-                    index === message.parts.length - 1 &&
-                    message.id === messages.at(-1)?.id
-                  }
-                >
-                  <ReasoningTrigger />
-                  <ReasoningContent>{part.text}</ReasoningContent>
-                </Reasoning>
-              )
-            }
+  //           if (part.type === 'reasoning') {
+  //             return (
+  //               <Reasoning
+  //                 key={`${message.id}-${index}`}
+  //                 className="w-full"
+  //                 isStreaming={
+  //                   status === 'streaming' &&
+  //                   index === message.parts.length - 1 &&
+  //                   message.id === messages.at(-1)?.id
+  //                 }
+  //               >
+  //                 <ReasoningTrigger />
+  //                 <ReasoningContent>{part.text}</ReasoningContent>
+  //               </Reasoning>
+  //             )
+  //           }
 
-            if (part.type === 'dynamic-tool') {
-              return (
-                <Tool defaultOpen={true} key={`${message.id}-${index}`}>
-                  <ToolHeader type={`tool-${part.toolName}`} state={part.state} />
-                  <ToolContent>
-                    <ToolInput input={part.input} />
-                    <ToolOutput
-                      // output={<Response>{String(part.output)}</Response>}
-                      output={part.output}
-                      errorText={part.errorText}
-                    />
-                  </ToolContent>
-                </Tool>
-              )
-            }
-          })}
-        </div>
-      </div>
-    )
+  //           if (part.type === 'dynamic-tool') {
+  //             return (
+  //               <Tool defaultOpen={true} key={`${message.id}-${index}`}>
+  //                 <ToolHeader type={`tool-${part.toolName}`} state={part.state} />
+  //                 <ToolContent>
+  //                   <ToolInput input={part.input} />
+  //                   <ToolOutput
+  //                     // output={<Response>{String(part.output)}</Response>}
+  //                     output={part.output}
+  //                     errorText={part.errorText}
+  //                   />
+  //                 </ToolContent>
+  //               </Tool>
+  //             )
+  //           }
+  //         })}
+  //       </div>
+  //     </div>
+  //   )
+  // }
+
+  const debugInfo = {
+    messages,
+    currentSessionTitle,
+    capabilities,
+    currentCapabilityContext,
+    contextualActions,
+    getQuickSuggestions: getQuickSuggestions().map((s) => s.label),
+  }
+  // handle debug click and copy the debugInfo to clipboard
+  const handleDebugClick = () => {
+    navigator.clipboard.writeText(JSON.stringify(debugInfo, null, 2))
+    alert('Debug info copied to clipboard')
   }
 
-  motion
-
+  
   return (
-    <div className={`h-full flex flex-col shadow-sm max-w-4xl mx-auto ${className || ''}`}>
+    <div
+      className={`h-full flex flex-col relative size-full shadow-sm max-w-4xl mx-auto ${
+        className || ''
+      }`}
+    >
       {/* Chat Messages */}
       <ScrollArea
         ref={scrollAreaRef}
@@ -564,12 +553,25 @@ export function ChatInterface({
                 key={message.id}
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
-                className={cn(
-                  'flex gap-3',
-                  message.role === 'user' ? 'flex-row-reverse' : 'flex-row',
-                )}
+                // className={cn(
+                //   'flex gap-3',
+                //   message.role === 'user' ? 'flex-row-reverse' : 'flex-row',
+                // )}
               >
-                {renderMessage(message)}
+                {/* {renderMessage(message)} */}
+
+                <Message from={message.role} key={message.id}>
+                  <MessageContent variant="flat">
+
+                     { messageHandler({
+                        message,
+                        addToolResult: addToolResult ?? (() => {}),
+                        status,
+                        messages,
+                      })}
+                  </MessageContent>
+                  {/* <MessageAvatar src={message.avatar} name={message.name} /> */}
+                </Message>
               </motion.div>
             ))}
           </motion.animate>
@@ -727,6 +729,14 @@ export function ChatInterface({
                   {suggestion.label}
                 </Button>
               ))}
+            <Button
+              variant="outline"
+              size="sm"
+              className="rounded-full text-xs ml-auto"
+              onClick={handleDebugClick}
+            >
+              Debug
+            </Button>
           </div>
         </div>
 

@@ -3,8 +3,8 @@ import { ChatMessage } from './ChatMessage'
 import { Meta, StoryFn } from '@storybook/react'
 import { delay, http, HttpResponse } from 'msw'
 import type { StoryObj } from '@storybook/react'
-import { Default as CardArtefact1 } from './ChatCardArtefact.stories'
-import { chatCardTestData } from './ChatCardTask.stories'
+import { Default as CardArtefact1 } from './Components/ChatCardArtefact.stories'
+import { chatCardTestData } from './Components/ChatCardTask.stories'
 export default {
   title: 'Chat/ChatMessage',
   component: ChatMessage,

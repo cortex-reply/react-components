@@ -14,7 +14,7 @@ interface TaskToolPart {
 
 interface ChatTaskToolRendererProps {
   toolPart: TaskToolPart
-  index: number
+  index: string | number
   addToolResult: (toolCallId: string, tool: string, output: any) => void
 }
 
