@@ -36,16 +36,19 @@ const RichTextContent: React.FC<RichTextProps> = ({ setValue, value, name, edita
   }
 
   useEffect(() => {
+    editor.setEditable(editable)
+  }, [editable])
+
+  useEffect(() => {
     if (value) {
       editor.update(() => {
         editor.setEditorState(editor.parseEditorState(value as any))
       })
     }
-    // editor?.setEditorState(value)
   }, [])
 
   return (
-    <div className="w-full px-10">
+    <div className="w-full">
       <div className=" ">
         {editable && <ToolbarPlugin />}
         <div className="px-4 my-4  border-l  border-[#222222]">

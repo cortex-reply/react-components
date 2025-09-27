@@ -282,31 +282,47 @@ export function KnowledgeBrowser({
         {/* Menu Content */}
         <ScrollArea className="h-[calc(100%-100px)]">
           <div className="p-4 space-y-3">
-            {Object.entries(hierarchy).map(([label, data]) => (
-              <MenuItem
-                key={label}
-                label={label}
-                documents={data.documents}
-                children={data.children}
-                level={0}
-                onDocumentClick={handleDocumentClick}
-                selectedDocumentId={selectedDocumentId}
-                showDocumentCount={menuConfig.showDocumentCount}
-              />
-            ))}
+            {menuConfig.groupBy.length === 0 ? (
+              <>
+                <MenuItem
+                  key={'Document'}
+                  label={'Document'}
+                  documents={filteredDocuments}
+                  level={0}
+                  onDocumentClick={handleDocumentClick}
+                  selectedDocumentId={selectedDocumentId}
+                  showDocumentCount={menuConfig.showDocumentCount}
+                />
+              </>
+            ) : (
+              <>
+                {Object.entries(hierarchy).map(([label, data]) => (
+                  <MenuItem
+                    key={label}
+                    label={label}
+                    documents={data.documents}
+                    children={data.children}
+                    level={0}
+                    onDocumentClick={handleDocumentClick}
+                    selectedDocumentId={selectedDocumentId}
+                    showDocumentCount={menuConfig.showDocumentCount}
+                  />
+                ))}
 
-            {Object.keys(hierarchy).length === 0 && (
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                className="text-center text-muted-foreground py-12"
-              >
-                <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-muted flex items-center justify-center">
-                  <FileText className="h-8 w-8 text-muted-foreground" />
-                </div>
-                <p className="text-sm font-medium">No documents found</p>
-                <p className="text-xs mt-1">Try adjusting your search terms</p>
-              </motion.div>
+                {Object.keys(hierarchy).length === 0 && (
+                  <motion.div
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    className="text-center text-muted-foreground py-12"
+                  >
+                    <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-muted flex items-center justify-center">
+                      <FileText className="h-8 w-8 text-muted-foreground" />
+                    </div>
+                    <p className="text-sm font-medium">No documents found</p>
+                    <p className="text-xs mt-1">Try adjusting your search terms</p>
+                  </motion.div>
+                )}
+              </>
             )}
           </div>
         </ScrollArea>
