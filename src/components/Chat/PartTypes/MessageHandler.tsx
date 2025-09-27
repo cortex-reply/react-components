@@ -326,7 +326,10 @@ return(
 
     if (part.type === 'dynamic-tool') {
       return (
-        <Tool defaultOpen={true} key={`${message.id}-${key}`}>
+        <Tool 
+          defaultOpen={part.state !== 'output-available'} 
+          key={`${message.id}-${key}`}
+        >
           <ToolHeader type={`tool-${part.toolName}`} state={part.state} />
           <ToolContent>
             <ToolInput input={part.input} />
