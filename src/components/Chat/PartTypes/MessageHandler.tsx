@@ -153,6 +153,8 @@ return(
         )
       }
       if (part.type === 'tool-requestApproval') {
+
+        console.log("Rendering PartApprovalTool with toolPart:", toolPart)
         return (
           <div key={key} className="mb-2">
             <PartApprovalTool
