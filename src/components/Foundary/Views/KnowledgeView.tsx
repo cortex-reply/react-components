@@ -55,7 +55,7 @@ export default function KnowledgeView({
   return (
     <div className="flex flex-col h-full max-h-[calc(100vh-8rem)]">
       <div className="px-2 md:px-4 py-4 flex-shrink-0">
-        <DashboardHero
+        {/* <DashboardHero
           title="Knowledge"
           description="Access, manage, and share all your team knowledge in one place."
           gradient="bg-gradient-to-r from-teal-600 via-cyan-600 to-blue-600"
@@ -75,27 +75,45 @@ export default function KnowledgeView({
                 }
               : undefined
           }
-        />
+        /> */}
 
         {/* Context Tabs */}
         {contexts && contexts.length > 0 && (
           <div className="mt-6">
             <div className="border-b border-border">
-              <nav className="-mb-px flex space-x-8 overflow-x-auto">
-                {contexts.map((context) => (
-                  <button
-                    key={context.id}
-                    onClick={() => setActiveContext(context)}
-                    className={`group inline-flex items-center gap-2 py-3 px-1 border-b-2 font-medium text-sm whitespace-nowrap transition-colors ${
-                      activeContext?.id === context.id
-                        ? 'border-primary text-primary'
-                        : 'border-transparent text-muted-foreground hover:text-foreground hover:border-muted-foreground'
-                    }`}
-                  >
-                    {context.icon}
-                    {context.label}
-                  </button>
-                ))}
+              <nav className="-mb-px flex justify-between items-center">
+                <div className="flex space-x-8 overflow-x-auto">
+                  {contexts.map((context) => (
+                    <button
+                      key={context.id}
+                      onClick={() => setActiveContext(context)}
+                      className={`group inline-flex items-center gap-2 py-3 px-1 border-b-2 font-medium text-sm whitespace-nowrap transition-colors ${
+                        activeContext?.id === context.id
+                          ? 'border-primary text-primary'
+                          : 'border-transparent text-muted-foreground hover:text-foreground hover:border-muted-foreground'
+                      }`}
+                    >
+                      {context.icon}
+                      {context.label}
+                    </button>
+                  ))}
+                </div>
+                
+                {/* Action Buttons */}
+                <div className="flex items-center gap-2 flex-shrink-0">
+                    <button
+                      onClick={() => setIsAddKnowledgeModalOpen(true)}
+                      className="inline-flex border border-primary rounded-xl items-center gap-2 py-2 px-3 text-sm font-medium text-primary hover:text-primary/80 transition-colors whitespace-nowrap"
+                    >
+                      Add Knowledge
+                    </button>
+                    <button
+                      onClick={() => setIsAddTeamContextModalOpen(true)}
+                      className="inline-flex border border-primary rounded-xl items-center gap-2 py-2 px-3 text-sm font-medium text-primary hover:text-primary/80 transition-colors whitespace-nowrap"
+                    >
+                      Add Context
+                    </button>
+                </div>
               </nav>
             </div>
 
@@ -111,7 +129,7 @@ export default function KnowledgeView({
 
       {activeContext ? (
         <div className="flex-1 min-h-0 px-2 md:px-4 pb-4">
-          <div className="h-full rounded-3xl border overflow-hidden">
+          <div className="h-full rounded-xl border overflow-hidden">
             <KnowledgeBrowser
               documents={documents}
               menuConfig={activeContext?.menuConfig}

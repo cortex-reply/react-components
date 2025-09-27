@@ -30,10 +30,29 @@ export const AddKnowledgeModal: React.FC<AddKnowledgeModalProps> = ({
   onAddKnowledge,
   knowledgeContexts,
 }) => {
-  const [formData, setFormData] = useState({
-    name: '',
-    description: '',
-    metadata: [] as { key: string; value: string }[],
+  const getSuggestedMetadataKeys = () => {
+    const keysFromContexts = new Set<string>()
+
+    // Get keys from knowledge contexts (used for grouping)
+    knowledgeContexts.forEach((context) => {
+      context.menuConfig.groupBy.forEach((key) => keysFromContexts.add(key))
+    })
+
+    return {
+      contextKeys: Array.from(keysFromContexts).sort(),
+      allKeys: Array.from(keysFromContexts).sort(),
+    }
+  }
+
+  const [formData, setFormData] = useState(() => {
+    const suggestedKeys = getSuggestedMetadataKeys()
+    return {
+      name: '',
+      description: '',
+      metadata: suggestedKeys.contextKeys.length > 0 
+        ? suggestedKeys.contextKeys.map(key => ({ key, value: '' }))
+        : [{ key: '', value: '' }] as { key: string; value: string }[],
+    }
   })
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -43,10 +62,15 @@ export const AddKnowledgeModal: React.FC<AddKnowledgeModalProps> = ({
       return
     }
 
+    // Only include metadata entries that have both key and value
+    const filteredMetadata = formData.metadata.filter(
+      (item) => item.key && item.key.trim() && item.value && item.value.trim()
+    )
+
     onAddKnowledge({
       name: formData.name,
       description: formData.description,
-      metadata: formData.metadata,
+      metadata: filteredMetadata,
       source: 'payload',
       visibility: 'public',
       createdAt: new Date().toISOString(),
@@ -56,10 +80,13 @@ export const AddKnowledgeModal: React.FC<AddKnowledgeModalProps> = ({
     })
 
     // Reset form
+    const suggestedKeys = getSuggestedMetadataKeys()
     setFormData({
       name: '',
       description: '',
-      metadata: [] as { key: string; value: string }[],
+      metadata: suggestedKeys.contextKeys.length > 0 
+        ? suggestedKeys.contextKeys.map(key => ({ key, value: '' }))
+        : [{ key: '', value: '' }] as { key: string; value: string }[],
       // isActive: false,
     })
 
@@ -67,30 +94,18 @@ export const AddKnowledgeModal: React.FC<AddKnowledgeModalProps> = ({
   }
 
   const handleClose = () => {
+    const suggestedKeys = getSuggestedMetadataKeys()
     setFormData({
       name: '',
       description: '',
-      metadata: [] as { key: string; value: string }[],
+      metadata: suggestedKeys.contextKeys.length > 0 
+        ? suggestedKeys.contextKeys.map(key => ({ key, value: '' }))
+        : [{ key: '', value: '' }] as { key: string; value: string }[],
       // isActive: false,
     })
     onClose()
   }
 
-  const getSuggestedMetadataKeys = () => {
-    const keysFromContexts = new Set<string>()
-    const keysFromDocuments = new Set<string>()
-
-    // Get keys from knowledge contexts (used for grouping)
-    knowledgeContexts.forEach((context) => {
-      context.menuConfig.groupBy.forEach((key) => keysFromContexts.add(key))
-    })
-
-    return {
-      contextKeys: Array.from(keysFromContexts).sort(),
-      documentKeys: Array.from(keysFromDocuments).sort(),
-      allKeys: Array.from(new Set([...keysFromContexts, ...keysFromDocuments])).sort(),
-    }
-  }
   const suggestedKeys = getSuggestedMetadataKeys()
 
   // Get suggested values for a specific metadata key
@@ -174,11 +189,15 @@ export const AddKnowledgeModal: React.FC<AddKnowledgeModalProps> = ({
               <div className="flex items-center justify-between mb-3">
                 <div>
                   <Label htmlFor="metadata">Metadata</Label>
-                  {suggestedKeys.contextKeys.length > 0 && (
+                  {suggestedKeys.contextKeys.length > 0 ? (
                     <p className="text-xs text-muted-foreground">
-                      Suggested: {suggestedKeys.contextKeys.slice(0, 4).join(', ')}
+                      Context keys: {suggestedKeys.contextKeys.slice(0, 4).join(', ')}
                       {suggestedKeys.contextKeys.length > 4 &&
-                        ` +${suggestedKeys.contextKeys.length - 4}`}
+                        ` +${suggestedKeys.contextKeys.length - 4} more`} • Fill in values or add more fields
+                    </p>
+                  ) : (
+                    <p className="text-xs text-muted-foreground">
+                      Add key-value metadata to organize and categorize your knowledge
                     </p>
                   )}
                 </div>
@@ -194,96 +213,88 @@ export const AddKnowledgeModal: React.FC<AddKnowledgeModalProps> = ({
                 </Button>
               </div>
 
-              {formData.metadata && formData.metadata.length > 0 ? (
-                <div className="space-y-2">
-                  {formData.metadata.map(({ key, value }, index) => {
-                    const suggestedValues = getSuggestedValues(key)
-                    return (
-                      <div key={`metadata-key-${index}`} className="flex gap-2 items-center">
-                        <Input
-                          value={key}
-                          onChange={(e) => {
-                            const newKey = e.target.value || ' '
+              <div className="space-y-2">
+                {formData.metadata.map(({ key, value }, index) => {
+                  const suggestedValues = getSuggestedValues(key)
+                  return (
+                    <div key={`metadata-key-${index}`} className="flex gap-2 items-center">
+                      <Input
+                        value={key}
+                        onChange={(e) => {
+                          const newKey = e.target.value || ' '
 
-                            const oldValue = formData.metadata.find(
-                              (item) => item.key === key,
-                            )?.value
-                            setFormData((prev) => {
-                              const newMetadata = [...prev.metadata]
-                              const index = newMetadata.findIndex((item) => item.key === key)
-                              if (index !== -1) {
-                                newMetadata.splice(index, 1)
-                              }
-                              if (newKey) {
-                                newMetadata.push({
-                                  key: newKey,
-                                  value: oldValue || '',
-                                })
-                              }
-                              return { ...prev, metadata: newMetadata }
-                            })
-                            e.target.focus()
-                          }}
-                          placeholder="Key"
-                          className="w-32 h-8 text-sm"
-                          list={`metadata-keys-${key}`}
-                        />
-                        <datalist id={`metadata-keys-${key}`}>
-                          {suggestedKeys.allKeys.map((suggestedKey) => (
-                            <option key={suggestedKey} value={suggestedKey} />
-                          ))}
-                        </datalist>
+                          const oldValue = formData.metadata.find(
+                            (item) => item.key === key,
+                          )?.value
+                          setFormData((prev) => {
+                            const newMetadata = [...prev.metadata]
+                            const index = newMetadata.findIndex((item) => item.key === key)
+                            if (index !== -1) {
+                              newMetadata.splice(index, 1)
+                            }
+                            if (newKey) {
+                              newMetadata.push({
+                                key: newKey,
+                                value: oldValue || '',
+                              })
+                            }
+                            return { ...prev, metadata: newMetadata }
+                          })
+                          e.target.focus()
+                        }}
+                        placeholder={suggestedKeys.allKeys.length > 0 ? `e.g., ${suggestedKeys.allKeys[0]}` : "Key"}
+                        className="w-32 h-8 text-sm"
+                        list={`metadata-keys-${key}`}
+                      />
+                      <datalist id={`metadata-keys-${key}`}>
+                        {suggestedKeys.allKeys.map((suggestedKey) => (
+                          <option key={suggestedKey} value={suggestedKey} />
+                        ))}
+                      </datalist>
 
-                        <span className="text-muted-foreground text-sm">=</span>
+                      <span className="text-muted-foreground text-sm">=</span>
 
-                        {suggestedValues.length > 0 ? (
-                          <Select
-                            value={String(value || '')}
-                            onValueChange={(newValue) => handleMetadataValueSelect(key, newValue)}
-                          >
-                            <SelectTrigger className="flex-1 h-8 text-sm">
-                              <SelectValue placeholder="Value" />
-                            </SelectTrigger>
-                            <SelectContent>
-                              {suggestedValues.map((suggestedValue) => (
-                                <SelectItem key={suggestedValue} value={suggestedValue}>
-                                  {suggestedValue}
-                                </SelectItem>
-                              ))}
-                              <SelectItem value="__custom__">
-                                <span className="text-muted-foreground text-xs">Custom...</span>
-                              </SelectItem>
-                            </SelectContent>
-                          </Select>
-                        ) : (
-                          <Input
-                            value={String(value || '')}
-                            onChange={(e) => handleMetadataChange(key, e.target.value)}
-                            placeholder="Value"
-                            className="flex-1 h-8 text-sm"
-                          />
-                        )}
-
-                        <Button
-                          type="button"
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => handleRemoveMetadataField(key)}
-                          className="h-8 w-8 p-0 text-muted-foreground hover:text-destructive"
+                      {suggestedValues.length > 0 ? (
+                        <Select
+                          value={String(value || '')}
+                          onValueChange={(newValue) => handleMetadataValueSelect(key, newValue)}
                         >
-                          <X className="h-3 w-3" />
-                        </Button>
-                      </div>
-                    )
-                  })}
-                </div>
-              ) : (
-                <div className="text-center py-3 border border-dashed border-border rounded-lg bg-muted/20">
-                  <p className="text-xs text-muted-foreground">
-                    No metadata • Click "Add" to create fields
-                  </p>
-                </div>
-              )}
+                          <SelectTrigger className="flex-1 h-8 text-sm">
+                            <SelectValue placeholder="Value" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {suggestedValues.map((suggestedValue) => (
+                              <SelectItem key={suggestedValue} value={suggestedValue}>
+                                {suggestedValue}
+                              </SelectItem>
+                            ))}
+                            <SelectItem value="__custom__">
+                              <span className="text-muted-foreground text-xs">Custom...</span>
+                            </SelectItem>
+                          </SelectContent>
+                        </Select>
+                      ) : (
+                        <Input
+                          value={String(value || '')}
+                          onChange={(e) => handleMetadataChange(key, e.target.value)}
+                          placeholder="Value"
+                          className="flex-1 h-8 text-sm"
+                        />
+                      )}
+
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => handleRemoveMetadataField(key)}
+                        className="h-8 w-8 p-0 text-muted-foreground hover:text-destructive"
+                      >
+                        <X className="h-3 w-3" />
+                      </Button>
+                    </div>
+                  )
+                })}
+              </div>
             </div>
 
             {/* <div className="flex items-center gap-2">

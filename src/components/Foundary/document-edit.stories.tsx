@@ -221,7 +221,7 @@ const sampleRichTextDocument: KnowledgeDocument = {
   id: '2',
   title: 'Team Communication Guidelines',
   description: 'Essential guidelines for effective team communication',
-  format: 'richtext',
+  format: 'richText',
   metadata: {
     category: 'Management',
     difficulty: 'Beginner',

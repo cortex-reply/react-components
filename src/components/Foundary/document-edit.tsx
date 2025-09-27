@@ -1,7 +1,7 @@
 'use client'
 
 import { motion } from 'motion/react'
-import { Edit3, Save, X, Plus } from 'lucide-react'
+import { Edit3, Save, X, Plus, ChevronDown, ChevronRight, Info, File, FileText, Type } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { Textarea } from '@/components/ui/textarea'
@@ -13,6 +13,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
+import { EditableField } from '@/components/AdvancedComponents/EditableField'
 import type { KnowledgeDocument, KnowledgeContext } from './types'
 import RichText from './RichText'
 
@@ -37,11 +38,41 @@ export function DocumentEdit({
     ...document,
     updatedAt: new Date(),
   })
+  const [isMetadataExpanded, setIsMetadataExpanded] = useState(false)
   const [richTextContent, setRichTextContent] = useState<any>(editedDocument.richTextContent)
 
   useEffect(() => {
     setEditedDocument(document)
   }, [document])
+
+  const formatIcon = (format: string) => {
+    switch (format) {
+      case 'markdown':
+      case 'mdx':
+        return <FileText className="h-6 w-6 text-primary" />
+      case 'richText':
+        return <File className="h-6 w-6 text-success" />
+      case 'text':
+        return <Type className="h-6 w-6 text-muted-foreground" />
+      default:
+        return <File className="h-6 w-6 text-muted-foreground" />
+    }
+  }
+
+  const formatBadgeColor = (format: string) => {
+    switch (format) {
+      case 'markdown':
+        return 'bg-primary/10 text-primary border-primary/20'
+      case 'mdx':
+        return 'bg-secondary/10 text-secondary border-secondary/20'
+      case 'richText':
+        return 'bg-success/10 text-success border-success/20'
+      case 'text':
+        return 'bg-muted/50 text-muted-foreground border-muted-foreground/20'
+      default:
+        return 'bg-muted text-muted-foreground border-border'
+    }
+  }
 
   // Extract suggested metadata keys from knowledge contexts and existing documents
   const getSuggestedMetadataKeys = () => {
@@ -123,68 +154,91 @@ export function DocumentEdit({
       className="h-full flex flex-col"
     >
       {/* Header */}
-      <div className="border-b border-border bg-card p-8">
-        <div className="flex items-start justify-between gap-4 mb-6">
-          <div className="flex items-center gap-3">
-            <div className="flex-shrink-0 p-3 rounded-xl bg-primary/10 border border-primary/20">
-              <Edit3 className="h-6 w-6 text-primary" />
+      <div className="border-b border-border bg-card p-8 pb-6">
+        <div className="flex items-start justify-between gap-4 mb-4">
+          <div className="flex items-start gap-4 flex-1 min-w-0">
+            {/* <div className="flex-shrink-0 p-3 rounded-xl bg-muted border border-border">
+              {formatIcon(editedDocument.format)}
+            </div> */}
+            
+            <div className="flex-1 min-w-0">
+              <div className="flex items-start gap-4 mb-0 leading-tight">
+                <div className="flex-1 min-w-0">
+                  <EditableField
+                    fieldName="title"
+                    value={editedDocument.title}
+                    label=""
+                    onSave={(fieldName, value) => setEditedDocument(prev => ({ ...prev, title: value }))}
+                    className="[&>div:last-child]:text-2xl [&>div:last-child]:font-bold [&>div:last-child]:leading-tight [&>div:last-child]:text-foreground [&>div:last-child]:p-0 [&>div:last-child]:border-0 [&>div:last-child]:hover:bg-muted/30 [&>div:last-child]:min-h-0"
+                  />
+                </div>
+                <span className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium border ${formatBadgeColor(editedDocument.format)} flex-shrink-0 mt-1`}>
+                  {editedDocument.format.toUpperCase()}
+                </span>
+              </div>
+              
+              <div className="mt-2">
+                <EditableField
+                  fieldName="description"
+                  value={editedDocument.description || 'Click to add description...'}
+                  label=""
+                  multiline={true}
+                  onSave={(fieldName, value) => setEditedDocument(prev => ({ ...prev, description: value }))}
+                  className="[&>div:last-child]:text-muted-foreground [&>div:last-child]:text-lg [&>div:last-child]:leading-relaxed [&>div:last-child]:p-0 [&>div:last-child]:border-0 [&>div:last-child]:hover:bg-muted/30 [&>div:last-child]:min-h-0"
+                />
+              </div>
             </div>
-            <h1 className="text-2xl font-bold text-foreground">
-              {mode === 'edit' ? 'Edit Document' : 'Create Document'}
-            </h1>
           </div>
 
-          <div className="flex gap-2">
+          <div className="flex items-center gap-2 flex-shrink-0">
+            {/* Metadata Toggle */}
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => setIsMetadataExpanded(!isMetadataExpanded)}
+              className="gap-2"
+            >
+              <Info className="h-4 w-4" />
+              Metadata
+              {editedDocument.metadata && Object.keys(editedDocument.metadata).length > 0 && (
+                <span className="inline-flex items-center justify-center w-5 h-5 text-xs font-medium bg-primary/10 text-primary rounded-full">
+                  {Object.keys(editedDocument.metadata).length}
+                </span>
+              )}
+              {isMetadataExpanded ? (
+                <ChevronDown className="h-4 w-4" />
+              ) : (
+                <ChevronRight className="h-4 w-4" />
+              )}
+            </Button>
+
             <Button variant="outline" size="sm" onClick={onCancel} className="gap-2">
               <X className="h-4 w-4" />
               Cancel
             </Button>
             <Button size="sm" onClick={handleSave} className="gap-2">
               <Save className="h-4 w-4" />
-              Save Changes
+              Save
             </Button>
           </div>
         </div>
 
-        <div className="space-y-4">
-          {/* Title */}
-          <div>
-            <label className="block text-sm font-medium text-foreground mb-2">Title</label>
-            <Input
-              value={editedDocument.title}
-              onChange={(e) => setEditedDocument((prev) => ({ ...prev, title: e.target.value }))}
-              className="text-lg font-semibold"
-              placeholder="Document title..."
-            />
-          </div>
-
-          {/* Description */}
-          <div>
-            <label className="block text-sm font-medium text-foreground mb-2">Description</label>
-
-            <Textarea
-              value={editedDocument.description || ''}
-              onChange={(e) =>
-                setEditedDocument((prev) => ({ ...prev, description: e.target.value }))
-              }
-              placeholder="Document description..."
-              rows={2}
-            />
-          </div>
-
-          {/* Metadata Fields */}
-          <div>
+        {/* Collapsible Metadata Section */}
+        <motion.div
+          initial={false}
+          animate={{ 
+            height: isMetadataExpanded ? 'auto' : 0,
+            opacity: isMetadataExpanded ? 1 : 0
+          }}
+          transition={{ duration: 0.2, ease: 'easeInOut' }}
+          className="overflow-hidden"
+        >
+          <div className="pt-4 border-t border-border mt-4">
             <div className="flex items-center justify-between mb-3">
-              <div>
-                <label className="block text-sm font-medium text-foreground">Metadata</label>
-                {suggestedKeys.contextKeys.length > 0 && (
-                  <p className="text-xs text-muted-foreground">
-                    Suggested: {suggestedKeys.contextKeys.slice(0, 4).join(', ')}
-                    {suggestedKeys.contextKeys.length > 4 &&
-                      ` +${suggestedKeys.contextKeys.length - 4}`}
-                  </p>
-                )}
-              </div>
+              <h3 className="text-sm font-semibold text-foreground flex items-center gap-2">
+                <Info className="h-4 w-4" />
+                Document Metadata
+              </h3>
               <Button
                 type="button"
                 variant="outline"
@@ -193,118 +247,111 @@ export function DocumentEdit({
                 className="gap-1 h-8"
               >
                 <Plus className="h-3 w-3" />
-                Add
+                Add Field
               </Button>
             </div>
 
-            {editedDocument.metadata && Object.keys(editedDocument.metadata).length > 0 ? (
-              <div className="space-y-2">
-                {Object.entries(editedDocument.metadata).map(([key, value], index) => {
-                  const suggestedValues = getSuggestedValues(key)
-                  return (
-                    <div key={`metadata-key-${index}`} className="flex gap-2 items-center">
-                      <Input
-                        value={key}
-                        onChange={(e) => {
-                          const newKey = e.target.value || ''
-
-                          const oldValue = editedDocument.metadata?.[key]
-                          setEditedDocument((prev) => {
-                            const newMetadata = { ...prev.metadata }
-                            delete newMetadata[key]
-                            if (newKey) {
-                              newMetadata[newKey] = oldValue || ''
-                            }
-                            return { ...prev, metadata: newMetadata }
-                          })
-                        }}
-                        placeholder="Key"
-                        className="w-32 h-8 text-sm"
-                        list={`metadata-keys-${key}`}
-                      />
-                      <datalist id={`metadata-keys-${key}`}>
-                        {suggestedKeys.allKeys.map((suggestedKey) => (
-                          <option key={suggestedKey} value={suggestedKey} />
-                        ))}
-                      </datalist>
-
-                      <span className="text-muted-foreground text-sm">=</span>
-
-                      {suggestedValues.length > 0 ? (
-                        <Select
-                          value={String(value || '')}
-                          onValueChange={(newValue) => handleMetadataValueSelect(key, newValue)}
-                        >
-                          <SelectTrigger className="flex-1 h-8 text-sm">
-                            <SelectValue placeholder="Value" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            {suggestedValues.map((suggestedValue) => (
-                              <SelectItem key={suggestedValue} value={suggestedValue}>
-                                {suggestedValue}
-                              </SelectItem>
-                            ))}
-                            <SelectItem value="__custom__">
-                              <span className="text-muted-foreground text-xs">Custom...</span>
-                            </SelectItem>
-                          </SelectContent>
-                        </Select>
-                      ) : (
+            {/* {suggestedKeys.contextKeys.length > 0 && (
+              <p className="text-xs text-muted-foreground mb-3">
+                Suggested: {suggestedKeys.contextKeys.slice(0, 4).join(', ')}
+                {suggestedKeys.contextKeys.length > 4 &&
+                  ` +${suggestedKeys.contextKeys.length - 4} more`}
+              </p>
+            )} */}
+            
+            <div className="bg-muted rounded-lg p-4 border border-border">
+              {editedDocument.metadata && Object.keys(editedDocument.metadata).length > 0 ? (
+                <div className="space-y-2">
+                  {Object.entries(editedDocument.metadata).map(([key, value], index) => {
+                    const suggestedValues = getSuggestedValues(key)
+                    return (
+                      <div key={`metadata-key-${index}`} className="flex gap-2 items-center">
                         <Input
-                          value={String(value || '')}
-                          onChange={(e) => handleMetadataChange(key, e.target.value)}
-                          placeholder="Value"
-                          className="flex-1 h-8 text-sm"
+                          value={key}
+                          onChange={(e) => {
+                            const newKey = e.target.value || ''
+                            const oldValue = editedDocument.metadata?.[key]
+                            setEditedDocument((prev) => {
+                              const newMetadata = { ...prev.metadata }
+                              delete newMetadata[key]
+                              if (newKey) {
+                                newMetadata[newKey] = oldValue || ''
+                              }
+                              return { ...prev, metadata: newMetadata }
+                            })
+                          }}
+                          placeholder="Key"
+                          className="w-32 h-8 text-sm"
+                          list={`metadata-keys-${key}`}
                         />
-                      )}
+                        <datalist id={`metadata-keys-${key}`}>
+                          {suggestedKeys.allKeys.map((suggestedKey) => (
+                            <option key={suggestedKey} value={suggestedKey} />
+                          ))}
+                        </datalist>
 
-                      <Button
-                        type="button"
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => handleRemoveMetadataField(key)}
-                        className="h-8 w-8 p-0 text-muted-foreground hover:text-destructive"
-                      >
-                        <X className="h-3 w-3" />
-                      </Button>
-                    </div>
-                  )
-                })}
-              </div>
-            ) : (
-              <div className="text-center py-3 border border-dashed border-border rounded-lg bg-muted/20">
-                <p className="text-xs text-muted-foreground">
-                  No metadata • Click "Add" to create fields
-                </p>
-              </div>
-            )}
-          </div>
+                        <span className="text-muted-foreground text-sm">=</span>
 
-          {/* Format Display */}
-          <div className="flex items-center gap-2">
-            <span className="text-sm font-medium text-foreground">Format</span>
-            <Select
-              value={editedDocument.format}
-              onValueChange={(value) =>
-                setEditedDocument((prev) => ({ ...prev, format: value as 'markdown' | 'richText' }))
-              }
-            >
-              <SelectTrigger className="flex-1 h-8 text-sm">
-                <SelectValue placeholder="Format" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="markdown">Markdown</SelectItem>
-                <SelectItem value="richText">Rich Text</SelectItem>
-              </SelectContent>
-            </Select>
+                        {suggestedValues.length > 0 ? (
+                          <Select
+                            value={String(value || '')}
+                            onValueChange={(newValue) => handleMetadataValueSelect(key, newValue)}
+                          >
+                            <SelectTrigger className="flex-1 h-8 text-sm">
+                              <SelectValue placeholder="Value" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              {suggestedValues.map((suggestedValue) => (
+                                <SelectItem key={suggestedValue} value={suggestedValue}>
+                                  {suggestedValue}
+                                </SelectItem>
+                              ))}
+                              <SelectItem value="__custom__">
+                                <span className="text-muted-foreground text-xs">Custom...</span>
+                              </SelectItem>
+                            </SelectContent>
+                          </Select>
+                        ) : (
+                          <Input
+                            value={String(value || '')}
+                            onChange={(e) => handleMetadataChange(key, e.target.value)}
+                            placeholder="Value"
+                            className="flex-1 h-8 text-sm"
+                          />
+                        )}
+
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => handleRemoveMetadataField(key)}
+                          className="h-8 w-8 p-0 text-muted-foreground hover:text-destructive"
+                        >
+                          <X className="h-3 w-3" />
+                        </Button>
+                      </div>
+                    )
+                  })}
+                </div>
+              ) : (
+                <div className="text-center py-4">
+                  <p className="text-sm text-muted-foreground mb-2">
+                    No metadata fields
+                  </p>
+                  <p className="text-xs text-muted-foreground">
+                    Click "Add Field" to create metadata
+                  </p>
+                </div>
+              )}
+            </div>
           </div>
-        </div>
+        </motion.div>
       </div>
 
       {/* Content Editor */}
       <div className="flex-1 ">
-        <div className="p-8">
-          <label className="block text-sm font-medium text-foreground mb-4">Content</label>
+        <div className="p-8 h-full">
+          {/* <label className="block text-sm font-medium text-foreground mb-4">Content</label> */}
           {editedDocument.format === 'richText' ? (
             <RichText
               setValue={setRichTextContent}
