@@ -151,7 +151,7 @@ export function DocumentEdit({
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.3 }}
-      className="h-full flex flex-col"
+      className="h-screen flex flex-col"
     >
       {/* Header */}
       <div className="border-b border-border bg-card p-8 pb-6">
@@ -231,9 +231,9 @@ export function DocumentEdit({
             opacity: isMetadataExpanded ? 1 : 0
           }}
           transition={{ duration: 0.2, ease: 'easeInOut' }}
-          className="overflow-hidden"
+          className="overflow-hidden h-full max-h-full"
         >
-          <div className="pt-4 border-t border-border mt-4">
+          <div className="pt-4 border-t border-border mt-4 h-screen max-h-full flex">
             <div className="flex items-center justify-between mb-3">
               <h3 className="text-sm font-semibold text-foreground flex items-center gap-2">
                 <Info className="h-4 w-4" />
@@ -349,8 +349,8 @@ export function DocumentEdit({
       </div>
 
       {/* Content Editor */}
-      <div className="flex-1 ">
-        <div className="p-8 h-full">
+      <div className="flex-1 overflow-hidden">
+        <div className="p-8 h-full max-h-full overflow-auto">
           {/* <label className="block text-sm font-medium text-foreground mb-4">Content</label> */}
           {editedDocument.format === 'richText' ? (
             <RichText
