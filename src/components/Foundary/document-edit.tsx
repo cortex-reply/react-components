@@ -302,7 +302,7 @@ export function DocumentEdit({
       </div>
 
       {/* Content Editor */}
-      <div className="flex-1 overflow-auto">
+      <div className="flex-1 ">
         <div className="p-8">
           <label className="block text-sm font-medium text-foreground mb-4">Content</label>
           {editedDocument.format === 'richText' ? (

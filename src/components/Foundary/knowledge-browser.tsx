@@ -329,7 +329,7 @@ export function KnowledgeBrowser({
       </div>
 
       {/* Right Content - Document Preview */}
-      <div className="flex-1 bg-background">
+      <div className="flex-1 bg-background overflow-scroll">
         {selectedDocument ? (
           <DocumentPreview
             document={selectedDocument}

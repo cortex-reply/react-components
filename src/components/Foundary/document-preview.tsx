@@ -264,7 +264,7 @@ export function DocumentPreview({
       </div>
 
       {/* Content */}
-      <div className="flex-1 overflow-auto">
+      <div className="flex-1 ">
         <div className="p-8">
           {/* Metadata Section */}
           {document.metadata && Object.keys(document.metadata).length > 0 && (
