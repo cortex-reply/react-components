@@ -141,6 +141,7 @@ export function CopilotInterface({
           // Call the AI SDK's addToolResult with the correct argument shape
           // Ignore the returned promise for compatibility
           chatHook.addToolResult({ tool, toolCallId, output })
+          console.log("Tool result added:", { toolCallId, tool, output })
           chatHook.sendMessage()
         }
       : () => { console.log("addToolResult not available") }
