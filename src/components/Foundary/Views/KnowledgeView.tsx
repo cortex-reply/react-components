@@ -79,7 +79,7 @@ export default function KnowledgeView({
 
         {/* Context Tabs */}
         {contexts && contexts.length > 0 && (
-          <div className="mt-6">
+          <div className="">
             <div className="">
               <nav className="-mb-px flex justify-between items-center">
                 <div className="flex space-x-8 overflow-x-auto">
