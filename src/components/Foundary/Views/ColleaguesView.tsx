@@ -31,6 +31,7 @@ import {
 } from '../types'
 import { motion, AnimatePresence } from 'motion/react'
 import { DashboardHero } from '../../Heros/DashboardHero'
+import { cn } from '@/components/dc-temp/utils'
 interface ColleaguesViewProps {
   initialColleagues?: Colleague[]
   onColleagueAdd?: (colleague: Colleague) => void
@@ -492,6 +493,9 @@ export default function ColleaguesView({
                       onDelete={handleDeleteColleague}
                       onViewDetails={handleViewDetails}
                       compact={compactView}
+                      className={cn([
+                        colleague.type === 'digital' && 'border-teal-400'
+                      ])}
                     />
                   ))}
                 </div>
@@ -534,6 +538,9 @@ export default function ColleaguesView({
                       onDelete={handleDeleteColleague}
                       onViewDetails={handleViewDetails}
                       compact={compactView}
+                      className={cn([
+                        colleague.type === 'digital' && 'border-teal-400'
+                      ])}
                     />
                   ))}
                 </div>

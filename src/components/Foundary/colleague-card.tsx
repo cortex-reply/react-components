@@ -197,12 +197,11 @@ export function ColleagueCard({
               </>
             )} */}
 
-            {/* {colleague.type === 'digital' && (
+            {colleague.type === 'digital' && (
               <div className="flex items-center gap-2 text-muted-foreground">
-                <Settings className="h-3 w-3" />
-                <span>v{colleague.version}</span>
+                <span>{colleague.description}</span>
               </div>
-            )} */}
+            )}
 
             {/* <div className="flex items-center gap-2 text-muted-foreground">
               <Clock className="h-3 w-3" />
