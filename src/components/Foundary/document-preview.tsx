@@ -332,7 +332,7 @@ export function DocumentPreview({
                 </div>
               </div>
             ) : (
-              <div className="text-center py-12 bg-muted rounded-xl border-2 border-dashed border-border">
+              <div className="text-center p-12 bg-muted rounded-xl border-2 border-dashed border-border">
                 <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-background flex items-center justify-center">
                   <FileText className="h-8 w-8 text-muted-foreground" />
                 </div>
