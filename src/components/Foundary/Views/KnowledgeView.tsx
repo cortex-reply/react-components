@@ -53,7 +53,7 @@ export default function KnowledgeView({
   }
 
   return (
-    <div className="flex flex-col h-full max-h-[calc(100vh-8rem)]">
+    <div className="flex flex-col h-full">
       <div className="px-2 md:px-4 py-4 flex-shrink-0">
         {/* <DashboardHero
           title="Knowledge"
@@ -80,7 +80,7 @@ export default function KnowledgeView({
         {/* Context Tabs */}
         {contexts && contexts.length > 0 && (
           <div className="mt-6">
-            <div className="border-b border-border">
+            <div className="">
               <nav className="-mb-px flex justify-between items-center">
                 <div className="flex space-x-8 overflow-x-auto">
                   {contexts.map((context) => (
@@ -103,7 +103,7 @@ export default function KnowledgeView({
                 <div className="flex items-center gap-2 flex-shrink-0">
                     <button
                       onClick={() => setIsAddKnowledgeModalOpen(true)}
-                      className="inline-flex border border-primary rounded-xl items-center gap-2 py-2 px-3 text-sm font-medium text-primary hover:text-primary/80 transition-colors whitespace-nowrap"
+                      className="inline-flex border border-primary rounded-xl items-center py-2 px-3 text-sm font-medium text-primary hover:text-primary/80 transition-colors whitespace-nowrap"
                     >
                       Add Knowledge
                     </button>
@@ -120,7 +120,7 @@ export default function KnowledgeView({
             {/* Active Context Description */}
             {activeContext?.description && (
               <div className="mt-3 px-1">
-                <p className="text-sm text-muted-foreground">{activeContext?.description}</p>
+                <p className="text-sm text-primary">{activeContext?.description}</p>
               </div>
             )}
           </div>
