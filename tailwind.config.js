@@ -15,6 +15,17 @@ const config = {
     require('tailwindcss-animated'),
     require('@tailwindcss/typography'),
     require('tailwindcss-intersect'),
+    function ({ addUtilities }) {
+      addUtilities({
+        '.no-scrollbar::-webkit-scrollbar': {
+          display: 'none',
+        },
+        '.no-scrollbar': {
+          '-ms-overflow-style': 'none',
+          'scrollbar-width': 'none',
+        },
+      })
+    },
   ],
   prefix: '',
   safelist: [
