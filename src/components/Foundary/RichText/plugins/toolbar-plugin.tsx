@@ -43,6 +43,7 @@ import {
   $isHeadingNode,
   HeadingTagType,
 } from '@payloadcms/richtext-lexical/lexical/rich-text'
+import { INSERT_UPLOAD_COMMAND, InsertInlineImageDialog, InsertUploadPayload } from './image-plugin'
 import Bold from '../Icons/Bold'
 import Italic from '../Icons/Italic'
 import Underline from '../Icons/Underline'
@@ -50,17 +51,16 @@ import Strikethrough from '../Icons/StrikeThrough'
 import Subscript from '../Icons/Subscript'
 import Superscript from '../Icons/Superscript'
 import { H1, H2, H3, H4, TextIcon } from '../Icons/Headings'
+import { $createMyUploadNode } from '../nodes/image-node'
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from '@/components/ui'
+} from '@/components/ui/dropdown-menu'
 import { cn } from '@/lib/utils'
+// import {-s'
 // import { $createUploadNode } from '@payloadcms/richtext-lexical/client'
 
 const LowPriority = 1
@@ -165,41 +165,40 @@ export default function ToolbarPlugin() {
         },
         LowPriority,
       ),
-      // mergeRegister(
-      //   editor.registerCommand<InsertUploadPayload>(
-      //     INSERT_UPLOAD_COMMAND,
-      //     (payload: InsertUploadPayload) => {
-      //       editor.update(() => {
-      //         const selection = $getSelection() || $getPreviousSelection()
+      mergeRegister(
+        editor.registerCommand<InsertUploadPayload>(
+          INSERT_UPLOAD_COMMAND,
+          (payload: InsertUploadPayload) => {
+            editor.update(() => {
+              const selection = $getSelection() || $getPreviousSelection()
 
-      //         if ($isRangeSelection(selection)) {
-      //           const uploadNode = $createUploadNode({
-      //             data: {
-      //               id: payload.id,
-      //               fields: payload.fields,
-      //               relationTo: payload.relationTo,
-      //               value: payload.value,
-      //             },
-      //           })
+              if ($isRangeSelection(selection)) {
+                const uploadNode = $createMyUploadNode({
+                  id: payload.id,
+                  fields: payload.fields,
+                  relationTo: payload.relationTo,
+                  value: payload.value,
+                })
 
-      //           // we need to get the focus node before inserting the block node, as $insertNodeToNearestRoot can change the focus node
-      //           const { focus } = selection
-      //           const focusNode = focus.getNode()
-      //           // Insert upload node BEFORE potentially removing focusNode, as $insertNodeToNearestRoot errors if the focusNode doesn't exist
-      //           // $insertNodeToNearestRoot(uploadNode)
+                // we need to get the focus node before inserting the block node, as $insertNodeToNearestRoot can change the focus node
+                const { focus } = selection
+                const focusNode = focus.getNode()
+                // Insert upload node BEFORE potentially removing focusNode, as $insertNodeToNearestRoot errors if the focusNode doesn't exist
+                // @ts-ignore
+                $insertNodeToNearestRoot(uploadNode)
 
-      //           // Delete the node it it's an empty paragraph
-      //           if ($isParagraphNode(focusNode) && !focusNode.__first) {
-      //             focusNode.remove()
-      //           }
-      //         }
-      //       })
+                // Delete the node it it's an empty paragraph
+                if ($isParagraphNode(focusNode) && !focusNode.__first) {
+                  focusNode.remove()
+                }
+              }
+            })
 
-      //       return true
-      //     },
-      //     COMMAND_PRIORITY_EDITOR,
-      //   ),
-      // ),
+            return true
+          },
+          COMMAND_PRIORITY_EDITOR,
+        ),
+      ),
     )
   }, [editor, $updateToolbar])
 
@@ -469,7 +468,7 @@ export default function ToolbarPlugin() {
             ))}
           </DropdownMenuContent>
         </DropdownMenu>
-        {/* <DropdownMenu>
+        <DropdownMenu>
           <DropdownMenuTrigger className="flex items-center justify-center gap-2 px-2 py-1 rounded hover:bg-[#3c3c3c] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-[#3a3a3a] focus:ring-[#3c3c3c] text-[#b5b5b5] text-xs">
             <Plus width={15} height={15} />
             <ChevronDown width={15} height={15} />
@@ -487,8 +486,9 @@ export default function ToolbarPlugin() {
               </DropdownMenuItem>
             ))}
           </DropdownMenuContent>
-        </DropdownMenu> */}
-        {/* {imageDialogOpen && (
+        </DropdownMenu>
+
+        {imageDialogOpen && (
           <InsertInlineImageDialog
             activeEditor={editor}
             onClose={() => {
@@ -496,7 +496,7 @@ export default function ToolbarPlugin() {
             }}
             isOpen={imageDialogOpen} // This should be controlled by state
           />
-        )} */}
+        )}
       </div>
     </div>
   )
