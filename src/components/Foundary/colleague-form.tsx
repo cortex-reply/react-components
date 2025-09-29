@@ -185,7 +185,7 @@ export function ColleagueForm({
   const buttonLabel = submitLabel || (colleague ? 'Update Colleague' : 'Add Colleague')
 
   return (
-    <Card className="m-8 w-full max-w-4xl mx-auto">
+    <Card className="m-8 w-full max-w-4xl mx-auto overflow-y-scroll no-scrollbar">
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <Bot className="h-5 w-5" />
