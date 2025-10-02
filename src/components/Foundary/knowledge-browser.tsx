@@ -15,7 +15,7 @@ interface KnowledgeBrowserProps {
   menuConfig: KnowledgeMenuConfig
   onDocumentClick?: (document: KnowledgeDocument) => void
   onDocumentShare?: (document: KnowledgeDocument) => void
-  onDocumentUpdate?: (document: KnowledgeDocument) => void
+  onDocumentUpdate?: (document: KnowledgeDocument) => Promise<boolean>
   selectedDocumentId?: string
   className?: string
   editable?: boolean
@@ -199,6 +199,15 @@ export function KnowledgeBrowser({
   useEffect(() => {
     setDocuments(initialDocuments)
   }, [initialDocuments])
+
+  useEffect(() => {
+    if (selectedDocument?.id) {
+      const currDoc = documents.find((doc) => doc.id === selectedDocument.id)
+      if (currDoc) {
+        setSelectedDocument(currDoc)
+      }
+    }
+  }, [documents])
 
   // Filter documents based on search
   const filteredDocuments = useMemo(() => {
