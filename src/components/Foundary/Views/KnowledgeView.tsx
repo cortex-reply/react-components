@@ -6,6 +6,7 @@ import type { KnowledgeDocument, KnowledgeContext, Knowledge, TeamKnowledgeConte
 import { KnowledgeBrowser } from '../knowledge-browser'
 import { AddKnowledgeModal } from '../Knowledge/add-knowledge-modal'
 import { AddTeamContext } from '../Knowledge/add-team-context'
+import { Loader2 } from 'lucide-react'
 
 interface KnowledgeViewProps {
   documents?: KnowledgeDocument[]
@@ -16,7 +17,7 @@ interface KnowledgeViewProps {
   selectedDocumentId?: string
   onAddKnowledge?: (knowledge: Omit<Knowledge, 'id'>) => void
   onAddTeamContext?: (teamContext: TeamKnowledgeContext) => void
-  onDocumentUpdate?: (document: KnowledgeDocument) => void
+  onDocumentUpdate?: (document: KnowledgeDocument) => Promise<boolean>
 }
 
 export default function KnowledgeView({
@@ -33,6 +34,7 @@ export default function KnowledgeView({
   const [activeContext, setActiveContext] = useState(contexts[0])
   const [isAddKnowledgeModalOpen, setIsAddKnowledgeModalOpen] = useState(false)
   const [isAddTeamContextModalOpen, setIsAddTeamContextModalOpen] = useState(false)
+  const [isAddingKnowledge, setIsAddingKnowledge] = useState(false)
 
   useEffect(() => {
     if (!activeContext && contexts && contexts.length > 0) setActiveContext(contexts[0])
@@ -40,6 +42,7 @@ export default function KnowledgeView({
 
   const handleAddKnowledge = (knowledge: Omit<Knowledge, 'id'>) => {
     if (onAddKnowledge) {
+      setIsAddingKnowledge(true)
       onAddKnowledge(knowledge)
     }
     setIsAddKnowledgeModalOpen(false)
@@ -55,6 +58,13 @@ export default function KnowledgeView({
   return (
     <div className="flex flex-col h-full">
       <div className="px-2 md:px-4 py-4 flex-shrink-0">
+        {isAddingKnowledge && (
+          <div className="absolute inset-0 bg-background/90 z-[9999] flex flex-col items-center justify-center gap-4">
+            <Loader2 className="h-8 w-8 animate-spin text-primary" />
+            <p className="font-semibold text-lg">Initializing document...</p>
+          </div>
+        )}
+
         {/* <DashboardHero
           title="Knowledge"
           description="Access, manage, and share all your team knowledge in one place."
@@ -98,21 +108,21 @@ export default function KnowledgeView({
                     </button>
                   ))}
                 </div>
-                
+
                 {/* Action Buttons */}
                 <div className="flex items-center gap-2 flex-shrink-0">
-                    <button
-                      onClick={() => setIsAddKnowledgeModalOpen(true)}
-                      className="inline-flex border border-primary rounded-xl items-center py-2 px-3 text-sm font-medium text-primary hover:text-primary/80 transition-colors whitespace-nowrap"
-                    >
-                      Add Knowledge
-                    </button>
-                    <button
-                      onClick={() => setIsAddTeamContextModalOpen(true)}
-                      className="inline-flex border border-primary rounded-xl items-center gap-2 py-2 px-3 text-sm font-medium text-primary hover:text-primary/80 transition-colors whitespace-nowrap"
-                    >
-                      Add Context
-                    </button>
+                  <button
+                    onClick={() => setIsAddKnowledgeModalOpen(true)}
+                    className="inline-flex border border-primary rounded-xl items-center py-2 px-3 text-sm font-medium text-primary hover:text-primary/80 transition-colors whitespace-nowrap"
+                  >
+                    Add Knowledge
+                  </button>
+                  <button
+                    onClick={() => setIsAddTeamContextModalOpen(true)}
+                    className="inline-flex border border-primary rounded-xl items-center gap-2 py-2 px-3 text-sm font-medium text-primary hover:text-primary/80 transition-colors whitespace-nowrap"
+                  >
+                    Add Context
+                  </button>
                 </div>
               </nav>
             </div>
