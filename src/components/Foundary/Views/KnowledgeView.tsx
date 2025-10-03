@@ -7,6 +7,7 @@ import { KnowledgeBrowser } from '../knowledge-browser'
 import { AddKnowledgeModal } from '../Knowledge/add-knowledge-modal'
 import { AddTeamContext } from '../Knowledge/add-team-context'
 import { Loader2 } from 'lucide-react'
+import { Button } from '@/components/ui/button'
 
 interface KnowledgeViewProps {
   documents?: KnowledgeDocument[]
@@ -151,11 +152,16 @@ export default function KnowledgeView({
           </div>
         </div>
       ) : (
+        <div>
         <div className="flex-1 min-h-0 px-2 md:px-4 pb-4 flex items-center justify-center">
           <p className="text-muted-foreground">No contexts available</p>
+        </div>
+        <div className="flex-1 min-h-0 px-2 md:px-4 pb-4 flex items-center justify-center">
           <Button onClick={() => setIsAddTeamContextModalOpen(true)}>Add Context</Button>
         </div>
-      )}
+      </div>
+      )
+      }
       <>
         <AddTeamContext
           isOpen={isAddTeamContextModalOpen}
