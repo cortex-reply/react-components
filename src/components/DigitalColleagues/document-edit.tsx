@@ -1,15 +1,32 @@
-"use client"
+'use client'
 
-import { motion } from "motion/react"
-import { File, FileText, Edit3, Save, X, Plus, Type, ChevronDown, ChevronRight, Info } from "lucide-react"
-import React, { useState, useEffect } from "react"
-import { Button } from "@/components/ui/button"
-import { Textarea } from "@/components/ui/textarea"
-import { Input } from "@/components/ui/input"
-import { Badge } from "@/components/ui/badge"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { EditableField } from "@/components/AdvancedComponents/EditableField"
-import type { KnowledgeDocument, KnowledgeContext } from "./types"
+import { motion } from 'motion/react'
+import {
+  File,
+  FileText,
+  Edit3,
+  Save,
+  X,
+  Plus,
+  Type,
+  ChevronDown,
+  ChevronRight,
+  Info,
+} from 'lucide-react'
+import React, { useState, useEffect } from 'react'
+import { Button } from '@/components/ui/button'
+import { Textarea } from '@/components/ui/textarea'
+import { Input } from '@/components/ui/input'
+import { Badge } from '@/components/ui/badge'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
+import { EditableField } from '@/components/AdvancedComponents/EditableField'
+import type { KnowledgeDocument, KnowledgeContext } from './types'
 
 interface DocumentEditProps {
   document: KnowledgeDocument
@@ -19,39 +36,39 @@ interface DocumentEditProps {
   knowledgeContexts?: KnowledgeContext[]
 }
 
-export function DocumentEdit({ 
-  document, 
-  onSave, 
+export function DocumentEdit({
+  document,
+  onSave,
   onCancel,
   availableDocuments = [],
-  knowledgeContexts = []
+  knowledgeContexts = [],
 }: DocumentEditProps) {
   const [editedDocument, setEditedDocument] = useState<KnowledgeDocument>({
     ...document,
-    updatedAt: new Date()
+    updatedAt: new Date(),
   })
   const [isMetadataExpanded, setIsMetadataExpanded] = useState(false)
-  
+
   // Keep track of metadata fields with stable IDs for React reconciliation
   const [metadataFields, setMetadataFields] = useState(() => {
-    const fields: Array<{id: string, key: string, value: string, isContextKey: boolean}> = []
+    const fields: Array<{ id: string; key: string; value: string; isContextKey: boolean }> = []
     let idCounter = 0
-    
+
     // First, add all context keys as default fields (empty values)
     const contextKeys = new Set<string>()
-    knowledgeContexts.forEach(context => {
-      context.menuConfig.groupBy.forEach(key => contextKeys.add(key))
+    knowledgeContexts.forEach((context) => {
+      context.menuConfig.groupBy.forEach((key) => contextKeys.add(key))
     })
-    
-    contextKeys.forEach(key => {
+
+    contextKeys.forEach((key) => {
       fields.push({
         id: `context_field_${idCounter++}`,
         key,
         value: document.metadata?.[key] ? String(document.metadata[key]) : '',
-        isContextKey: true
+        isContextKey: true,
       })
     })
-    
+
     // Then add any existing metadata that isn't already a context key
     if (document.metadata) {
       Object.entries(document.metadata).forEach(([key, value]) => {
@@ -60,12 +77,12 @@ export function DocumentEdit({
             id: `existing_field_${idCounter++}`,
             key,
             value: String(value),
-            isContextKey: false
+            isContextKey: false,
           })
         }
       })
     }
-    
+
     return fields
   })
 
@@ -101,23 +118,23 @@ export function DocumentEdit({
   // Extract suggested metadata keys from existing documents only
   const getSuggestedMetadataKeys = () => {
     const keysFromDocuments = new Set<string>()
-    
+
     // Get keys from existing documents
-    availableDocuments.forEach(doc => {
+    availableDocuments.forEach((doc) => {
       if (doc.metadata) {
-        Object.keys(doc.metadata).forEach(key => keysFromDocuments.add(key))
+        Object.keys(doc.metadata).forEach((key) => keysFromDocuments.add(key))
       }
     })
-    
+
     return {
-      documentKeys: Array.from(keysFromDocuments).sort()
+      documentKeys: Array.from(keysFromDocuments).sort(),
     }
   }
 
   // Get suggested values for a specific metadata key
   const getSuggestedValues = (key: string) => {
     const values = new Set<string>()
-    availableDocuments.forEach(doc => {
+    availableDocuments.forEach((doc) => {
       if (doc.metadata?.[key]) {
         values.add(String(doc.metadata[key]))
       }
@@ -135,35 +152,30 @@ export function DocumentEdit({
   useEffect(() => {
     // Convert metadataFields back to document metadata format, filtering out empty keys and empty values
     const metadata = metadataFields
-      .filter(field => field.key.trim() !== '' && field.value.trim() !== '')
-      .reduce((acc, field) => ({
-        ...acc,
-        [field.key]: field.value
-      }), {})
-    
-    setEditedDocument(prev => ({
+      .filter((field) => field.key.trim() !== '' && field.value.trim() !== '')
+      .reduce(
+        (acc, field) => ({
+          ...acc,
+          [field.key]: field.value,
+        }),
+        {},
+      )
+
+    setEditedDocument((prev) => ({
       ...prev,
-      metadata: Object.keys(metadata).length > 0 ? metadata : undefined
+      metadata: Object.keys(metadata).length > 0 ? metadata : undefined,
     }))
   }, [metadataFields])
 
   const handleMetadataKeyChange = (fieldId: string, newKey: string) => {
-    setMetadataFields(prev => 
-      prev.map(field => 
-        field.id === fieldId 
-          ? { ...field, key: newKey }
-          : field
-      )
+    setMetadataFields((prev) =>
+      prev.map((field) => (field.id === fieldId ? { ...field, key: newKey } : field)),
     )
   }
 
   const handleMetadataValueChange = (fieldId: string, newValue: string) => {
-    setMetadataFields(prev => 
-      prev.map(field => 
-        field.id === fieldId 
-          ? { ...field, value: newValue }
-          : field
-      )
+    setMetadataFields((prev) =>
+      prev.map((field) => (field.id === fieldId ? { ...field, value: newValue } : field)),
     )
   }
 
@@ -181,17 +193,17 @@ export function DocumentEdit({
       id: `field_${Date.now()}`,
       key: '',
       value: '',
-      isContextKey: false
+      isContextKey: false,
     }
-    setMetadataFields(prev => [...prev, newField])
+    setMetadataFields((prev) => [...prev, newField])
   }
 
   const handleRemoveMetadataField = (fieldId: string) => {
-    setMetadataFields(prev => prev.filter(field => field.id !== fieldId))
+    setMetadataFields((prev) => prev.filter((field) => field.id !== fieldId))
   }
 
   return (
-    <motion.div 
+    <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.3 }}
@@ -204,7 +216,7 @@ export function DocumentEdit({
             <div className="flex-shrink-0 p-3 rounded-xl bg-muted border border-border">
               {formatIcon(editedDocument.format)}
             </div>
-            
+
             <div className="flex-1 min-w-0">
               <div className="flex items-start gap-4 mb-2 leading-tight">
                 <div className="flex-1 min-w-0">
@@ -212,22 +224,30 @@ export function DocumentEdit({
                     fieldName="title"
                     value={editedDocument.title}
                     label=""
-                    onSave={(fieldName, value) => setEditedDocument(prev => ({ ...prev, title: value }))}
+                    onSave={(fieldName, value) =>
+                      setEditedDocument((prev) => ({ ...prev, title: value }))
+                    }
                     className="[&>div:last-child]:text-2xl [&>div:last-child]:font-bold [&>div:last-child]:leading-tight [&>div:last-child]:text-foreground [&>div:last-child]:p-0 [&>div:last-child]:border-0 [&>div:last-child]:hover:bg-muted/30 [&>div:last-child]:min-h-0"
                   />
                 </div>
-                <span className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium border ${formatBadgeColor(editedDocument.format)} flex-shrink-0 mt-1`}>
+                <span
+                  className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium border ${formatBadgeColor(
+                    editedDocument.format,
+                  )} flex-shrink-0 mt-1`}
+                >
                   {editedDocument.format.toUpperCase()}
                 </span>
               </div>
-              
+
               <div className="mt-2">
                 <EditableField
                   fieldName="description"
                   value={editedDocument.description || 'Click to add description...'}
                   label=""
                   multiline={true}
-                  onSave={(fieldName, value) => setEditedDocument(prev => ({ ...prev, description: value }))}
+                  onSave={(fieldName, value) =>
+                    setEditedDocument((prev) => ({ ...prev, description: value }))
+                  }
                   className="[&>div:last-child]:text-muted-foreground [&>div:last-child]:text-lg [&>div:last-child]:leading-relaxed [&>div:last-child]:p-0 [&>div:last-child]:border-0 [&>div:last-child]:hover:bg-muted/30 [&>div:last-child]:min-h-0"
                 />
               </div>
@@ -244,9 +264,15 @@ export function DocumentEdit({
             >
               <Info className="h-4 w-4" />
               Metadata
-              {metadataFields.filter(field => field.key.trim() !== '' && field.value.trim() !== '').length > 0 && (
+              {metadataFields.filter(
+                (field) => field.key.trim() !== '' && field.value.trim() !== '',
+              ).length > 0 && (
                 <span className="inline-flex items-center justify-center w-5 h-5 text-xs font-medium bg-primary/10 text-primary rounded-full">
-                  {metadataFields.filter(field => field.key.trim() !== '' && field.value.trim() !== '').length}
+                  {
+                    metadataFields.filter(
+                      (field) => field.key.trim() !== '' && field.value.trim() !== '',
+                    ).length
+                  }
                 </span>
               )}
               {isMetadataExpanded ? (
@@ -256,20 +282,11 @@ export function DocumentEdit({
               )}
             </Button>
 
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={onCancel}
-              className="gap-2"
-            >
+            <Button variant="outline" size="sm" onClick={onCancel} className="gap-2">
               <X className="h-4 w-4" />
               Cancel
             </Button>
-            <Button
-              size="sm"
-              onClick={handleSave}
-              className="gap-2"
-            >
+            <Button size="sm" onClick={handleSave} className="gap-2">
               <Save className="h-4 w-4" />
               Save Changes
             </Button>
@@ -279,9 +296,9 @@ export function DocumentEdit({
         {/* Collapsible Metadata Section */}
         <motion.div
           initial={false}
-          animate={{ 
+          animate={{
             height: isMetadataExpanded ? 'auto' : 0,
-            opacity: isMetadataExpanded ? 1 : 0
+            opacity: isMetadataExpanded ? 1 : 0,
           }}
           transition={{ duration: 0.2, ease: 'easeInOut' }}
           className="overflow-hidden"
@@ -307,10 +324,11 @@ export function DocumentEdit({
             {suggestedKeys.documentKeys.length > 0 && (
               <p className="text-xs text-muted-foreground mb-3">
                 Additional from documents: {suggestedKeys.documentKeys.slice(0, 4).join(', ')}
-                {suggestedKeys.documentKeys.length > 4 && ` +${suggestedKeys.documentKeys.length - 4} more`}
+                {suggestedKeys.documentKeys.length > 4 &&
+                  ` +${suggestedKeys.documentKeys.length - 4} more`}
               </p>
             )}
-            
+
             <div className="bg-muted rounded-lg p-4 border border-border">
               {metadataFields.length > 0 ? (
                 <div className="space-y-2">
@@ -322,7 +340,9 @@ export function DocumentEdit({
                           value={field.key}
                           onChange={(e) => handleMetadataKeyChange(field.id, e.target.value)}
                           placeholder="Key"
-                          className={`w-32 h-8 text-sm ${field.isContextKey ? 'bg-primary/5 border-primary/30' : ''}`}
+                          className={`w-32 h-8 text-sm ${
+                            field.isContextKey ? 'bg-primary/5 border-primary/30' : ''
+                          }`}
                           list={`metadata-keys-${field.id}`}
                           disabled={field.isContextKey}
                         />
@@ -331,19 +351,21 @@ export function DocumentEdit({
                             <option key={suggestedKey} value={suggestedKey} />
                           ))}
                         </datalist>
-                        
+
                         <span className="text-muted-foreground text-sm">=</span>
-                        
+
                         {suggestedValues.length > 0 ? (
-                          <Select 
-                            value={field.value || ''} 
-                            onValueChange={(newValue) => handleMetadataValueSelect(field.id, newValue)}
+                          <Select
+                            value={field.value || ''}
+                            onValueChange={(newValue) =>
+                              handleMetadataValueSelect(field.id, newValue)
+                            }
                           >
                             <SelectTrigger className="flex-1 h-8 text-sm">
                               <SelectValue placeholder="Value" />
                             </SelectTrigger>
                             <SelectContent>
-                              {suggestedValues.map(suggestedValue => (
+                              {suggestedValues.map((suggestedValue) => (
                                 <SelectItem key={suggestedValue} value={suggestedValue}>
                                   {suggestedValue}
                                 </SelectItem>
@@ -361,7 +383,7 @@ export function DocumentEdit({
                             className="flex-1 h-8 text-sm"
                           />
                         )}
-                        
+
                         <Button
                           type="button"
                           variant="ghost"
@@ -377,9 +399,7 @@ export function DocumentEdit({
                 </div>
               ) : (
                 <div className="text-center py-4">
-                  <p className="text-sm text-muted-foreground mb-2">
-                    No metadata fields
-                  </p>
+                  <p className="text-sm text-muted-foreground mb-2">No metadata fields</p>
                   <p className="text-xs text-muted-foreground">
                     Click "Add Field" to create metadata
                   </p>
@@ -393,12 +413,10 @@ export function DocumentEdit({
       {/* Content Editor */}
       <div className="flex-1 overflow-auto">
         <div className="p-8">
-          <label className="block text-sm font-medium text-foreground mb-4">
-            Content
-          </label>
+          <label className="block text-sm font-medium text-foreground mb-4">Content</label>
           <Textarea
             value={editedDocument.content || ''}
-            onChange={(e) => setEditedDocument(prev => ({ ...prev, content: e.target.value }))}
+            onChange={(e) => setEditedDocument((prev) => ({ ...prev, content: e.target.value }))}
             placeholder="Document content..."
             className="min-h-[400px] font-mono text-sm"
             style={{ resize: 'vertical' }}

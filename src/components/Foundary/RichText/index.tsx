@@ -14,7 +14,9 @@ import { OnChangePlugin } from '@payloadcms/richtext-lexical/lexical/react/Lexic
 import React, { Dispatch, SetStateAction, useEffect } from 'react'
 
 import ToolbarPlugin from './plugins/toolbar-plugin'
+import { UploadNode } from './nodes/image-node'
 import { useLexicalComposerContext } from '@payloadcms/richtext-lexical/lexical/react/LexicalComposerContext'
+import InlineImagePlugin from './plugins/image-plugin'
 // import { UploadNode } from '@payloadcms/richtext-lexical/client'
 
 interface RichTextProps {
@@ -67,6 +69,7 @@ const RichTextContent: React.FC<RichTextProps> = ({ setValue, value, name, edita
               <AutoFocusPlugin />
               <ListPlugin />
               <OnChangePlugin onChange={handleEditorChange} />
+              <InlineImagePlugin />
             </>
           )}
         </div>
@@ -79,7 +82,7 @@ const RichText: React.FC<RichTextProps> = ({ setValue, value, name, editable = t
   const editorConfig = {
     namespace: 'Lexical editor',
     // nodes: [TableNode, TableCellNode, TableRowNode],
-    nodes: [ListNode, ListItemNode, HeadingNode],
+    nodes: [ListNode, ListItemNode, HeadingNode, UploadNode],
     // Handling of errors during update
     onError(error: Error) {
       console.error('Lexical error:', error)
@@ -124,6 +127,7 @@ const RichText: React.FC<RichTextProps> = ({ setValue, value, name, editable = t
   }
 
   return (
+    // @ts-ignore
     <LexicalComposer initialConfig={editorConfig}>
       <RichTextContent value={value} setValue={setValue} name={name} editable={editable} />
     </LexicalComposer>

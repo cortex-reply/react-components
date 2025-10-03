@@ -13,7 +13,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui'
-import { Plus, Save, X } from 'lucide-react'
+import { Loader2, Plus, Save, X } from 'lucide-react'
 import { KnowledgeContext } from '../types'
 import React, { useState } from 'react'
 
@@ -49,9 +49,10 @@ export const AddKnowledgeModal: React.FC<AddKnowledgeModalProps> = ({
     return {
       name: '',
       description: '',
-      metadata: suggestedKeys.contextKeys.length > 0 
-        ? suggestedKeys.contextKeys.map(key => ({ key, value: '' }))
-        : [{ key: '', value: '' }] as { key: string; value: string }[],
+      metadata:
+        suggestedKeys.contextKeys.length > 0
+          ? suggestedKeys.contextKeys.map((key) => ({ key, value: '' }))
+          : ([{ key: '', value: '' }] as { key: string; value: string }[]),
     }
   })
 
@@ -64,7 +65,7 @@ export const AddKnowledgeModal: React.FC<AddKnowledgeModalProps> = ({
 
     // Only include metadata entries that have both key and value
     const filteredMetadata = formData.metadata.filter(
-      (item) => item.key && item.key.trim() && item.value && item.value.trim()
+      (item) => item.key && item.key.trim() && item.value && item.value.trim(),
     )
 
     onAddKnowledge({
@@ -84,9 +85,10 @@ export const AddKnowledgeModal: React.FC<AddKnowledgeModalProps> = ({
     setFormData({
       name: '',
       description: '',
-      metadata: suggestedKeys.contextKeys.length > 0 
-        ? suggestedKeys.contextKeys.map(key => ({ key, value: '' }))
-        : [{ key: '', value: '' }] as { key: string; value: string }[],
+      metadata:
+        suggestedKeys.contextKeys.length > 0
+          ? suggestedKeys.contextKeys.map((key) => ({ key, value: '' }))
+          : ([{ key: '', value: '' }] as { key: string; value: string }[]),
       // isActive: false,
     })
 
@@ -98,9 +100,10 @@ export const AddKnowledgeModal: React.FC<AddKnowledgeModalProps> = ({
     setFormData({
       name: '',
       description: '',
-      metadata: suggestedKeys.contextKeys.length > 0 
-        ? suggestedKeys.contextKeys.map(key => ({ key, value: '' }))
-        : [{ key: '', value: '' }] as { key: string; value: string }[],
+      metadata:
+        suggestedKeys.contextKeys.length > 0
+          ? suggestedKeys.contextKeys.map((key) => ({ key, value: '' }))
+          : ([{ key: '', value: '' }] as { key: string; value: string }[]),
       // isActive: false,
     })
     onClose()
@@ -193,7 +196,8 @@ export const AddKnowledgeModal: React.FC<AddKnowledgeModalProps> = ({
                     <p className="text-xs text-muted-foreground">
                       Context keys: {suggestedKeys.contextKeys.slice(0, 4).join(', ')}
                       {suggestedKeys.contextKeys.length > 4 &&
-                        ` +${suggestedKeys.contextKeys.length - 4} more`} • Fill in values or add more fields
+                        ` +${suggestedKeys.contextKeys.length - 4} more`}{' '}
+                      • Fill in values or add more fields
                     </p>
                   ) : (
                     <p className="text-xs text-muted-foreground">
@@ -223,9 +227,7 @@ export const AddKnowledgeModal: React.FC<AddKnowledgeModalProps> = ({
                         onChange={(e) => {
                           const newKey = e.target.value || ' '
 
-                          const oldValue = formData.metadata.find(
-                            (item) => item.key === key,
-                          )?.value
+                          const oldValue = formData.metadata.find((item) => item.key === key)?.value
                           setFormData((prev) => {
                             const newMetadata = [...prev.metadata]
                             const index = newMetadata.findIndex((item) => item.key === key)
@@ -242,7 +244,11 @@ export const AddKnowledgeModal: React.FC<AddKnowledgeModalProps> = ({
                           })
                           e.target.focus()
                         }}
-                        placeholder={suggestedKeys.allKeys.length > 0 ? `e.g., ${suggestedKeys.allKeys[0]}` : "Key"}
+                        placeholder={
+                          suggestedKeys.allKeys.length > 0
+                            ? `e.g., ${suggestedKeys.allKeys[0]}`
+                            : 'Key'
+                        }
                         className="w-32 h-8 text-sm"
                         list={`metadata-keys-${key}`}
                       />

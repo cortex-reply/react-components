@@ -1,8 +1,8 @@
 'use client'
 
 import { motion } from 'motion/react'
-import { File, FileText, Edit3, Type, ChevronDown, ChevronRight, Info } from 'lucide-react'
-import { useEffect, useState } from 'react'
+import { File, FileText, Edit3, Type, ChevronDown, ChevronRight, Info, Loader2 } from 'lucide-react'
+import { startTransition, useEffect, useMemo, useRef, useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { Dialog, DialogContent, DialogPortal, DialogOverlay } from '@/components/ui/dialog'
 import * as DialogPrimitive from '@radix-ui/react-dialog'
@@ -61,20 +61,27 @@ const defaultTextRenderer = (content: string): ReactNode => (
 )
 
 // Default richtext renderer (placeholder for PayloadCMS richtext)
-const defaultRichTextRenderer = (content: Knowledge['richTextContent']): ReactNode => (
-  <div className="prose prose-slate dark:prose-invert max-w-none">
-    {content && (
-      <RichText value={JSON.stringify(content)} editable={false} name="richTextContent" />
-    )}
-    {/* <div className="bg-amber-50 dark:bg-amber-950/20 border border-amber-200 dark:border-amber-800 rounded-lg p-4 mb-4">
+const defaultRichTextRenderer = (content: Knowledge['richTextContent']): ReactNode => {
+  return (
+    <div className="prose prose-slate dark:prose-invert max-w-none">
+      {content && (
+        <RichText
+          value={JSON.stringify(content)}
+          editable={false}
+          key={JSON.stringify(content)}
+          name="richTextContent"
+        />
+      )}
+      {/* <div className="bg-amber-50 dark:bg-amber-950/20 border border-amber-200 dark:border-amber-800 rounded-lg p-4 mb-4">
       <p className="text-amber-800 dark:text-amber-200 text-sm">
         <strong>RichText Renderer:</strong> This is a placeholder. Integrate with
         @payloadcms/richtext-lexical for full rendering.
       </p>
     </div>
     <pre className="text-sm">{content}</pre> */}
-  </div>
-)
+    </div>
+  )
+}
 
 // Default MDX renderer (placeholder for @mdx-js/react)
 const defaultMDXRenderer = (content: string): ReactNode => (
@@ -98,7 +105,7 @@ export interface DocumentRenderers {
 
 interface DocumentPreviewProps {
   document: KnowledgeDocument
-  onDocumentUpdate?: (document: KnowledgeDocument) => void
+  onDocumentUpdate?: (document: KnowledgeDocument) => Promise<boolean>
   editable?: boolean
   mode?: 'create' | 'view'
   renderers?: DocumentRenderers
@@ -118,6 +125,14 @@ export function DocumentPreview({
   const [isEditing, setIsEditing] = useState(false)
   const [isMetadataExpanded, setIsMetadataExpanded] = useState(false)
   const [document, setDocument] = useState<KnowledgeDocument>(initialDocument)
+  const [isSaving, setIsSaving] = useState(false)
+  const rollbackRef = useRef<KnowledgeDocument | null>(null)
+  const contentForKey = document.format === 'richText' ? document.richTextContent : document.content
+
+  const contentKey = useMemo(() => {
+    // stringify safely; ok for UI keys
+    return `${document.format}:${JSON.stringify(contentForKey)}`
+  }, [document.format, contentForKey])
 
   useEffect(() => {
     setDocument(initialDocument)
@@ -181,10 +196,32 @@ export function DocumentPreview({
     }
   }
 
-  const handleSave = (updatedDocument: KnowledgeDocument) => {
-    setIsEditing(false)
-    onDocumentUpdate?.(updatedDocument)
-    setDocument(updatedDocument)
+  const handleSave = async (updatedDocument: KnowledgeDocument) => {
+    setIsSaving(true)
+    // keep a rollback snapshot
+    rollbackRef.current = document
+
+    // immediate optimistic UI
+    startTransition(() => {
+      setDocument({
+        ...updatedDocument,
+        richTextContent: updatedDocument.richTextContent
+          ? structuredClone(updatedDocument.richTextContent)
+          : undefined,
+      })
+    })
+
+    try {
+      const ok = await onDocumentUpdate?.(updatedDocument)
+      setIsSaving(false)
+      if (!ok) throw new Error('save failed')
+      setIsEditing(false)
+    } catch (e) {
+      // rollback on failure
+      if (rollbackRef.current) {
+        startTransition(() => setDocument(rollbackRef.current!))
+      }
+    }
   }
 
   const handleCancel = () => {
@@ -203,9 +240,14 @@ export function DocumentPreview({
             className={cn(
               'fixed inset-0 z-50 bg-background p-0 m-0 border-0',
               'data-[state=open]:animate-in data-[state=closed]:animate-out',
-              'data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0'
+              'data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0',
             )}
           >
+            {isSaving && (
+              <div className="absolute inset-0 bg-background/50 flex items-center justify-center">
+                <Loader2 className="h-8 w-8 animate-spin text-primary" />
+              </div>
+            )}
             <DocumentEdit
               mode={mode === 'create' ? 'create' : 'edit'}
               document={document}
@@ -225,127 +267,129 @@ export function DocumentPreview({
         transition={{ duration: 0.3 }}
         className="h-full flex flex-col"
       >
-      {/* Header */}
-      <div className="border-b border-border bg-card p-8 pb-6">
-        <div className="flex items-start justify-between gap-4">
-          <div className="flex items-start gap-4 flex-1 min-w-0">
-            {/* <div className="flex-shrink-0 p-3 rounded-xl bg-muted border border-border">
+        {/* Header */}
+        <div className="border-b border-border bg-card p-8 pb-6">
+          <div className="flex items-start justify-between gap-4">
+            <div className="flex items-start gap-4 flex-1 min-w-0">
+              {/* <div className="flex-shrink-0 p-3 rounded-xl bg-muted border border-border">
               {formatIcon(document.format)}
             </div> */}
-            
-            <div className="flex-1 min-w-0">
-              <h1 className="text-2xl font-bold text-foreground mb-2 leading-tight">
-                {document.title}
-                <span className={`inline-flex ml-4 items-center px-3 py-1 rounded-full text-sm font-medium border ${formatBadgeColor(document.format)}`}>
-                  {document.format.toUpperCase()}
-                </span>
-              </h1>
-              
-              {document.description && (
-                <p className="text-muted-foreground text-lg leading-relaxed">
-                  {document.description}
-                </p>
+
+              <div className="flex-1 min-w-0">
+                <h1 className="text-2xl font-bold text-foreground mb-2 leading-tight">
+                  {document.title}
+                  <span
+                    className={`inline-flex ml-4 items-center px-3 py-1 rounded-full text-sm font-medium border ${formatBadgeColor(
+                      document.format,
+                    )}`}
+                  >
+                    {document.format.toUpperCase()}
+                  </span>
+                </h1>
+
+                {document.description && (
+                  <p className="text-muted-foreground text-lg leading-relaxed">
+                    {document.description}
+                  </p>
+                )}
+              </div>
+            </div>
+
+            <div className="items-center gap-2 flex-shrink-0 hidden lg:flex">
+              {/* Metadata Toggle */}
+              {document.metadata && Object.keys(document.metadata).length > 0 && (
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setIsMetadataExpanded(!isMetadataExpanded)}
+                  className="gap-2"
+                >
+                  <Info className="h-4 w-4" />
+                  Metadata
+                  {isMetadataExpanded ? (
+                    <ChevronDown className="h-4 w-4" />
+                  ) : (
+                    <ChevronRight className="h-4 w-4" />
+                  )}
+                </Button>
+              )}
+
+              {editable && (
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setIsEditing(true)}
+                  className="gap-2"
+                >
+                  <Edit3 className="h-4 w-4" />
+                  Edit
+                </Button>
               )}
             </div>
           </div>
 
-          <div className="items-center gap-2 flex-shrink-0 hidden lg:flex">
-            {/* Metadata Toggle */}
-            {document.metadata && Object.keys(document.metadata).length > 0 && (
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => setIsMetadataExpanded(!isMetadataExpanded)}
-                className="gap-2"
-              >
-                <Info className="h-4 w-4" />
-                Metadata
-                {isMetadataExpanded ? (
-                  <ChevronDown className="h-4 w-4" />
-                ) : (
-                  <ChevronRight className="h-4 w-4" />
-                )}
-              </Button>
-            )}
-
-            {editable && (
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => setIsEditing(true)}
-                className="gap-2"
-              >
-                <Edit3 className="h-4 w-4" />
-                Edit
-              </Button>
-            )}
-          </div>
-        </div>
-
-        {/* Collapsible Metadata Section */}
-        {document.metadata && Object.keys(document.metadata).length > 0 && (
-          <motion.div
-            initial={false}
-            animate={{ 
-              height: isMetadataExpanded ? 'auto' : 0,
-              opacity: isMetadataExpanded ? 1 : 0
-            }}
-            transition={{ duration: 0.2, ease: 'easeInOut' }}
-            className="overflow-hidden"
-          >
-            <div className="pt-4 border-t border-border mt-4">
-              <h3 className="text-sm font-semibold text-foreground mb-3 flex items-center gap-2">
-                <Info className="h-4 w-4" />
-                Document Metadata
-              </h3>
-              <div className="bg-muted rounded-lg p-4 border border-border">
-                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-6 gap-y-2 text-sm">
-                  {Object.entries(document.metadata).map(([key, value]) => (
-                    <div key={key} className="flex flex-col gap-1">
-                      <span className="text-muted-foreground font-medium text-xs uppercase tracking-wide">
-                        {key.replace(/([A-Z])/g, ' $1').trim()}
-                      </span>
-                      <span className="text-foreground font-medium">
-                        {String(value)}
-                      </span>
-                    </div>
-                  ))}
+          {/* Collapsible Metadata Section */}
+          {document.metadata && Object.keys(document.metadata).length > 0 && (
+            <motion.div
+              initial={false}
+              animate={{
+                height: isMetadataExpanded ? 'auto' : 0,
+                opacity: isMetadataExpanded ? 1 : 0,
+              }}
+              transition={{ duration: 0.2, ease: 'easeInOut' }}
+              className="overflow-hidden"
+            >
+              <div className="pt-4 border-t border-border mt-4">
+                <h3 className="text-sm font-semibold text-foreground mb-3 flex items-center gap-2">
+                  <Info className="h-4 w-4" />
+                  Document Metadata
+                </h3>
+                <div className="bg-muted rounded-lg p-4 border border-border">
+                  <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-6 gap-y-2 text-sm">
+                    {Object.entries(document.metadata).map(([key, value]) => (
+                      <div key={key} className="flex flex-col gap-1">
+                        <span className="text-muted-foreground font-medium text-xs uppercase tracking-wide">
+                          {key.replace(/([A-Z])/g, ' $1').trim()}
+                        </span>
+                        <span className="text-foreground font-medium">{String(value)}</span>
+                      </div>
+                    ))}
+                  </div>
                 </div>
               </div>
+            </motion.div>
+          )}
+        </div>
+
+        {/* Content */}
+        <div className="flex-1 ">
+          <div className="py-4 h-full">
+            {/* Content Preview */}
+            <div className="space-y-4">
+              {document.content || document.richTextContent ? (
+                <div className="relative" key={contentKey}>
+                  <div className="bg-background px-8 overflow-hidden h-full flex-1">
+                    {renderContent(
+                      document.format === 'richText' ? document.richTextContent : document.content,
+                      document.format,
+                    )}
+                  </div>
+                </div>
+              ) : (
+                <div className="text-center p-12 bg-muted rounded-xl border-2 border-dashed border-border">
+                  <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-background flex items-center justify-center">
+                    <FileText className="h-8 w-8 text-muted-foreground" />
+                  </div>
+                  <h4 className="text-foreground font-medium mb-1">No content available</h4>
+                  <p className="text-muted-foreground text-sm">
+                    This document doesn't have preview content
+                  </p>
+                </div>
+              )}
             </div>
-          </motion.div>
-        )}
-      </div>
-
-      {/* Content */}
-      <div className="flex-1 ">
-        <div className="py-4 h-full">
-          {/* Content Preview */}
-          <div className="space-y-4">
-            {document.content || document.richTextContent ? (
-              <div className="relative">
-                <div className="bg-background px-8 overflow-hidden h-full flex-1">
-                  {renderContent(
-                    document.format === 'richText' ? document.richTextContent : document.content,
-                    document.format,
-                  )}
-                </div>
-              </div>
-            ) : (
-              <div className="text-center p-12 bg-muted rounded-xl border-2 border-dashed border-border">
-                <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-background flex items-center justify-center">
-                  <FileText className="h-8 w-8 text-muted-foreground" />
-                </div>
-                <h4 className="text-foreground font-medium mb-1">No content available</h4>
-                <p className="text-muted-foreground text-sm">
-                  This document doesn't have preview content
-                </p>
-              </div>
-            )}
           </div>
         </div>
-      </div>
-    </motion.div>
+      </motion.div>
     </>
   )
 }
