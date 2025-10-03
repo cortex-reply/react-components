@@ -6,6 +6,7 @@ import type { KnowledgeDocument, KnowledgeContext, Knowledge, TeamKnowledgeConte
 import { KnowledgeBrowser } from '../knowledge-browser'
 import { AddKnowledgeModal } from '../Knowledge/add-knowledge-modal'
 import { AddTeamContext } from '../Knowledge/add-team-context'
+import { Button } from 'react-day-picker'
 
 interface KnowledgeViewProps {
   documents?: KnowledgeDocument[]
@@ -143,6 +144,7 @@ export default function KnowledgeView({
       ) : (
         <div className="flex-1 min-h-0 px-2 md:px-4 pb-4 flex items-center justify-center">
           <p className="text-muted-foreground">No contexts available</p>
+          <Button onClick={() => setIsAddTeamContextModalOpen(true)}>Add Context</Button>
         </div>
       )}
       <>
