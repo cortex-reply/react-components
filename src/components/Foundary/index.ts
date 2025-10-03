@@ -2,6 +2,7 @@
 export { AppSidebarLeft } from './AppSidebarLeft'
 export { DashboardHeader } from './DashboardHeader'
 export { FoundaryLayout } from './foundary-layout'
+export { Login } from './Login'
 export { default as MainPage } from './MainPage'
 export { ManagementSidebar } from './ManagementSidebar'
 export { SearchableSelect } from './SearchableSelect'
