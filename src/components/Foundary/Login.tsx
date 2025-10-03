@@ -1,247 +1,45 @@
 'use client'
 
 import { useState } from 'react'
-import { motion, AnimatePresence } from 'motion/react'
-import { Bot, Users, Lock } from 'lucide-react'
+import { motion } from 'motion/react'
+import { Lock } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Logo } from '@/components/Payload/Logo'
 import { cn } from '../../utils'
 
 export interface LoginProps {
-  /**
-   * Callback function called when login button is clicked
-   */
-  onLogin?: () => void
-  /**
-   * Whether the login is in a loading state
-   */
-  isLoading?: boolean
-  /**
-   * Custom class name for the login container
-   */
-  className?: string
-  /**
-   * Main title text for the login screen
-   */
-  title?: string
-  /**
-   * Subtitle/description text for the login screen
-   */
-  subtitle?: string
-  /**
-   * Text for the login button
-   */
+  /** Function called when login is attempted */
+  onLogin: () => void
+  /** Text to display on the login button */
   buttonText?: string
-  /**
-   * Loading text shown when signing in
-   */
-  loadingText?: string
-  /**
-   * Post-login welcome title
-   */
-  welcomeTitle?: string
-  /**
-   * Post-login subtitle for workspace selection
-   */
-  welcomeSubtitle?: string
-  /**
-   * Logo source URL
-   */
-  logoSrc?: string
-  /**
-   * Logo alt text
-   */
-  logoAlt?: string
-  /**
-   * Workspace choice options for post-login selection
-   */
-  workspaceChoices?: WorkspaceChoice[]
+  /** Main title text */
+  title?: string
+  /** Subtitle text */
+  subtitle?: string
+  /** Props to pass to the Logo component */
+  logoProps?: { width?: number; height?: number; className?: string }
+  /** URL to redirect to after successful login */
+  redirectUrl?: string
+  /** Additional CSS classes */
+  className?: string
 }
 
-export interface WorkspaceChoice {
-  id: string
-  title: string
-  description: string
-  icon: React.ReactNode
-  color: string
-  gradient: string
-  url?: string
-  onClick?: () => void
-}
-
-const defaultWorkspaceChoices: WorkspaceChoice[] = [
-  {
-    id: 'ava',
-    title: 'Chat with Ava',
-    description: 'Start a conversation with our digital assistant for instant help and guidance.',
-    icon: <Bot className="h-12 w-12" />,
-    color: 'text-purple-600',
-    gradient: 'from-purple-500 to-blue-600',
-    url: '/chat/ava'
-  },
-  {
-    id: 'team',
-    title: 'Collaborate with Team',
-    description: 'Work together with your colleagues on projects and share knowledge.',
-    icon: <Users className="h-12 w-12" />,
-    color: 'text-blue-600',
-    gradient: 'from-blue-500 to-green-600',
-    url: '/workspace/team'
-  }
-]
-
-export function Login({ 
-  onLogin, 
-  isLoading = false, 
-  className,
-  title = "Welcome to Cortex",
-  subtitle = "Click below to access your digital workspace",
-  buttonText = "Sign In to Continue",
-  loadingText = "Signing you in...",
-  welcomeTitle = "Welcome to Cortex",
-  welcomeSubtitle = "Choose how you'd like to get started",
-  logoSrc = "/logo.png",
-  logoAlt = "Cortex Logo",
-  workspaceChoices = defaultWorkspaceChoices
-}: LoginProps) {
-  const [isLoggedIn, setIsLoggedIn] = useState(false)
+export const Login: React.FC<LoginProps> = ({
+  onLogin,
+  buttonText = "Login",
+  title = "Login to Cortex",
+  subtitle = "Welcome back",
+  logoProps = { width: 80, height: 80 },
+  redirectUrl = "/dashboard",
+  className
+}) => {
   const [isLoggingIn, setIsLoggingIn] = useState(false)
 
   const handleLogin = async () => {
     setIsLoggingIn(true)
-    
-    // Simulate login process
-    await new Promise(resolve => setTimeout(resolve, 1500))
-    
-    setIsLoggingIn(false)
-    setIsLoggedIn(true)
-    
-    // Call the optional callback
-    onLogin?.()
-  }
-
-  const handleWorkspaceChoice = (choice: WorkspaceChoice) => {
-    // Handle custom onClick callback first
-    if (choice.onClick) {
-      choice.onClick()
-      return
-    }
-    
-    // Handle URL redirection
-    if (choice.url) {
-      if (choice.url.startsWith('http://') || choice.url.startsWith('https://')) {
-        // External URL
-        window.open(choice.url, '_blank')
-      } else {
-        // Internal navigation
-        window.location.href = choice.url
-      }
-    } else {
-      // Fallback - just log for demo
-      console.log(`User selected: ${choice.title}`)
-    }
-  }
-
-  if (isLoggedIn) {
-    return (
-      <div className={cn('min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 flex items-center justify-center p-4', className)}>
-        <motion.div
-          initial={{ opacity: 0, scale: 0.9 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.5, type: "spring", stiffness: 100 }}
-          className="w-full max-w-4xl"
-        >
-          <div className="text-center mb-8">
-            <motion.div
-              initial={{ opacity: 0, scale: 0.8 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ delay: 0.1, duration: 0.6 }}
-              className="mb-6 flex justify-center"
-            >
-              <div className="w-32 h-32 bg-white rounded-full flex items-center justify-center shadow-lg">
-                <Logo 
-                  className="w-24 h-auto"
-                  loading="eager"
-                  priority="high"
-                  alt={logoAlt}
-                  src={logoSrc}
-                />
-              </div>
-            </motion.div>
-            <motion.h1 
-              initial={{ opacity: 0, y: -20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.2, duration: 0.6 }}
-              className="text-4xl font-bold bg-primary bg-clip-text text-transparent mb-4"
-            >
-              {welcomeTitle}
-            </motion.h1>
-            <motion.p 
-              initial={{ opacity: 0, y: -10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.3, duration: 0.6 }}
-              className="text-lg text-muted-foreground"
-            >
-              {welcomeSubtitle}
-            </motion.p>
-          </div>
-
-          <div className="grid md:grid-cols-2 gap-6">
-            <AnimatePresence>
-              {workspaceChoices.map((choice, index) => (
-                <motion.div
-                  key={choice.id}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ 
-                    delay: 0.4 + (index * 0.1), 
-                    duration: 0.6,
-                    type: "spring",
-                    stiffness: 100
-                  }}
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
-                >
-                  <Card 
-                    className="cursor-pointer transition-all duration-300 hover:shadow-xl border-2 hover:border-primary/30 group h-full"
-                    onClick={() => handleWorkspaceChoice(choice)}
-                  >
-                    <CardHeader className="text-center pb-4">
-                      <div className={cn(
-                        'mx-auto w-20 h-20 rounded-full flex items-center justify-center mb-4 transition-all duration-300',
-                        'bg-gradient-to-br', choice.gradient,
-                        'group-hover:scale-110'
-                      )}>
-                        <div className="text-white">
-                          {choice.icon}
-                        </div>
-                      </div>
-                      <CardTitle className="text-2xl font-semibold">
-                        {choice.title}
-                      </CardTitle>
-                    </CardHeader>
-                    <CardContent className="text-center">
-                      <CardDescription className="text-base leading-relaxed mb-6">
-                        {choice.description}
-                      </CardDescription>
-                      <Button 
-                        className={cn(
-                          'w-full, text-white border-0 hover:opacity-90 transition-opacity duration-300'
-                        )}
-                        size="lg"
-                      >
-                        Get Started
-                      </Button>
-                    </CardContent>
-                  </Card>
-                </motion.div>
-              ))}
-            </AnimatePresence>
-          </div>
-        </motion.div>
-      </div>
-    )
+    // Call the callback with the token
+    onLogin()
   }
 
   return (
@@ -261,11 +59,10 @@ export function Login({
               className="mx-auto w-20 h-20 bg-white rounded-full flex items-center justify-center mb-4 shadow-lg"
             >
               <Logo 
-                className="w-16 h-auto"
+                {...logoProps}
+                className={cn("w-16 h-auto", logoProps?.className)}
                 loading="eager"
                 priority="high"
-                alt={logoAlt}
-                src={logoSrc}
               />
             </motion.div>
             <CardTitle className="text-3xl font-bold bg-accent bg-clip-text text-transparent">
@@ -279,10 +76,10 @@ export function Login({
           <CardContent className="space-y-6 py-6">
             <Button 
               onClick={handleLogin}
-              className="w-full h-12  text-white border-0 font-medium text-lg transition-all duration-300 shadow-lg hover:shadow-xl"
-              disabled={isLoggingIn || isLoading}
+              className="w-full h-12 text-white border-0 font-medium text-lg transition-all duration-300 shadow-lg hover:shadow-xl"
+              disabled={isLoggingIn}
             >
-              {isLoggingIn || isLoading ? (
+              {isLoggingIn ? (
                 <>
                   <motion.div
                     animate={{ rotate: 360 }}
@@ -291,7 +88,7 @@ export function Login({
                   >
                     <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full" />
                   </motion.div>
-                  {loadingText}
+                  Signing In...
                 </>
               ) : (
                 <>
