@@ -18,7 +18,7 @@ export interface LoginProps {
   /** Subtitle text */
   subtitle?: string
   /** Props to pass to the Logo component */
-  logoProps?: { width?: number; height?: number; className?: string }
+  logoProps?: { width?: number; height?: number; className?: string; src?: string; alt?: string }
   /** URL to redirect to after successful login */
   redirectUrl?: string
   /** Additional CSS classes */
