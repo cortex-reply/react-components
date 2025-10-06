@@ -27,11 +27,6 @@ interface Holiday {
 export function CalendarView({ currentDate, setCurrentDate, holidays }: CalendarViewProps) {
   const [selectedDay, setSelectedDay] = useState<Date | null>(null)
 
-  console.log(
-    'holidaysIds',
-    holidays.map((h) => h.id),
-  )
-
   const firstDayOfMonth =
     (new Date(currentDate.getFullYear(), currentDate.getMonth(), 1).getDay() + 6) % 7
 
@@ -45,7 +40,7 @@ export function CalendarView({ currentDate, setCurrentDate, holidays }: Calendar
     const filteredHolidays = holidays.filter(
       (h) =>
         TimeUtil.toUtcMidnight(new Date(h.startDate)) <= day &&
-        TimeUtil.toUtcMidnight(new Date(h.endDate)) >= day,
+        TimeUtil.toUtcEndOfDay(new Date(h.endDate)) >= day,
     )
     return {
       date: day,
