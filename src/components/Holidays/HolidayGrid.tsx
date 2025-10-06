@@ -44,7 +44,7 @@ export function HolidayGrid({
     return {
       ...holiday,
       startDate: TimeUtil.toUtcMidnight(holiday.startDate).toISOString(),
-      endDate: TimeUtil.toUtcMidnight(holiday.endDate).toISOString(),
+      endDate: TimeUtil.toUtcEndOfDay(holiday.endDate).toISOString(),
     }
   })
 

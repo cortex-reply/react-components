@@ -45,7 +45,7 @@ export function CalendarView({ currentDate, setCurrentDate, holidays }: Calendar
     const filteredHolidays = holidays.filter(
       (h) =>
         TimeUtil.toUtcMidnight(new Date(h.startDate)) <= day &&
-        TimeUtil.toUtcMidnight(new Date(h.endDate)) >= day,
+        TimeUtil.toUtcEndOfDay(new Date(h.endDate)) >= day,
     )
     return {
       date: day,

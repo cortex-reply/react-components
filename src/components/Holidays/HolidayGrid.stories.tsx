@@ -86,6 +86,16 @@ const mockHolidays: Holiday[] = [
     totalDays: 3,
     leaveType: 'Full Day',
   },
+  {
+    id: '8',
+    userId: '3',
+    userName: 'Bob Johnson',
+    startDate: '2025-10-27T00:00:00.000Z',
+    endDate: '2025-10-31T00:00:00.000Z',
+    status: 'approved',
+    totalDays: 5,
+    leaveType: 'Full Day',
+  },
 ]
 
 const mockEmployees: Employee[] = [
