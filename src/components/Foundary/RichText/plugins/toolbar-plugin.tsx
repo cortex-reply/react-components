@@ -398,7 +398,7 @@ export default function ToolbarPlugin() {
   ]
 
   return (
-    <div className="flex justify-between border border-[#222222] py-2 px-2">
+    <div className="flex justify-between border border-[#222222] py-2 px-2 sticky top-0 bg-black z-50">
       <div className="flex gap-2 " ref={toolbarRef}>
         {toolbarActions.map((group, index) => (
           <Fragment key={`toolbar-option-${group.length}-${index}`}>

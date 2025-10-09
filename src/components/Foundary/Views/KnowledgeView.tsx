@@ -1,13 +1,18 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { DashboardHero } from '../../Heros/DashboardHero/DashboardHero'
 import type { KnowledgeDocument, KnowledgeContext, Knowledge, TeamKnowledgeContext } from '../types'
 import { KnowledgeBrowser } from '../knowledge-browser'
 import { AddKnowledgeModal } from '../Knowledge/add-knowledge-modal'
-import { AddTeamContext } from '../Knowledge/add-team-context'
-import { Loader2 } from 'lucide-react'
+import { ChevronDown, Loader2 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui'
+import { ManageTeamContextModal } from '../Knowledge/manage-team-context'
 
 interface KnowledgeViewProps {
   documents?: KnowledgeDocument[]
@@ -17,8 +22,10 @@ interface KnowledgeViewProps {
   onLoadDocumentContent?: (documentId: string) => Promise<string>
   selectedDocumentId?: string
   onAddKnowledge?: (knowledge: Omit<Knowledge, 'id'>) => void
-  onAddTeamContext?: (teamContext: TeamKnowledgeContext) => void
   onDocumentUpdate?: (document: KnowledgeDocument) => Promise<boolean>
+  onAddTeamContext?: (teamContext: TeamKnowledgeContext) => void
+  onUpdateTeamContext?: (data: TeamKnowledgeContext) => void
+  onDeleteTeamContext?: (id: string) => void
 }
 
 export default function KnowledgeView({
@@ -29,8 +36,10 @@ export default function KnowledgeView({
   onLoadDocumentContent,
   selectedDocumentId,
   onAddKnowledge,
-  onAddTeamContext,
   onDocumentUpdate,
+  onAddTeamContext,
+  onUpdateTeamContext,
+  onDeleteTeamContext,
 }: KnowledgeViewProps) {
   const [activeContext, setActiveContext] = useState(contexts[0])
   const [isAddKnowledgeModalOpen, setIsAddKnowledgeModalOpen] = useState(false)
@@ -39,6 +48,11 @@ export default function KnowledgeView({
 
   useEffect(() => {
     if (!activeContext && contexts && contexts.length > 0) setActiveContext(contexts[0])
+    else {
+      const currContext = contexts.find((c) => c.id === activeContext?.id)
+      if (currContext) setActiveContext(currContext)
+      else setActiveContext(contexts[0])
+    }
   }, [contexts])
 
   const handleAddKnowledge = (knowledge: Omit<Knowledge, 'id'>) => {
@@ -49,12 +63,12 @@ export default function KnowledgeView({
     setIsAddKnowledgeModalOpen(false)
   }
 
-  const handleAddTeamContext = (teamContext: TeamKnowledgeContext) => {
-    if (onAddTeamContext) {
-      onAddTeamContext(teamContext)
-    }
-    setIsAddTeamContextModalOpen(false)
-  }
+  // const handleAddTeamContext = (teamContext: TeamKnowledgeContext) => {
+  //   if (onAddTeamContext) {
+  //     onAddTeamContext(teamContext)
+  //   }
+  //   // setIsAddTeamContextModalOpen(false)
+  // }
 
   return (
     <div className="flex flex-col h-full">
@@ -111,20 +125,24 @@ export default function KnowledgeView({
                 </div>
 
                 {/* Action Buttons */}
-                <div className="flex items-center gap-2 flex-shrink-0">
-                  <button
-                    onClick={() => setIsAddKnowledgeModalOpen(true)}
-                    className="inline-flex border border-primary rounded-xl items-center py-2 px-3 text-sm font-medium text-primary hover:text-primary/80 transition-colors whitespace-nowrap"
-                  >
-                    Add Knowledge
-                  </button>
-                  <button
-                    onClick={() => setIsAddTeamContextModalOpen(true)}
-                    className="inline-flex border border-primary rounded-xl items-center gap-2 py-2 px-3 text-sm font-medium text-primary hover:text-primary/80 transition-colors whitespace-nowrap"
-                  >
-                    Add Context
-                  </button>
-                </div>
+                <DropdownMenu>
+                  <DropdownMenuTrigger>
+                    <div
+                      // onClick={() => setIsAddKnowledgeModalOpen(true)}
+                      className="inline-flex border border-primary rounded-xl items-center justify-center gap-2 py-2 px-3 text-sm font-medium text-primary hover:text-primary/80 transition-colors whitespace-nowrap"
+                    >
+                      Actions <ChevronDown className="h-4 w-4" />
+                    </div>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent>
+                    <DropdownMenuItem onClick={() => setIsAddKnowledgeModalOpen(true)}>
+                      Add Knowledge
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => setIsAddTeamContextModalOpen(true)}>
+                      Manage Contexts
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
               </nav>
             </div>
 
@@ -153,20 +171,22 @@ export default function KnowledgeView({
         </div>
       ) : (
         <div>
-        <div className="flex-1 min-h-0 px-2 md:px-4 pb-4 flex items-center justify-center">
-          <p className="text-muted-foreground">No contexts available</p>
+          <div className="flex-1 min-h-0 px-2 md:px-4 pb-4 flex items-center justify-center">
+            <p className="text-muted-foreground">No contexts available</p>
+          </div>
+          <div className="flex-1 min-h-0 px-2 md:px-4 pb-4 flex items-center justify-center">
+            <Button onClick={() => setIsAddTeamContextModalOpen(true)}>Add Context</Button>
+          </div>
         </div>
-        <div className="flex-1 min-h-0 px-2 md:px-4 pb-4 flex items-center justify-center">
-          <Button onClick={() => setIsAddTeamContextModalOpen(true)}>Add Context</Button>
-        </div>
-      </div>
-      )
-      }
+      )}
       <>
-        <AddTeamContext
+        <ManageTeamContextModal
           isOpen={isAddTeamContextModalOpen}
           onClose={() => setIsAddTeamContextModalOpen(false)}
-          onAddTeamContext={handleAddTeamContext}
+          knowledgeSources={contexts}
+          onCreate={onAddTeamContext}
+          onUpdate={onUpdateTeamContext}
+          onDelete={onDeleteTeamContext}
         />
 
         <AddKnowledgeModal

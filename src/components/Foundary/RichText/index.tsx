@@ -92,7 +92,7 @@ const RichText: React.FC<RichTextProps> = ({ setValue, value, name, editable = t
     theme: {
       code: 'editor-code',
       heading: {
-        h1: 'text-4xl',
+        h1: 'text-4xl text-primary',
         h2: 'text-3xl',
         h3: 'text-2xl',
         h4: 'text-lg',
