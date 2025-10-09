@@ -1,8 +1,20 @@
 'use client'
 
 import { motion } from 'motion/react'
-import { Edit3, Save, X, Plus, ChevronDown, ChevronRight, Info, File, FileText, Type } from 'lucide-react'
-import { useEffect, useState } from 'react'
+import {
+  Edit3,
+  Save,
+  X,
+  Plus,
+  ChevronDown,
+  ChevronRight,
+  Info,
+  File,
+  FileText,
+  Type,
+  Loader2,
+} from 'lucide-react'
+import { useEffect, useRef, useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { Textarea } from '@/components/ui/textarea'
 import { Input } from '@/components/ui/input'
@@ -19,7 +31,7 @@ import RichText from './RichText'
 
 interface DocumentEditProps {
   document: KnowledgeDocument
-  onSave: (document: KnowledgeDocument) => void
+  onSave: (document: KnowledgeDocument, mode: 'save' | 'autosave') => void
   mode?: 'create' | 'edit'
   onCancel: () => void
   availableDocuments?: KnowledgeDocument[]
@@ -40,6 +52,179 @@ export function DocumentEdit({
   })
   const [isMetadataExpanded, setIsMetadataExpanded] = useState(false)
   const [richTextContent, setRichTextContent] = useState<any>(editedDocument.richTextContent)
+  const [isAutoSaving, setIsAutoSaving] = useState(false)
+  const timerRef = useRef<NodeJS.Timeout | null>(null)
+  const lastSavedHashRef = useRef<string>('')
+  const autoSaveDisplayTimerRef = useRef<NodeJS.Timeout | null>(null)
+  const debounceRef = useRef<NodeJS.Timeout | null>(null)
+
+  // --- Helpers ---
+  const stableStringify = (obj: any) => {
+    // Canonical JSON stringify (sorted keys) so object order differences don't cause spurious saves
+    const seen = new WeakSet()
+    const stringify = (val: any): any => {
+      if (val && typeof val === 'object') {
+        if (seen.has(val)) return null
+        seen.add(val)
+
+        if (Array.isArray(val)) return val.map(stringify)
+
+        // sort keys
+        return Object.keys(val)
+          .sort()
+          .reduce((acc, k) => {
+            acc[k] = stringify(val[k])
+            return acc
+          }, {} as Record<string, any>)
+      }
+      return val
+    }
+
+    return JSON.stringify(stringify(obj))
+  }
+
+  const normalizeText = (s: string | undefined | null) => {
+    if (!s) return ''
+    // Collapse repeating whitespace; trim
+    return s.replace(/\s+/g, ' ').trim()
+  }
+
+  const canonicalizeMetadata = (meta?: Record<string, any>) => {
+    if (!meta) return {}
+    const out: Record<string, string> = {}
+    Object.keys(meta)
+      .sort()
+      .forEach((k) => {
+        out[k] = String(meta[k] ?? '').trim()
+      })
+    return out
+  }
+
+  const canonicalContent = () => {
+    // If richText, use stable JSON; if plain text, use normalized text
+    if (editedDocument.format === 'richText') {
+      // You may want to strip editor-specific transient fields (selection, version, timestamps) if present
+      return stableStringify(richTextContent)
+    } else {
+      return normalizeText(editedDocument.content)
+    }
+  }
+
+  const computeSnapshotHash = () => {
+    // Build a minimal canonical snapshot that represents what “meaningful change” should track
+    const snapshot = {
+      title: normalizeText(editedDocument.title),
+      description: normalizeText(editedDocument.description),
+      format: editedDocument.format,
+      metadata: canonicalizeMetadata(editedDocument.metadata),
+      content: canonicalContent(),
+    }
+    const s = stableStringify(snapshot)
+
+    // Lightweight djb2 hash
+    let hash = 5381
+    for (let i = 0; i < s.length; i++) {
+      hash = (hash * 33) ^ s.charCodeAt(i)
+    }
+    return (hash >>> 0).toString(16)
+  }
+
+  const hasMeaningfulChange = (prevHash: string, nextHash: string) => {
+    if (prevHash === nextHash) return false
+
+    if (editedDocument.format !== 'richText') {
+      const oldC = canonicalContentFromHash(prevHash) // see helper below
+      const newC = canonicalContent() // current text
+
+      // If we can’t recover old content, fall back to “hash changed”
+      if (oldC == null) return true
+
+      const oldLen = oldC.length
+      const newLen = newC.length
+      const absDelta = Math.abs(newLen - oldLen)
+      const pctDelta = oldLen === 0 ? 1 : absDelta / oldLen
+
+      // Ignore tiny whitespace-only edits
+      if (normalizeText(oldC) === normalizeText(newC) && absDelta < 3) return false
+
+      return absDelta >= 10 || pctDelta >= 0.02 // >= 10 chars OR >= 2%
+    }
+
+    return true
+  }
+
+  // Store a small map of hash → content length so we can compare deltas cheaply (only for text format).
+  const hashToContentLenRef = useRef<Map<string, number>>(new Map())
+  const canonicalContentFromHash = (hash: string): string | null => {
+    const len = hashToContentLenRef.current.get(hash)
+    if (len == null) return null
+    return 'x'.repeat(len)
+  }
+
+  useEffect(() => {
+    if (debounceRef.current) clearTimeout(debounceRef.current)
+
+    debounceRef.current = setTimeout(() => {
+      const nextHash = computeSnapshotHash()
+      const prevHash = lastSavedHashRef.current
+
+      if (!hasMeaningfulChange(prevHash, nextHash)) return
+
+      // Trigger autosave
+      setIsAutoSaving(true)
+      onSave({ ...editedDocument, richTextContent }, 'autosave')
+
+      // Optimistically mark as saved to avoid repeated saves for the same snapshot
+      lastSavedHashRef.current = nextHash
+
+      if (editedDocument.format !== 'richText') {
+        const c = canonicalContent()
+        hashToContentLenRef.current.set(nextHash, c.length)
+      }
+    }, 800)
+
+    return () => {
+      if (debounceRef.current) clearTimeout(debounceRef.current)
+    }
+  }, [
+    editedDocument.title,
+    editedDocument.description,
+    editedDocument.format,
+    editedDocument.content, // only relevant in non-richText mode
+    editedDocument.metadata, // shallow ref changes? If metadata is edited immutably as you do, good.
+    richTextContent, // relevant in richText mode
+  ])
+
+  useEffect(() => {
+    const handleBeforeUnload = () => {
+      const nextHash = computeSnapshotHash()
+      if (nextHash !== lastSavedHashRef.current) {
+        onSave({ ...editedDocument, richTextContent }, 'autosave')
+        lastSavedHashRef.current = nextHash
+      }
+    }
+
+    window.addEventListener('pagehide', handleBeforeUnload)
+    window.addEventListener('beforeunload', handleBeforeUnload)
+    return () => {
+      window.removeEventListener('pagehide', handleBeforeUnload)
+      window.removeEventListener('beforeunload', handleBeforeUnload)
+    }
+  }, [editedDocument, richTextContent])
+
+  useEffect(() => {
+    if (isAutoSaving) {
+      autoSaveDisplayTimerRef.current = setTimeout(() => {
+        setIsAutoSaving(false)
+      }, 2_000)
+    }
+
+    return () => {
+      if (autoSaveDisplayTimerRef.current) {
+        clearTimeout(autoSaveDisplayTimerRef.current)
+      }
+    }
+  }, [isAutoSaving])
 
   useEffect(() => {
     setEditedDocument(document)
@@ -112,7 +297,7 @@ export function DocumentEdit({
   const suggestedKeys = getSuggestedMetadataKeys()
 
   const handleSave = () => {
-    onSave({ ...editedDocument, richTextContent })
+    onSave({ ...editedDocument, richTextContent }, 'autosave')
   }
 
   const handleMetadataChange = (key: string, value: string) => {
@@ -160,7 +345,7 @@ export function DocumentEdit({
             {/* <div className="flex-shrink-0 p-3 rounded-xl bg-muted border border-border">
               {formatIcon(editedDocument.format)}
             </div> */}
-            
+
             <div className="flex-1 min-w-0">
               <div className="flex items-start gap-4 mb-0 leading-tight">
                 <div className="flex-1 min-w-0">
@@ -168,22 +353,30 @@ export function DocumentEdit({
                     fieldName="title"
                     value={editedDocument.title}
                     label=""
-                    onSave={(fieldName, value) => setEditedDocument(prev => ({ ...prev, title: value }))}
+                    onSave={(fieldName, value) =>
+                      setEditedDocument((prev) => ({ ...prev, title: value }))
+                    }
                     className="[&>div:last-child]:text-2xl [&>div:last-child]:font-bold [&>div:last-child]:leading-tight [&>div:last-child]:text-foreground [&>div:last-child]:p-0 [&>div:last-child]:border-0 [&>div:last-child]:hover:bg-muted/30 [&>div:last-child]:min-h-0"
                   />
                 </div>
-                <span className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium border ${formatBadgeColor(editedDocument.format)} flex-shrink-0 mt-1`}>
+                <span
+                  className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium border ${formatBadgeColor(
+                    editedDocument.format,
+                  )} flex-shrink-0 mt-1`}
+                >
                   {editedDocument.format.toUpperCase()}
                 </span>
               </div>
-              
+
               <div className="mt-2">
                 <EditableField
                   fieldName="description"
                   value={editedDocument.description || 'Click to add description...'}
                   label=""
                   multiline={true}
-                  onSave={(fieldName, value) => setEditedDocument(prev => ({ ...prev, description: value }))}
+                  onSave={(fieldName, value) =>
+                    setEditedDocument((prev) => ({ ...prev, description: value }))
+                  }
                   className="[&>div:last-child]:text-muted-foreground [&>div:last-child]:text-lg [&>div:last-child]:leading-relaxed [&>div:last-child]:p-0 [&>div:last-child]:border-0 [&>div:last-child]:hover:bg-muted/30 [&>div:last-child]:min-h-0"
                 />
               </div>
@@ -214,11 +407,15 @@ export function DocumentEdit({
 
             <Button variant="outline" size="sm" onClick={onCancel} className="gap-2">
               <X className="h-4 w-4" />
-              Cancel
+              Close
             </Button>
-            <Button size="sm" onClick={handleSave} className="gap-2">
-              <Save className="h-4 w-4" />
-              Save
+            <Button size="sm" onClick={handleSave} className="gap-2" disabled={isAutoSaving}>
+              {isAutoSaving ? (
+                <Loader2 className="h-4 w-4 animate-spin" />
+              ) : (
+                <Save className="h-4 w-4" />
+              )}
+              {isAutoSaving ? 'Auto-saving...' : 'Save'}
             </Button>
           </div>
         </div>
@@ -226,9 +423,9 @@ export function DocumentEdit({
         {/* Collapsible Metadata Section */}
         <motion.div
           initial={false}
-          animate={{ 
+          animate={{
             height: isMetadataExpanded ? 'auto' : 0,
-            opacity: isMetadataExpanded ? 1 : 0
+            opacity: isMetadataExpanded ? 1 : 0,
           }}
           transition={{ duration: 0.2, ease: 'easeInOut' }}
           className="overflow-hidden h-full max-h-full"
@@ -258,7 +455,7 @@ export function DocumentEdit({
                   ` +${suggestedKeys.contextKeys.length - 4} more`}
               </p>
             )} */}
-            
+
             <div className="bg-muted rounded-lg p-4 border border-border">
               {editedDocument.metadata && Object.keys(editedDocument.metadata).length > 0 ? (
                 <div className="space-y-2">
@@ -335,9 +532,7 @@ export function DocumentEdit({
                 </div>
               ) : (
                 <div className="text-center py-4">
-                  <p className="text-sm text-muted-foreground mb-2">
-                    No metadata fields
-                  </p>
+                  <p className="text-sm text-muted-foreground mb-2">No metadata fields</p>
                   <p className="text-xs text-muted-foreground">
                     Click "Add Field" to create metadata
                   </p>
@@ -350,7 +545,7 @@ export function DocumentEdit({
 
       {/* Content Editor */}
       <div className="flex-1 overflow-hidden">
-        <div className="p-8 h-full max-h-full overflow-auto">
+        <div className="p-8 pt-0 h-full max-h-full overflow-auto">
           {/* <label className="block text-sm font-medium text-foreground mb-4">Content</label> */}
           {editedDocument.format === 'richText' ? (
             <RichText

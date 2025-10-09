@@ -196,8 +196,11 @@ export function DocumentPreview({
     }
   }
 
-  const handleSave = async (updatedDocument: KnowledgeDocument) => {
-    setIsSaving(true)
+  const handleSave = async (
+    updatedDocument: KnowledgeDocument,
+    mode: 'save' | 'autosave' = 'save',
+  ) => {
+    if (mode === 'save') setIsSaving(true)
     // keep a rollback snapshot
     rollbackRef.current = document
 
@@ -213,9 +216,9 @@ export function DocumentPreview({
 
     try {
       const ok = await onDocumentUpdate?.(updatedDocument)
-      setIsSaving(false)
+      if (mode === 'save') setIsSaving(false)
       if (!ok) throw new Error('save failed')
-      setIsEditing(false)
+      // setIsEditing(false)
     } catch (e) {
       // rollback on failure
       if (rollbackRef.current) {
