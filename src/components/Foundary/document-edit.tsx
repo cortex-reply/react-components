@@ -89,16 +89,16 @@ export function DocumentEdit({
     return s.replace(/\s+/g, ' ').trim()
   }
 
-  const canonicalizeMetadata = (meta?: Record<string, any>) => {
-    if (!meta) return {}
-    const out: Record<string, string> = {}
-    Object.keys(meta)
-      .sort()
-      .forEach((k) => {
-        out[k] = String(meta[k] ?? '').trim()
-      })
-    return out
-  }
+  // const canonicalizeMetadata = (meta?: Record<string, any>) => {
+  //   if (!meta) return {}
+  //   const out: Record<string, string> = {}
+  //   Object.keys(meta)
+  //     .sort()
+  //     .forEach((k) => {
+  //       out[k] = String(meta[k] ?? '').trim()
+  //     })
+  //   return out
+  // }
 
   const canonicalContent = () => {
     // If richText, use stable JSON; if plain text, use normalized text
@@ -116,7 +116,7 @@ export function DocumentEdit({
       title: normalizeText(editedDocument.title),
       description: normalizeText(editedDocument.description),
       format: editedDocument.format,
-      metadata: canonicalizeMetadata(editedDocument.metadata),
+      // metadata: canonicalizeMetadata(editedDocument.metadata),
       content: canonicalContent(),
     }
     const s = stableStringify(snapshot)
@@ -430,22 +430,12 @@ export function DocumentEdit({
           transition={{ duration: 0.2, ease: 'easeInOut' }}
           className="overflow-hidden h-full max-h-full"
         >
-          <div className="pt-4 border-t border-border mt-4 h-screen max-h-full flex">
+          <div className="pt-4 border-t border-border mt-4  max-h-full flex gap-2">
             <div className="flex items-center justify-between mb-3">
               <h3 className="text-sm font-semibold text-foreground flex items-center gap-2">
                 <Info className="h-4 w-4" />
                 Document Metadata
               </h3>
-              <Button
-                type="button"
-                variant="outline"
-                size="sm"
-                onClick={handleAddMetadataField}
-                className="gap-1 h-8"
-              >
-                <Plus className="h-3 w-3" />
-                Add Field
-              </Button>
             </div>
 
             {/* {suggestedKeys.contextKeys.length > 0 && (
@@ -456,88 +446,100 @@ export function DocumentEdit({
               </p>
             )} */}
 
-            <div className="bg-muted rounded-lg p-4 border border-border">
-              {editedDocument.metadata && Object.keys(editedDocument.metadata).length > 0 ? (
-                <div className="space-y-2">
-                  {Object.entries(editedDocument.metadata).map(([key, value], index) => {
-                    const suggestedValues = getSuggestedValues(key)
-                    return (
-                      <div key={`metadata-key-${index}`} className="flex gap-2 items-center">
-                        <Input
-                          value={key}
-                          onChange={(e) => {
-                            const newKey = e.target.value || ''
-                            const oldValue = editedDocument.metadata?.[key]
-                            setEditedDocument((prev) => {
-                              const newMetadata = { ...prev.metadata }
-                              delete newMetadata[key]
-                              if (newKey) {
-                                newMetadata[newKey] = oldValue || ''
-                              }
-                              return { ...prev, metadata: newMetadata }
-                            })
-                          }}
-                          placeholder="Key"
-                          className="w-32 h-8 text-sm"
-                          list={`metadata-keys-${key}`}
-                        />
-                        <datalist id={`metadata-keys-${key}`}>
-                          {suggestedKeys.allKeys.map((suggestedKey) => (
-                            <option key={suggestedKey} value={suggestedKey} />
-                          ))}
-                        </datalist>
-
-                        <span className="text-muted-foreground text-sm">=</span>
-
-                        {suggestedValues.length > 0 ? (
-                          <Select
-                            value={String(value || '')}
-                            onValueChange={(newValue) => handleMetadataValueSelect(key, newValue)}
-                          >
-                            <SelectTrigger className="flex-1 h-8 text-sm">
-                              <SelectValue placeholder="Value" />
-                            </SelectTrigger>
-                            <SelectContent>
-                              {suggestedValues.map((suggestedValue) => (
-                                <SelectItem key={suggestedValue} value={suggestedValue}>
-                                  {suggestedValue}
-                                </SelectItem>
-                              ))}
-                              <SelectItem value="__custom__">
-                                <span className="text-muted-foreground text-xs">Custom...</span>
-                              </SelectItem>
-                            </SelectContent>
-                          </Select>
-                        ) : (
+            <div className="flex flex-col gap-2">
+              <div className="bg-muted rounded-lg p-4 border border-border">
+                {editedDocument.metadata && Object.keys(editedDocument.metadata).length > 0 ? (
+                  <div className="space-y-2">
+                    {Object.entries(editedDocument.metadata).map(([key, value], index) => {
+                      const suggestedValues = getSuggestedValues(key)
+                      return (
+                        <div key={`metadata-key-${index}`} className="flex gap-2 items-center">
                           <Input
-                            value={String(value || '')}
-                            onChange={(e) => handleMetadataChange(key, e.target.value)}
-                            placeholder="Value"
-                            className="flex-1 h-8 text-sm"
+                            value={key}
+                            onChange={(e) => {
+                              const newKey = e.target.value || ''
+                              const oldValue = editedDocument.metadata?.[key]
+                              setEditedDocument((prev) => {
+                                const newMetadata = { ...prev.metadata }
+                                delete newMetadata[key]
+                                if (newKey) {
+                                  newMetadata[newKey] = oldValue || ''
+                                }
+                                return { ...prev, metadata: newMetadata }
+                              })
+                            }}
+                            placeholder="Key"
+                            className="w-32 h-8 text-sm"
+                            list={`metadata-keys-${key}`}
                           />
-                        )}
+                          <datalist id={`metadata-keys-${key}`}>
+                            {suggestedKeys.allKeys.map((suggestedKey) => (
+                              <option key={suggestedKey} value={suggestedKey} />
+                            ))}
+                          </datalist>
 
-                        <Button
-                          type="button"
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => handleRemoveMetadataField(key)}
-                          className="h-8 w-8 p-0 text-muted-foreground hover:text-destructive"
-                        >
-                          <X className="h-3 w-3" />
-                        </Button>
-                      </div>
-                    )
-                  })}
-                </div>
-              ) : (
-                <div className="text-center py-4">
-                  <p className="text-sm text-muted-foreground mb-2">No metadata fields</p>
-                  <p className="text-xs text-muted-foreground">
-                    Click "Add Field" to create metadata
-                  </p>
-                </div>
-              )}
+                          <span className="text-muted-foreground text-sm">=</span>
+
+                          {suggestedValues.length > 0 ? (
+                            <Select
+                              value={String(value || '')}
+                              onValueChange={(newValue) => handleMetadataValueSelect(key, newValue)}
+                            >
+                              <SelectTrigger className="flex-1 h-8 text-sm">
+                                <SelectValue placeholder="Value" />
+                              </SelectTrigger>
+                              <SelectContent>
+                                {suggestedValues.map((suggestedValue) => (
+                                  <SelectItem key={suggestedValue} value={suggestedValue}>
+                                    {suggestedValue}
+                                  </SelectItem>
+                                ))}
+                                <SelectItem value="__custom__">
+                                  <span className="text-muted-foreground text-xs">Custom...</span>
+                                </SelectItem>
+                              </SelectContent>
+                            </Select>
+                          ) : (
+                            <Input
+                              value={String(value || '')}
+                              onChange={(e) => handleMetadataChange(key, e.target.value)}
+                              placeholder="Value"
+                              className="flex-1 h-8 text-sm"
+                            />
+                          )}
+
+                          <Button
+                            type="button"
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => handleRemoveMetadataField(key)}
+                            className="h-8 w-8 p-0 text-muted-foreground hover:text-destructive"
+                          >
+                            <X className="h-3 w-3" />
+                          </Button>
+                        </div>
+                      )
+                    })}
+                  </div>
+                ) : (
+                  <div className="text-center py-4">
+                    <p className="text-sm text-muted-foreground mb-2">No metadata fields</p>
+                    <p className="text-xs text-muted-foreground">
+                      Click "Add Field" to create metadata
+                    </p>
+                  </div>
+                )}
+              </div>
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                onClick={handleAddMetadataField}
+                className="gap-1 h-8"
+              >
+                <Plus className="h-3 w-3" />
+                Add Field
+              </Button>
             </div>
           </div>
         </motion.div>
