@@ -223,6 +223,11 @@ export interface DigitalColleague {
    * The capability level of this digital colleague.
    */
   capabilityLevel: number
+  /**
+   * The identity used by this digital colleague to authenticate with Keycloak.
+   */
+  identity: number | Identity;
+  keycloakSecretLastUpdated?: string | null;
   systemMsg?: string | null
   metadata?: {
     type?: string
@@ -362,6 +367,43 @@ export interface KnowledgeBase {
   description?: string | null
   updatedAt: string
   createdAt: string
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "identities".
+ */
+export interface Identity {
+  id: number;
+  /**
+   * Keycloak client ID for this digital colleague to authenticate with.
+   */
+  keycloakClientId: string;
+  /**
+   * Keycloak user ID associated with this digital colleague.
+   */
+  keycloakUserId: string;
+  /**
+   * Choose how to manage the Keycloak client secret.
+   */
+  secretManagementMode: 'auto' | 'manual';
+  /**
+   * Enter a new Keycloak client secret to rotate/update the stored secret. Leave empty to keep existing secret.
+   */
+  keycloakClientSecret?: string | null;
+  /**
+   * Provide the AWS Secrets Manager ARN for an existing secret.
+   */
+  keycloakSecretArn?: string | null;
+  /**
+   * AWS Secrets Manager ARN for the Keycloak client secret.
+   */
+  keycloakSecretLocation?: string | null;
+  /**
+   * When the secret was last updated in Secrets Manager.
+   */
+  keycloakSecretLastUpdated?: string | null;
+  updatedAt: string;
+  createdAt: string;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
