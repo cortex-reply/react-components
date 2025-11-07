@@ -19,6 +19,7 @@ interface FileViewProps {
   onFileEdit?: (file: FileType) => void
   onFileDelete?: (fileId: string) => void
   onFileClick?: (file: FileType) => void
+  onFileUpdate?: (fileId: string, content: string) => void
   compactView?: boolean
   className?: string
 }
@@ -29,6 +30,7 @@ export default function FileView({
   onFileEdit,
   onFileDelete,
   onFileClick,
+  onFileUpdate,
   compactView = false,
   className,
 }: FileViewProps) {
@@ -50,7 +52,13 @@ export default function FileView({
   }
 
   useEffect(() => {
-    const next = getHash(initialFiles)
+    const next = getHash(
+      initialFiles.map((el) => ({
+        ...el,
+        // createdAt: el.createdAt instanceof Date ? el.createdAt.toISOString() : el.createdAt,
+        updatedAt: new Date().toISOString(),
+      })),
+    )
     if (next !== prevFilesHash.current) {
       setFiles(initialFiles)
       prevFilesHash.current = next
@@ -210,7 +218,8 @@ export default function FileView({
                 <FileList
                   files={filteredFiles}
                   onFileClick={handleFileClick}
-                  onFileEdit={handleEditFile}
+                  // onFileEdit={handleEditFile}
+                  onFileUpdate={onFileUpdate}
                   onFileDelete={handleDeleteFile}
                   showHeader={!compactView}
                 />
@@ -220,7 +229,8 @@ export default function FileView({
                 <FileList
                   files={recentFiles}
                   onFileClick={handleFileClick}
-                  onFileEdit={handleEditFile}
+                  // onFileEdit={handleEditFile}
+                  onFileUpdate={onFileUpdate}
                   onFileDelete={handleDeleteFile}
                   showHeader={!compactView}
                 />
@@ -230,7 +240,8 @@ export default function FileView({
                 <FileList
                   files={sharedFiles}
                   onFileClick={handleFileClick}
-                  onFileEdit={handleEditFile}
+                  // onFileEdit={handleEditFile}
+                  onFileUpdate={onFileUpdate}
                   onFileDelete={handleDeleteFile}
                   showHeader={!compactView}
                 />
