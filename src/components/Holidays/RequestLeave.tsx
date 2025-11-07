@@ -84,6 +84,8 @@ export function RequestLeave({ remainingDays, submitLeaveRequest }: RequestLeave
       toast.error('Please select both start and end dates')
       return
     }
+
+    //code to check if the total days exceed remaining days only if within the same year
     if (startYear == endYear && totalDays > remainingDays) {
       toast.error('You do not have enough leave days remaining')
       return
