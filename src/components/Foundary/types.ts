@@ -226,8 +226,8 @@ export interface DigitalColleague {
   /**
    * The identity used by this digital colleague to authenticate with Keycloak.
    */
-  identity: number | Identity;
-  keycloakSecretLastUpdated?: string | null;
+  identity: number | Identity
+  keycloakSecretLastUpdated?: string | null
   systemMsg?: string | null
   metadata?: {
     type?: string
@@ -373,37 +373,37 @@ export interface KnowledgeBase {
  * via the `definition` "identities".
  */
 export interface Identity {
-  id: number;
+  id: number
   /**
    * Keycloak client ID for this digital colleague to authenticate with.
    */
-  keycloakClientId: string;
+  keycloakClientId: string
   /**
    * Keycloak user ID associated with this digital colleague.
    */
-  keycloakUserId: string;
+  keycloakUserId: string
   /**
    * Choose how to manage the Keycloak client secret.
    */
-  secretManagementMode: 'auto' | 'manual';
+  secretManagementMode: 'auto' | 'manual'
   /**
    * Enter a new Keycloak client secret to rotate/update the stored secret. Leave empty to keep existing secret.
    */
-  keycloakClientSecret?: string | null;
+  keycloakClientSecret?: string | null
   /**
    * Provide the AWS Secrets Manager ARN for an existing secret.
    */
-  keycloakSecretArn?: string | null;
+  keycloakSecretArn?: string | null
   /**
    * AWS Secrets Manager ARN for the Keycloak client secret.
    */
-  keycloakSecretLocation?: string | null;
+  keycloakSecretLocation?: string | null
   /**
    * When the secret was last updated in Secrets Manager.
    */
-  keycloakSecretLastUpdated?: string | null;
-  updatedAt: string;
-  createdAt: string;
+  keycloakSecretLastUpdated?: string | null
+  updatedAt: string
+  createdAt: string
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -459,6 +459,7 @@ export interface Task {
       } | null)
   status: 'backlog' | 'todo' | 'in-progress' | 'review' | 'done' | 'cancelled'
   project?: (number | null) | Project
+  files?: (number | File)[] | null
   epic?: (number | null) | Epic
   /**
    * Estimate of effort required to complete this task, in story points.

@@ -417,7 +417,6 @@ const convertFileTypeToKnowledgeDocument = async (file: FileType): Promise<Knowl
         url = '/' + url
       }
 
-      console.log('Fetching file content from URL:', url)
       const response = await fetch(url)
 
       if (response.ok) {
@@ -428,7 +427,6 @@ const convertFileTypeToKnowledgeDocument = async (file: FileType): Promise<Knowl
       }
     } catch (error) {
       console.error('Failed to fetch file content:', error)
-      throw error // Re-throw to let the caller handle it
     }
   } else {
     console.warn('No URL provided for file:', file.name)
@@ -438,9 +436,7 @@ const convertFileTypeToKnowledgeDocument = async (file: FileType): Promise<Knowl
   if (file.mimeType === 'text/markdown') {
     format = 'richText'
     // Convert markdown to Lexical JSON format
-    console.log('Converting markdown to Lexical, content length:', content.length)
     richTextContent = markdownToLexical(content)
-    console.log('Converted Lexical JSON:', JSON.stringify(richTextContent, null, 2))
   } else if (file.mimeType?.startsWith('text/')) {
     format = 'text'
   }
@@ -493,14 +489,17 @@ export function FileEdit({ document, onCancel, onSave, onFileUpdate }: FileEditP
       setIsLoading(true)
       convertFileTypeToKnowledgeDocument(document)
         .then((convertedDoc) => {
-          console.log('Loaded content:', convertedDoc)
+          // Only update state if the request wasn't aborted
           setEditedDocument(convertedDoc)
           setRichTextContent(convertedDoc.richTextContent)
           setIsLoading(false)
         })
         .catch((error) => {
-          console.error('Failed to convert file:', error)
-          setIsLoading(false)
+          // Don't log or update state if it's an AbortError
+          if (error instanceof Error && error.name !== 'AbortError') {
+            console.error('Failed to convert file:', error)
+            setIsLoading(false)
+          }
         })
     } else {
       setEditedDocument({

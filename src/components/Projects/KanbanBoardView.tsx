@@ -27,6 +27,9 @@ export interface KanbanBoardProps {
   // Epic handlers
   onAddEpic?: (newEpic: Omit<Epic, 'id' | 'updatedAt' | 'createdAt'>) => void
   onAddComment?: ({ content, taskId }: { taskId: string; content: string }) => void
+  onUploadFile?: (taskId: string, file: FormData) => Promise<void>
+  onDeleteFile?: (taskId: string, fileId: string) => Promise<void>
+  onFileUpdate?: (fileId: string, content: string) => void
 }
 
 export const KanbanBoardView: React.FC<KanbanBoardProps> = ({
@@ -44,6 +47,9 @@ export const KanbanBoardView: React.FC<KanbanBoardProps> = ({
   // Epic handlers
   onAddEpic,
   onAddComment,
+  onUploadFile,
+  onDeleteFile,
+  onFileUpdate,
 }) => {
   const [tasks, setTasks] = useState<Task[]>([])
   const [epics, setEpics] = useState<Epic[]>([])
@@ -68,17 +74,31 @@ export const KanbanBoardView: React.FC<KanbanBoardProps> = ({
   const prevSprintHash = useRef<string>('')
   const prevColleagueHash = useRef<string>('')
 
-  const getHash = (list: { id: string | number; createdAt: string; updatedAt: string }[]) => {
-    return list
-      .map(
-        (item) =>
-          `${item.id}-${new Date(item.createdAt).getTime()}-${new Date(item.updatedAt).getTime()}`,
-      )
-      .join('-')
+  const getHash = (
+    list: { id: string | number; createdAt: string; updatedAt: string }[],
+    additionalInfo?: string,
+  ) => {
+    return (
+      list
+        .map(
+          (item) =>
+            `${item.id}-${new Date(item.createdAt).getTime()}-${new Date(
+              item.updatedAt,
+            ).getTime()}`,
+        )
+        .join('-') + (additionalInfo ? `-${additionalInfo}` : '')
+    )
   }
 
   useEffect(() => {
-    const next = getHash(initialTasks)
+    const filesUpdatedAt = initialTasks
+      .map((task) =>
+        task.files
+          ?.filter((el) => typeof el === 'object')
+          .map((file) => new Date(file.updatedAt).getTime()),
+      )
+      .flat()
+    const next = getHash(initialTasks, filesUpdatedAt.join('-'))
     if (next !== prevTaskHash.current) {
       setTasks(initialTasks)
       if (selectedTask) {
@@ -288,7 +308,6 @@ export const KanbanBoardView: React.FC<KanbanBoardProps> = ({
               const columnTasks = getTasksByStatus(column.status)
               const tasksByEpic = getTasksByEpic(columnTasks)
 
-              // console.log('col', col)
 
               return (
                 <KanbanColumn
@@ -377,6 +396,9 @@ export const KanbanBoardView: React.FC<KanbanBoardProps> = ({
           onUpdateTask={handleUpdateTask}
           onDeleteTask={handleDeleteTask}
           colleagues={colleagues}
+          onUploadFile={onUploadFile}
+          onDeleteFile={onDeleteFile}
+          onFileUpdate={onFileUpdate}
           onAddComment={onAddComment}
         />
       )}
