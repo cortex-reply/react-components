@@ -11,7 +11,7 @@ import { ListItemNode, ListNode } from '@payloadcms/richtext-lexical/lexical/lis
 import { HeadingNode } from '@payloadcms/richtext-lexical/lexical/rich-text'
 
 import { OnChangePlugin } from '@payloadcms/richtext-lexical/lexical/react/LexicalOnChangePlugin'
-import React, { Dispatch, SetStateAction, useEffect } from 'react'
+import React, { Dispatch, SetStateAction, useEffect, useRef } from 'react'
 
 import ToolbarPlugin from './plugins/toolbar-plugin'
 import { UploadNode } from './nodes/image-node'
@@ -27,27 +27,41 @@ interface RichTextProps {
 }
 const RichTextContent: React.FC<RichTextProps> = ({ setValue, value, name, editable = true }) => {
   const [editor] = useLexicalComposerContext()
+  const previousValueRef = useRef<any>(null)
 
   const handleEditorChange = (editorState: any) => {
     editorState.read(() => {
       const json = editorState.toJSON()
-      setValue?.(() => {
-        return json
-      })
+      // Only update if the value actually changed
+      if (JSON.stringify(json) !== JSON.stringify(previousValueRef.current)) {
+        previousValueRef.current = json
+        setValue?.(() => {
+          return json
+        })
+      }
     })
   }
 
   useEffect(() => {
     editor.setEditable(editable)
-  }, [editable])
+  }, [editable, editor])
 
   useEffect(() => {
-    if (value) {
-      editor.update(() => {
-        editor.setEditorState(editor.parseEditorState(value as any))
-      })
+    if (value && JSON.stringify(value) !== JSON.stringify(previousValueRef.current)) {
+      editor.update(
+        () => {
+          try {
+            const editorState = editor.parseEditorState(value as any)
+            editor.setEditorState(editorState)
+            previousValueRef.current = value
+          } catch (error) {
+            console.error('Error parsing editor state:', error)
+          }
+        },
+        { discrete: true },
+      )
     }
-  }, [])
+  }, [value, editor])
 
   return (
     <div className="w-full">
