@@ -1,10 +1,21 @@
 import React, { use, useEffect, useState } from 'react'
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
-import { Task, Epic, Sprint, DigitalColleague, User, Colleague } from '../Foundary/types'
+import {
+  Task,
+  Epic,
+  Sprint,
+  DigitalColleague,
+  User,
+  Colleague,
+  File as FileType,
+} from '../Foundary/types'
 import { EditableField } from '../AdvancedComponents/EditableField'
 import { CommentSection } from '../AdvancedComponents/CommentSection'
 import { TaskSidebar } from './TaskSidebar'
-import { Loader2, Check, X } from 'lucide-react'
+import { FileList } from './file-list'
+import { AddFileModal } from './AddFileModal'
+import { Button } from '@/components/ui/button'
+import { Loader2, Check, X, Upload, File as FileIcon } from 'lucide-react'
 
 interface Comment {
   id: string
@@ -25,6 +36,9 @@ interface TaskDetailsModalProps {
   onDeleteTask: (taskId: string) => Promise<void>
   onAddComment?: ({ content, taskId }: { taskId: string; content: string }) => void
   colleagues: Colleague[]
+  onUploadFile?: (taskId: string, file: FormData) => Promise<void>
+  onDeleteFile?: (taskId: string, fileId: string) => Promise<void>
+  onFileUpdate?: (fileId: string, content: string) => void
 }
 
 export const TaskDetailsModal: React.FC<TaskDetailsModalProps> = ({
@@ -37,11 +51,15 @@ export const TaskDetailsModal: React.FC<TaskDetailsModalProps> = ({
   onDeleteTask,
   onAddComment,
   colleagues,
+  onUploadFile,
+  onDeleteFile,
+  onFileUpdate,
 }) => {
   const [task, setTask] = useState(initialTask)
   const [lastUpdated, setLastUpdated] = useState(new Date())
   const [updateState, setUpdateState] = useState<UpdateState>('idle')
   const [deleteState, setDeleteState] = useState<UpdateState>('idle')
+  const [isUploadModalOpen, setIsUploadModalOpen] = useState(false)
   const [comments, setComments] = useState<Comment[]>([
     // {
     //   id: '1',
@@ -141,6 +159,51 @@ export const TaskDetailsModal: React.FC<TaskDetailsModalProps> = ({
     }
   }
 
+  const handleUploadFile = async (formData: FormData) => {
+    if (!onUploadFile) return
+
+    setUpdateState('loading')
+    try {
+      await onUploadFile(task.id.toString(), formData)
+      setLastUpdated(new Date())
+      setUpdateState('success')
+      setIsUploadModalOpen(false)
+      setTimeout(() => setUpdateState('idle'), 1500)
+    } catch (error) {
+      console.error('Error uploading file:', error)
+      setUpdateState('error')
+      setTimeout(() => setUpdateState('idle'), 3000)
+    }
+  }
+
+  const handleDeleteFile = async (file: FileType) => {
+    if (!onDeleteFile) return
+
+    setUpdateState('loading')
+    try {
+      await onDeleteFile(task.id.toString(), file.id.toString())
+      setLastUpdated(new Date())
+      setUpdateState('success')
+      setTimeout(() => setUpdateState('idle'), 1500)
+    } catch (error) {
+      console.error('Error deleting file:', error)
+      setUpdateState('error')
+      setTimeout(() => setUpdateState('idle'), 3000)
+    }
+  }
+
+  // Extract files from task - handle both File objects and file IDs
+  const taskFiles: FileType[] = (task.files || [])
+    .map((file) => {
+      if (typeof file === 'number') {
+        // If it's just an ID, we can't display it without fetching
+        // For now, return null and filter it out
+        return null
+      }
+      return file as FileType
+    })
+    .filter((file): file is FileType => file !== null)
+
   // Prevent closing when operations are in progress
   const canClose = updateState !== 'loading' && deleteState !== 'loading'
 
@@ -215,10 +278,46 @@ export const TaskDetailsModal: React.FC<TaskDetailsModalProps> = ({
               disabled={updateState === 'loading'}
             />
 
+            {/* Files Section */}
+            <div className="space-y-2">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <FileIcon className="h-4 w-4 text-muted-foreground" />
+                  <h3 className="text-sm font-medium">Files</h3>
+                </div>
+                {onUploadFile && (
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setIsUploadModalOpen(true)}
+                    disabled={updateState === 'loading'}
+                    className="gap-2"
+                  >
+                    <Upload className="h-4 w-4" />
+                    Upload
+                  </Button>
+                )}
+              </div>
+              {taskFiles.length > 0 ? (
+                <FileList
+                  files={taskFiles}
+                  onFileDelete={onDeleteFile ? handleDeleteFile : undefined}
+                  onFileUpdate={onFileUpdate}
+                  showHeader={false}
+                  className="border rounded-lg"
+                  viewMode="card"
+                />
+              ) : (
+                <div className="text-sm text-muted-foreground py-4 text-center border border-dashed rounded-lg">
+                  No files attached
+                </div>
+              )}
+            </div>
+
             {/* Comments Section */}
             <CommentSection
               comments={(task?.comments || []).map((el) => ({
-                author: (el as any).author.value.name || '',
+                author: (el as any).author?.value.name || '',
                 createdAt: new Date(el.timestamp),
                 text: el.text,
                 id: el.id || '',
@@ -243,6 +342,15 @@ export const TaskDetailsModal: React.FC<TaskDetailsModalProps> = ({
           />
         </div>
       </DialogContent>
+
+      {/* File Upload Modal */}
+      {onUploadFile && (
+        <AddFileModal
+          isOpen={isUploadModalOpen}
+          onClose={() => setIsUploadModalOpen(false)}
+          onAddFile={handleUploadFile}
+        />
+      )}
     </Dialog>
   )
 }
