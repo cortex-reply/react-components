@@ -77,17 +77,19 @@ export function RequestLeave({ remainingDays, submitLeaveRequest }: RequestLeave
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
 
-    const startYear = startDate?.getUTCFullYear()
-    const endYear = endDate?.getUTCFullYear()
+
 
     if (!startDate || !endDate) {
       toast.error('Please select both start and end dates')
       return
     }
 
-    //code to check if the total days exceed remaining days only if within the same year
-    if (startYear == endYear && totalDays > remainingDays) {
-      toast.error('You do not have enough leave days remaining')
+    const startYear = startDate?.getUTCFullYear()
+    const currentYear = new Date().getUTCFullYear()
+
+    //code to check if the total days exceed remaining days only if start date is in the current year
+    if (startYear === currentYear && totalDays > remainingDays) {
+      toast.error('You do not have enough leave days remaining.')
       return
     }
 
