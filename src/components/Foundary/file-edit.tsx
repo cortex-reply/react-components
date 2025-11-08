@@ -40,7 +40,26 @@ const lexicalToMarkdown = (lexicalJson: any): string => {
       }
 
       case 'paragraph': {
-        return extractTextFromChildren(node.children || [])
+        // Check if paragraph is empty (no children or only empty text nodes)
+        const hasContent =
+          node.children &&
+          node.children.some((child: any) => {
+            if (child.type === 'text') {
+              return child.text && child.text.trim().length > 0
+            }
+            if (child.type === 'linebreak') {
+              return true
+            }
+            return true
+          })
+
+        if (!hasContent) {
+          // Empty paragraph - return empty string to preserve it
+          return ''
+        }
+
+        const text = extractTextFromChildren(node.children || [])
+        return text
       }
 
       case 'list': {
@@ -53,6 +72,7 @@ const lexicalToMarkdown = (lexicalJson: any): string => {
             listItems.push(`${prefix} ${itemText}`)
           }
         })
+        // Return each list item as a separate line - they'll be split later
         return listItems.join('\n')
       }
 
@@ -132,12 +152,34 @@ const lexicalToMarkdown = (lexicalJson: any): string => {
 
   lexicalJson.root.children.forEach((node: any) => {
     const markdown = processNode(node)
-    if (markdown) {
+    // Always push paragraphs (even if empty) to preserve empty lines
+    // For other node types, only push if they have content
+    if (node.type === 'paragraph') {
+      lines.push(markdown || '')
+    } else if (markdown) {
       lines.push(markdown)
     }
   })
 
-  return lines.join('\n\n')
+  // Join lines: empty strings create empty lines, non-empty lines separated by double newline
+  // Simple approach: join with \n\n for non-empty lines, but empty strings will create empty lines
+  // When joining ['Line1', '', 'Line2'] with \n, we get 'Line1\n\nLine2' which is correct
+  // When joining ['Line1', 'Line2'] with \n, we get 'Line1\nLine2' which needs double newline
+  const result: string[] = []
+  for (let i = 0; i < lines.length; i++) {
+    result.push(lines[i])
+    if (i < lines.length - 1) {
+      if (lines[i] === '' || lines[i + 1] === '') {
+        // If either line is empty, just one newline (empty line is the separator)
+        // Don't add anything - the empty string will be joined with \n
+      } else {
+        // Both non-empty - add one more empty string to create double newline
+        result.push('')
+      }
+    }
+  }
+
+  return result.join('\n')
 }
 
 // Helper function to parse markdown text and create Lexical text nodes with formatting
@@ -244,6 +286,16 @@ const parseMarkdownText = (text: string): any[] => {
       continue
     }
 
+    // Check for newline characters
+    if (text[i] === '\n') {
+      nodes.push({
+        type: 'linebreak',
+        version: 1,
+      })
+      i += 1
+      continue
+    }
+
     // Regular text - find the next formatting marker or end of string
     let nextIndex = text.length
     const patterns = [
@@ -254,6 +306,7 @@ const parseMarkdownText = (text: string): any[] => {
       { pattern: /`+/, offset: 0 },
       { pattern: /\*[^*\n]/, offset: 0 },
       { pattern: /_[^_\n]/, offset: 0 },
+      { pattern: /\n/, offset: 0 },
     ]
 
     for (const { pattern } of patterns) {
@@ -274,14 +327,19 @@ const parseMarkdownText = (text: string): any[] => {
     i = nextIndex
   }
 
-  // Merge adjacent text nodes with the same format
+  // Merge adjacent text nodes with the same format (but not linebreaks)
   const merged: any[] = []
   for (const node of nodes) {
-    if (
+    if (node.type === 'linebreak') {
+      // Always keep linebreak nodes separate
+      merged.push(node)
+    } else if (
       merged.length > 0 &&
       merged[merged.length - 1].type === 'text' &&
+      node.type === 'text' &&
       merged[merged.length - 1].format === node.format
     ) {
+      // Merge adjacent text nodes with the same format
       merged[merged.length - 1].text += node.text
     } else {
       merged.push(node)
@@ -296,30 +354,67 @@ const markdownToLexical = (markdown: string): any => {
   // Split markdown into lines for basic parsing
   const lines = markdown.split('\n')
   const children: any[] = []
-  let currentParagraph: any[] = []
+  let currentParagraph: string[] = []
   let currentListItems: any[] = []
+  let currentListType: 'bullet' | 'number' | null = null
 
   const flushParagraph = () => {
     if (currentParagraph.length > 0) {
-      // Parse formatting in the paragraph text
-      const paragraphText = currentParagraph.join(' ')
-      const textNodes = parseMarkdownText(paragraphText)
-      children.push({
-        type: 'paragraph',
-        children: textNodes.length > 0 ? textNodes : [{ type: 'text', text: '', format: 0 }],
-      })
+      // Process each line as a separate paragraph to preserve newlines
+      // This way each line becomes its own paragraph, preserving spacing
+      for (let i = 0; i < currentParagraph.length; i++) {
+        const line = currentParagraph[i]
+        const textNodes = parseMarkdownText(line)
+        // Convert text nodes to Lexical format with required properties
+        const lexicalTextNodes =
+          textNodes.length > 0
+            ? textNodes.map((node) => ({
+                ...node,
+                mode: 'normal',
+                style: '',
+                detail: 0,
+                version: 1,
+              }))
+            : [
+                {
+                  type: 'text',
+                  text: '',
+                  format: 0,
+                  mode: 'normal',
+                  style: '',
+                  detail: 0,
+                  version: 1,
+                },
+              ]
+
+        children.push({
+          type: 'paragraph',
+          children: lexicalTextNodes,
+          direction: 'ltr',
+          format: '',
+          indent: 0,
+          version: 1,
+        })
+      }
       currentParagraph = []
     }
   }
 
   const flushList = () => {
-    if (currentListItems.length > 0) {
+    if (currentListItems.length > 0 && currentListType) {
       children.push({
         type: 'list',
-        listType: 'bullet',
+        listType: currentListType,
+        tag: currentListType === 'number' ? 'ol' : 'ul',
+        start: 1,
+        format: '',
+        indent: 0,
+        version: 1,
+        direction: 'ltr',
         children: currentListItems,
       })
       currentListItems = []
+      currentListType = null
     }
   }
 
@@ -327,9 +422,20 @@ const markdownToLexical = (markdown: string): any => {
     const trimmed = line.trim()
 
     if (!trimmed) {
-      // Empty line - flush current paragraph and list
+      // Empty line - flush current paragraph and list, then add empty paragraph
       flushParagraph()
       flushList()
+      // Add an empty paragraph to preserve the empty line
+      children.push({
+        children: [],
+        direction: null,
+        format: '',
+        indent: 0,
+        type: 'paragraph',
+        version: 1,
+        textFormat: 0,
+        textStyle: '',
+      })
       continue
     }
 
@@ -350,18 +456,120 @@ const markdownToLexical = (markdown: string): any => {
       continue
     }
 
-    // Check for list items
-    const listMatch = trimmed.match(/^[-*+]\s+(.+)$/)
-    if (listMatch) {
+    // Check for ordered list items (numbered lists like "1. ", "2. ", etc.)
+    const orderedListMatch = trimmed.match(/^(\d+)\.\s+(.*)$/)
+    if (orderedListMatch) {
       flushParagraph()
-      const listItemText = listMatch[1]
+      // If we were in a bullet list, flush it first
+      if (currentListType === 'bullet') {
+        flushList()
+      }
+      // Set list type to number if not already set
+      if (currentListType !== 'number') {
+        // If we have items from a previous list, flush them first
+        if (currentListItems.length > 0) {
+          flushList()
+        }
+        currentListType = 'number'
+      }
+      const listItemText = orderedListMatch[2] || ''
       const textNodes = parseMarkdownText(listItemText)
+      // Convert text nodes to Lexical format with required properties
+      const lexicalTextNodes =
+        textNodes.length > 0
+          ? textNodes.map((node) => ({
+              ...node,
+              mode: 'normal',
+              style: '',
+              detail: 0,
+              version: 1,
+            }))
+          : [
+              {
+                type: 'text',
+                text: '',
+                format: 0,
+                mode: 'normal',
+                style: '',
+                detail: 0,
+                version: 1,
+              },
+            ]
       currentListItems.push({
         type: 'listitem',
+        value: currentListItems.length + 1,
+        format: 'start',
+        indent: 0,
+        version: 1,
+        direction: 'ltr',
         children: [
           {
             type: 'paragraph',
-            children: textNodes.length > 0 ? textNodes : [{ type: 'text', text: '', format: 0 }],
+            children: lexicalTextNodes,
+            direction: 'ltr',
+            format: '',
+            indent: 0,
+            version: 1,
+          },
+        ],
+      })
+      continue
+    }
+
+    // Check for unordered list items (bullet lists like "- ", "* ", "+ ")
+    const unorderedListMatch = trimmed.match(/^[-*+]\s+(.+)$/)
+    if (unorderedListMatch) {
+      flushParagraph()
+      // If we were in a number list, flush it first
+      if (currentListType === 'number') {
+        flushList()
+      }
+      // Set list type to bullet if not already set
+      if (currentListType !== 'bullet') {
+        // If we have items from a previous list, flush them first
+        if (currentListItems.length > 0) {
+          flushList()
+        }
+        currentListType = 'bullet'
+      }
+      const listItemText = unorderedListMatch[1]
+      const textNodes = parseMarkdownText(listItemText)
+      // Convert text nodes to Lexical format with required properties
+      const lexicalTextNodes =
+        textNodes.length > 0
+          ? textNodes.map((node) => ({
+              ...node,
+              mode: 'normal',
+              style: '',
+              detail: 0,
+              version: 1,
+            }))
+          : [
+              {
+                type: 'text',
+                text: '',
+                format: 0,
+                mode: 'normal',
+                style: '',
+                detail: 0,
+                version: 1,
+              },
+            ]
+      currentListItems.push({
+        type: 'listitem',
+        value: currentListItems.length + 1,
+        format: 'start',
+        indent: 0,
+        version: 1,
+        direction: 'ltr',
+        children: [
+          {
+            type: 'paragraph',
+            children: lexicalTextNodes,
+            direction: 'ltr',
+            format: '',
+            indent: 0,
+            version: 1,
           },
         ],
       })
@@ -373,8 +581,9 @@ const markdownToLexical = (markdown: string): any => {
       flushList()
     }
 
-    // Regular paragraph text
-    currentParagraph.push(trimmed)
+    // Regular paragraph text - use original line to preserve any leading/trailing spaces
+    // But we still need to check if it's a list or heading first
+    currentParagraph.push(line)
   }
 
   // Flush any remaining content
