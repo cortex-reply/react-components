@@ -206,6 +206,14 @@ export interface DigitalColleague {
             relationTo: 'capabilities'
             value: number | Capability
           }
+          | {
+            relationTo: 'internalTools'
+            value: number | InternalTool
+          }
+          | {
+            relationTo: 'digital-colleagues'
+            value: number | DigitalColleague
+          }
       )[]
     | null
   knowledge?: (number | null) | Knowledge
@@ -241,27 +249,13 @@ export interface DigitalColleague {
  * via the `definition` "mcpTools".
  */
 export interface McpTool {
-  id: number
-  name: string
-  description?: string | null
-  url?: string | null
-  headers?:
-    | {
-        [k: string]: unknown
-      }
-    | unknown[]
-    | string
-    | number
-    | boolean
-    | null
-  toolNames?:
-    | {
-        toolName: string
-        id?: string | null
-      }[]
-    | null
-  updatedAt: string
-  createdAt: string
+  id: number;
+  name: string;
+  description?: string | null;
+  url?: string | null;
+  transportType?: ('sse' | 'streamable_http') | null;
+  updatedAt: string;
+  createdAt: string;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -367,6 +361,17 @@ export interface KnowledgeBase {
   description?: string | null
   updatedAt: string
   createdAt: string
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "internalTools".
+ */
+export interface InternalTool {
+  id: number;
+  name: string;
+  description?: string | null;
+  updatedAt: string;
+  createdAt: string;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
