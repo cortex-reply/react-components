@@ -244,7 +244,7 @@ export interface DigitalColleague {
   updatedAt: string
   createdAt: string
 }
-/**
+/** 
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "mcpTools".
  */
