@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import {
   MoreHorizontal,
   Mail,
@@ -241,16 +241,16 @@ export function ColleagueCard({
                   .map((capability) => (
                     <Badge
                       key={
-                        typeof capability.value === 'number'
-                          ? capability.value
-                          : capability.value.name
+                        typeof capability?.value === 'number'
+                          ? capability?.value || ''
+                          : capability?.value?.name || ''
                       }
                       variant="outline"
                       className="text-xs"
                     >
-                      {typeof capability.value === 'number'
-                        ? capability.value
-                        : capability.value.name}
+                      {typeof capability?.value === 'number'
+                        ? capability?.value || ''
+                        : capability?.value?.name || ''}
                     </Badge>
                   ))}
                 {(colleague.capabilities?.length || 0) > 2 && (

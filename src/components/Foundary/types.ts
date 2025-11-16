@@ -196,6 +196,7 @@ export interface Capability {
 export interface DigitalColleague {
   id: number
   name: string
+  model?: (number | null) | Model
   capabilities?:
     | (
         | {
@@ -206,11 +207,11 @@ export interface DigitalColleague {
             relationTo: 'capabilities'
             value: number | Capability
           }
-          | {
+        | {
             relationTo: 'internalTools'
             value: number | InternalTool
           }
-          | {
+        | {
             relationTo: 'digital-colleagues'
             value: number | DigitalColleague
           }
@@ -231,12 +232,11 @@ export interface DigitalColleague {
    * The capability level of this digital colleague.
    */
   capabilityLevel: number
+  systemMsg?: string | null
   /**
    * The identity used by this digital colleague to authenticate with Keycloak.
    */
   identity: number | Identity
-  keycloakSecretLastUpdated?: string | null
-  systemMsg?: string | null
   metadata?: {
     type?: string
     [k: string]: unknown
@@ -244,18 +244,31 @@ export interface DigitalColleague {
   updatedAt: string
   createdAt: string
 }
-/** 
+
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "models".
+ */
+export interface Model {
+  id: number
+  name: string
+  provider: 'aws' | 'openai'
+  model_id: string
+  updatedAt: string
+  createdAt: string
+}
+/**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "mcpTools".
  */
 export interface McpTool {
-  id: number;
-  name: string;
-  description?: string | null;
-  url?: string | null;
-  transportType?: ('sse' | 'streamable_http') | null;
-  updatedAt: string;
-  createdAt: string;
+  id: number
+  name: string
+  description?: string | null
+  url?: string | null
+  transportType?: ('sse' | 'streamable_http') | null
+  updatedAt: string
+  createdAt: string
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -367,11 +380,11 @@ export interface KnowledgeBase {
  * via the `definition` "internalTools".
  */
 export interface InternalTool {
-  id: number;
-  name: string;
-  description?: string | null;
-  updatedAt: string;
-  createdAt: string;
+  id: number
+  name: string
+  description?: string | null
+  updatedAt: string
+  createdAt: string
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema

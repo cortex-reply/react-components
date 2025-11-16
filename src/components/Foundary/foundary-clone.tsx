@@ -29,7 +29,7 @@ export function DigitalColleagueClone({
   const filteredColleagues = useMemo(() => {
     return digitalColleagues.filter((colleague) => {
       const matchesSearch =
-        colleague.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        colleague?.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
         colleague.jobDescription?.toLowerCase().includes(searchTerm.toLowerCase()) ||
         // colleague.capabilities?.some(cap => cap.toLowerCase().includes(searchTerm.toLowerCase())) ||
         colleague.workInstructions?.toLowerCase().includes(searchTerm.toLowerCase())
@@ -45,7 +45,7 @@ export function DigitalColleagueClone({
     const clonedColleague: DigitalColleague = {
       ...colleague,
       // id: `${colleague.id}-clone-${Date.now()}`,
-      name: `${colleague.name} (Copy)`,
+      name: `${colleague?.name} (Copy)`,
       // joinedDate: new Date(),
       // lastActive: new Date(),
       // lastUpdated: new Date(),
@@ -140,7 +140,7 @@ export function DigitalColleagueClone({
                         </Avatar>
                         <div>
                           <CardTitle className="text-lg flex items-center gap-2">
-                            {colleague.name}
+                            {colleague?.name}
                             {/* <Badge 
                               variant={colleague.status === "active" ? "default" : "secondary"}
                               className="text-xs"

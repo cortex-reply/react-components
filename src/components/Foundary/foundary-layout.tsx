@@ -29,6 +29,7 @@ interface FoundaryLayoutProps {
   onNotificationRemove?: (id: string) => void
   onRemoveAll?: () => void
   logo?: string
+  logoLink?: string
   appName?: string
   tagline?: string
   sidebarInitiallyClosed?: boolean
@@ -63,6 +64,7 @@ export function FoundaryLayout({
   onNotificationRemove,
   onRemoveAll,
   logo = '/headerlogo.png',
+  logoLink = '/teams',
   appName = 'Nuvia',
   tagline = 'Collaboration Platform',
   sidebarInitiallyClosed = false,
@@ -111,6 +113,7 @@ export function FoundaryLayout({
           onBusinessUnitChange={handleBusinessUnitChange}
           onSearch={onSearch}
           logo={logo}
+          logoLink={logoLink}
           appName={appName}
           tagline={tagline}
         />
@@ -126,6 +129,7 @@ export function FoundaryLayout({
           onBusinessUnitChange={handleBusinessUnitChange}
           onSearch={onSearch}
           logo={logo}
+          logoLink={logoLink}
           appName={appName}
           tagline={tagline}
         />
@@ -157,7 +161,7 @@ export function FoundaryLayout({
           tagline={tagline}
         />
 
-        <main className="flex-1 p-0 flex flex-col h-[calc(100vh-4rem)] overflow-hidden">
+        <main className="flex-1 p-0 flex flex-col h-[calc(100vh-4rem)] overflow-y-scroll">
           {children}
         </main>
       </div>
