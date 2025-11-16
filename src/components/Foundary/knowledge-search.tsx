@@ -70,7 +70,6 @@ export function KnowledgeSearch({
   }
 
   const handleRemoveDocument = (documentId: string) => {
-    console.log('doc', documentId, selectedDocuments)
     onDocumentsChange(selectedDocuments.filter((doc) => doc.id !== documentId))
   }
 
@@ -96,7 +95,7 @@ export function KnowledgeSearch({
 
         {/* Search Results Dropdown */}
         {showResults && filteredDocuments.length > 0 && (
-          <Card className="absolute top-full left-0 right-0 z-10 mt-1 max-h-60">
+          <Card className="absolute top-full left-0 right-0 z-10 mt-1 max-h-60 overflow-y-scroll no-scrollbar">
             <ScrollArea className="h-full">
               <CardContent className="p-2">
                 {filteredDocuments.map((doc) => (

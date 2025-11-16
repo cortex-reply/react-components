@@ -65,6 +65,7 @@ export function NavigationTabs({
               >
                 <TabsTrigger
                   value={tab.value}
+                  onClick={() => onTabChange?.(tab.value)}
                   className="w-full h-8 rounded-xl data-[state=active]:rounded-xl transition-all duration-200 hover:border hover:border-accent hover:bg-accent/10 px-4 py-2 text-sm font-medium"
                 >
                   {tab.label}

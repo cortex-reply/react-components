@@ -44,6 +44,14 @@ interface ColleaguesViewProps {
   availableUsers?: UserType[]
   existingDigitalColleagues?: DigitalColleague[]
   availableKnowledgeDocuments?: Knowledge[]
+  availableCapabilities?: Array<{
+    relationTo: 'mcpTools' | 'capabilities' | 'internalTools' | 'digital-colleagues'
+    value: number | { id: number; name: string }
+  }>
+  availableModels?: Array<{
+    id: number | string
+    name: string
+  }>
 }
 
 export default function ColleaguesView({
@@ -57,6 +65,8 @@ export default function ColleaguesView({
   availableUsers = [],
   existingDigitalColleagues = [],
   availableKnowledgeDocuments = [],
+  availableCapabilities = [],
+  availableModels = [],
 }: ColleaguesViewProps) {
   const [colleagues, setColleagues] = useState<Colleague[]>(initialColleagues || [])
   const [searchTerm, setSearchTerm] = useState('')
@@ -82,10 +92,10 @@ export default function ColleaguesView({
   >('main')
 
   const filteredColleagues = colleagues.filter((colleague) => {
-    if (!colleague || !colleague.name) return false
+    if (!colleague || !colleague?.name) return false
 
     const matchesSearch =
-      colleague.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      colleague?.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       (colleague.type === 'human' &&
         // (colleague.email?.toLowerCase().includes(searchTerm.toLowerCase()) ||
         //   colleague.role?.toLowerCase().includes(searchTerm.toLowerCase()))) ||
@@ -115,7 +125,6 @@ export default function ColleaguesView({
       setCurrentView('form')
     }
     // For now, only digital colleagues can be edited through the form
-    console.log('Editing colleague:', colleague)
     onColleagueEdit?.(colleague)
   }
 
@@ -130,13 +139,17 @@ export default function ColleaguesView({
   // New handler functions
   const handleUserSelect = (user: UserType) => {
     // Validate user object
+    if (!user || !user.id) {
+      console.error('Invalid user provided to handleUserSelect:', user)
+      return
+    }
 
     // Convert User to HumanColleague
     const humanColleague: HumanColleague = {
       id: `human-${Date.now()}`,
       type: 'human',
-      name: user.name,
-      email: user.email,
+      name: user?.name || 'Unknown User',
+      email: user?.email || '',
       updatedAt: user.updatedAt,
       createdAt: user.createdAt,
       accounts: user.accounts,
@@ -217,7 +230,6 @@ export default function ColleaguesView({
   }
 
   const handleDeleteColleague = (colleagueId: string) => {
-    console.log('deleting', colleagueId, colleagues)
     onColleagueDelete?.(
       colleagueId,
       (colleagues.find((c) => c.id.toString() === colleagueId.toString()) as Colleague)?.type as
@@ -316,6 +328,8 @@ export default function ColleaguesView({
         onSave={handleSaveColleague}
         onCancel={handleCancelForm}
         availableKnowledgeDocuments={availableKnowledgeDocuments}
+        availableCapabilities={availableCapabilities}
+        availableModels={availableModels}
         // availableKnowledgeDocuments={getAllAvailableKnowledgeDocuments()}
       />
     )
@@ -329,6 +343,8 @@ export default function ColleaguesView({
         onCancel={handleCancelView}
         readOnly={true}
         availableKnowledgeDocuments={availableKnowledgeDocuments}
+        availableCapabilities={availableCapabilities}
+        availableModels={availableModels}
         // availableKnowledgeDocuments={getAllAvailableKnowledgeDocuments()}
       />
     )
@@ -493,9 +509,7 @@ export default function ColleaguesView({
                       onDelete={handleDeleteColleague}
                       onViewDetails={handleViewDetails}
                       compact={compactView}
-                      className={cn([
-                        colleague.type === 'digital' && 'border-teal-400'
-                      ])}
+                      className={cn([colleague.type === 'digital' && 'border-teal-400'])}
                     />
                   ))}
                 </div>
@@ -538,9 +552,7 @@ export default function ColleaguesView({
                       onDelete={handleDeleteColleague}
                       onViewDetails={handleViewDetails}
                       compact={compactView}
-                      className={cn([
-                        colleague.type === 'digital' && 'border-teal-400'
-                      ])}
+                      className={cn([colleague.type === 'digital' && 'border-teal-400'])}
                     />
                   ))}
                 </div>

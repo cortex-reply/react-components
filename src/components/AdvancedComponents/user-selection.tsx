@@ -25,17 +25,23 @@ export function UserSelection({
 }: UserSelectionProps) {
   const [searchTerm, setSearchTerm] = useState('')
 
-  const filteredUsers = useMemo(() => {
-    return users.filter((user) => {
-      const matchesSearch =
-        user.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        user.email.toLowerCase().includes(searchTerm.toLowerCase())
-      // user.role.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      // (user.skills || []).some((skill) => skill.toLowerCase().includes(searchTerm.toLowerCase()))
+  // Ensure users is always an array
+  const safeUsers = Array.isArray(users) ? users : []
 
-      return matchesSearch
-    })
-  }, [users, searchTerm])
+  const filteredUsers = useMemo(() => {
+    // First filter out any undefined/null users, then apply search filter
+    return safeUsers
+      .filter((user): user is UserType => user != null && user !== undefined)
+      .filter((user) => {
+        const matchesSearch =
+          user?.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          user?.email?.toLowerCase().includes(searchTerm.toLowerCase())
+        // user.role.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        // (user.skills || []).some((skill) => skill.toLowerCase().includes(searchTerm.toLowerCase()))
+
+        return matchesSearch
+      })
+  }, [safeUsers, searchTerm])
 
   const handleUserSelect = (user: UserType) => {
     onUserSelect(user)
@@ -84,54 +90,60 @@ export function UserSelection({
 
           {/* Users Grid */}
           <div className="container grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-            {filteredUsers.map((user) => (
-              <motion.div
-                key={user.id}
-                layout
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 0.2 }}
-              >
-                <Card
-                  className={`cursor-pointer transition-all hover:shadow-lg ${
-                    selectedUserId === user.id ? 'ring-2 ring-primary' : ''
-                  }`}
-                  onClick={() => handleUserSelect(user)}
+            {filteredUsers.map((user) => {
+              // Safety check - skip rendering if user is invalid
+              if (!user || !user.id) return null
+
+              return (
+                <motion.div
+                  key={user.id}
+                  layout
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ duration: 0.2 }}
                 >
-                  <CardHeader className="pb-3">
-                    <div className="flex items-start justify-between">
-                      <div className="flex items-center gap-3">
-                        <Avatar>
-                          {/* <AvatarImage src={user.avatar} alt={user.name} /> */}
-                          <AvatarFallback>
-                            <User className="h-4 w-4" />
-                          </AvatarFallback>
-                        </Avatar>
-                        <div>
-                          <CardTitle className="text-lg">{user.name}</CardTitle>
-                          {/* <p className="text-sm text-muted-foreground">{user.role}</p> */}
+                  <Card
+                    className={`cursor-pointer transition-all hover:shadow-lg ${
+                      selectedUserId === user.id ? 'ring-2 ring-primary' : ''
+                    }`}
+                    onClick={() => handleUserSelect(user)}
+                  >
+                    <CardHeader className="pb-3">
+                      <div className="flex items-start justify-between">
+                        <div className="flex items-center gap-3">
+                          <Avatar>
+                            {/* <AvatarImage src={user.avatar} alt={user?.name || 'User'} /> */}
+                            <AvatarFallback>
+                              <User className="h-4 w-4" />
+                            </AvatarFallback>
+                          </Avatar>
+                          <div>
+                            <CardTitle className="text-lg">
+                              {user?.name || 'Unknown User'}
+                            </CardTitle>
+                            {/* <p className="text-sm text-muted-foreground">{user.role}</p> */}
+                          </div>
                         </div>
+                        {selectedUserId === user.id && <Check className="h-5 w-5 text-primary" />}
                       </div>
-                      {selectedUserId === user.id && <Check className="h-5 w-5 text-primary" />}
-                    </div>
-                  </CardHeader>
-                  <CardContent className="pt-0">
-                    <div className="space-y-3">
-                      <div>
-                        <p className="text-sm text-muted-foreground">Email</p>
-                        <p className="text-sm font-medium">{user.email}</p>
-                      </div>
-                      <div>
-                        <p className="text-sm text-muted-foreground">Department</p>
-                        {/* <Badge variant="secondary">{user.department}</Badge> */}
-                      </div>
-                      {/* {user.location && (
+                    </CardHeader>
+                    <CardContent className="pt-0">
+                      <div className="space-y-3">
+                        <div>
+                          <p className="text-sm text-muted-foreground">Email</p>
+                          <p className="text-sm font-medium">{user?.email || 'No email'}</p>
+                        </div>
+                        <div>
+                          <p className="text-sm text-muted-foreground">Department</p>
+                          {/* <Badge variant="secondary">{user.department}</Badge> */}
+                        </div>
+                        {/* {user.location && (
                         <div>
                           <p className="text-sm text-muted-foreground">Location</p>
                           <p className="text-sm">{user.location}</p>
                         </div>
                       )} */}
-                      {/* {user.skills && user.skills.length > 0 && (
+                        {/* {user.skills && user.skills.length > 0 && (
                         <div>
                           <p className="text-sm text-muted-foreground mb-2">Skills</p>
                           <div className="flex flex-wrap gap-1">
@@ -148,11 +160,12 @@ export function UserSelection({
                           </div>
                         </div>
                       )} */}
-                    </div>
-                  </CardContent>
-                </Card>
-              </motion.div>
-            ))}
+                      </div>
+                    </CardContent>
+                  </Card>
+                </motion.div>
+              )
+            })}
           </div>
 
           {filteredUsers.length === 0 && (
