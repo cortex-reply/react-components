@@ -13,6 +13,8 @@ import { OrgTree } from './OrgTree';
  * @param className - Optional additional CSS classes
  * @param expandable - Whether nodes can be collapsed/expanded (default: false)
  * @param initiallyExpanded - Whether nodes start expanded (default: true)
+ * @param companyInfo - Optional company information (name, logo) to display at the top
+ * @param defaultExpandedLevels - Number of levels to show expanded by default (default: 2)
  */
 export const OrgChart: React.FC<OrgChartProps> = ({
   users,
@@ -20,6 +22,8 @@ export const OrgChart: React.FC<OrgChartProps> = ({
   className = '',
   expandable = false,
   initiallyExpanded = true,
+  companyInfo,
+  defaultExpandedLevels = 2,
 }) => {
   // Build hierarchical tree from flat user list
   const orgTree = buildOrgTree(users);
@@ -55,6 +59,8 @@ export const OrgChart: React.FC<OrgChartProps> = ({
           onNodeClick={onNodeClick}
           expandable={expandable}
           initiallyExpanded={initiallyExpanded}
+          companyInfo={orgTree.length > 1 ? companyInfo : undefined}
+          defaultExpandedLevels={defaultExpandedLevels}
         />
       </div>
     </div>

@@ -1,15 +1,17 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import { OrgChart } from './OrgChart'
+import type { OrgChartProps } from './types'
 import {
   smallTeamData,
   mediumTeamData,
   singlePersonData,
   deepHierarchyData,
   wideHierarchyData,
+  dualPartnershipData,
   emptyData,
 } from './mockData'
 
-const meta = {
+const meta: Meta<OrgChartProps> = {
   title: 'Advanced Components/OrgChart',
   component: OrgChart,
   parameters: {
@@ -43,8 +45,16 @@ const meta = {
       description: 'Additional CSS classes',
       control: { type: 'text' },
     },
+    companyInfo: {
+      description: 'Company information including name and logo',
+      control: { type: 'object' },
+    },
+    defaultExpandedLevels: {
+      description: 'Number of levels to show expanded by default',
+      control: { type: 'number', min: 1, max: 10 },
+    },
   },
-} satisfies Meta<typeof OrgChart>
+} satisfies Meta<OrgChartProps>
 
 export default meta
 type Story = StoryObj<typeof meta>
@@ -110,26 +120,45 @@ export const WideHierarchy: Story = {
 }
 
 /**
+ * Dual partnership structure with 2 top-level partners.
+ * Shows how the company logo appears with controlled expansion levels.
+ */
+export const DualPartnership: Story = {
+  args: {
+    users: dualPartnershipData,
+    expandable: true,
+    defaultExpandedLevels: 2,
+    companyInfo: {
+      name: 'Cortex Reply',
+      logo: {
+        url: '/logo.png',
+        alt: 'Cortex Reply Logo',
+      },
+    },
+  },
+}
+
+/**
  * Expandable/collapsible nodes for better navigation in large organizations.
- * Click the arrow buttons to expand or collapse branches.
+ * Shows 2 levels expanded by default. Click the arrow buttons to expand or collapse branches.
  */
 export const ExpandableNodes: Story = {
   args: {
     users: mediumTeamData,
     expandable: true,
-    initiallyExpanded: true,
+    defaultExpandedLevels: 2,
   },
 }
 
 /**
- * Expandable nodes that start collapsed.
+ * Shows only 1 level expanded by default.
  * Useful for very large organizations where you want to progressively reveal structure.
  */
 export const InitiallyCollapsed: Story = {
   args: {
     users: mediumTeamData,
     expandable: true,
-    initiallyExpanded: false,
+    defaultExpandedLevels: 1,
   },
 }
 
@@ -142,7 +171,7 @@ export const WithClickHandler: Story = {
     users: smallTeamData,
     expandable: false,
     initiallyExpanded: true,
-    onNodeClick: (user) => {
+    onNodeClick: (user: any) => {
       console.log('Clicked user:', user)
       alert(`Clicked: ${user.name} (${user.email})`)
     },
@@ -157,6 +186,33 @@ export const EmptyState: Story = {
     users: emptyData,
     expandable: false,
     initiallyExpanded: true,
+  },
+}
+
+/**
+ * Wide hierarchy with company logo.
+ * Shows how the company node appears when there are many partners at the top level.
+ */
+export const WideHierarchyWithCompany: Story = {
+  args: {
+    users: wideHierarchyData,
+    expandable: true,
+    defaultExpandedLevels: 2,
+    companyInfo: {
+      name: 'Tech Innovators Inc',
+    },
+  },
+}
+
+/**
+ * Deep hierarchy showing 3 levels expanded by default.
+ * Demonstrates how defaultExpandedLevels controls the initial view of complex organizations.
+ */
+export const DeepHierarchyExpanded: Story = {
+  args: {
+    users: deepHierarchyData,
+    expandable: true,
+    defaultExpandedLevels: 3,
   },
 }
 

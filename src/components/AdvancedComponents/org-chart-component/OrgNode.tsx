@@ -83,7 +83,7 @@ export const OrgNode: React.FC<OrgNodeProps> = ({
               e.stopPropagation();
               onToggleExpand?.();
             }}
-            className="absolute -bottom-3 left-1/2 -translate-x-1/2 w-6 h-6 rounded-full bg-card border-2 border-border hover:border-primary/50 flex items-center justify-center transition-colors"
+            className="absolute -bottom-3 left-1/2 -translate-x-1/2 w-6 h-6 rounded-full bg-card border-2 border-border hover:border-primary/50 flex items-center justify-center transition-colors z-30"
             aria-label={isExpanded ? 'Collapse' : 'Expand'}
           >
             <svg
@@ -105,10 +105,7 @@ export const OrgNode: React.FC<OrgNodeProps> = ({
         )}
       </div>
 
-      {/* Children Indicator Line */}
-      {hasChildren && isExpanded && (
-        <div className="w-0.5 h-8 bg-border" />
-      )}
+
     </div>
   );
 };

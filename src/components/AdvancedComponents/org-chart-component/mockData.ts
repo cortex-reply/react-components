@@ -301,5 +301,108 @@ export const wideHierarchyData: User[] = [
   },
 ];
 
+// Two top-level partners with their respective teams
+export const dualPartnershipData: User[] = [
+  // Partner 1 and their team
+  {
+    id: '1',
+    name: 'Victoria Sterling',
+    email: 'victoria.sterling@company.com',
+    jobRole: 'P',
+    manager: null,
+    about: 'Managing Partner - Technology Division',
+  },
+  {
+    id: '2',
+    name: 'James Morrison',
+    email: 'james.morrison@company.com',
+    jobRole: 'SM',
+    manager: '1',
+    about: 'Senior Manager - Cloud & Infrastructure',
+  },
+  {
+    id: '3',
+    name: 'Sarah Kim',
+    email: 'sarah.kim@company.com',
+    jobRole: 'M',
+    manager: '2',
+    about: 'Manager - DevOps Team',
+  },
+  {
+    id: '4',
+    name: 'Michael Chen',
+    email: 'michael.chen@company.com',
+    jobRole: 'SC1',
+    manager: '3',
+    about: 'Senior Consultant - Platform Engineering',
+  },
+  {
+    id: '5',
+    name: 'Emma Rodriguez',
+    email: 'emma.rodriguez@company.com',
+    jobRole: 'C3',
+    manager: '3',
+    about: 'Consultant - Site Reliability Engineer',
+  },
+
+  // Partner 2 and their team
+  {
+    id: '6',
+    name: 'Alexander Cross',
+    email: 'alexander.cross@company.com',
+    jobRole: 'P',
+    manager: null,
+    about: 'Managing Partner - Strategy & Operations',
+  },
+  {
+    id: '7',
+    name: 'Diana Wells',
+    email: 'diana.wells@company.com',
+    jobRole: 'SM',
+    manager: '6',
+    about: 'Senior Manager - Business Transformation',
+  },
+  {
+    id: '8',
+    name: 'Robert Lynch',
+    email: 'robert.lynch@company.com',
+    jobRole: 'M',
+    manager: '7',
+    about: 'Manager - Process Optimization',
+  },
+  {
+    id: '9',
+    name: 'Lisa Wang',
+    email: 'lisa.wang@company.com',
+    jobRole: 'SC2',
+    manager: '8',
+    about: 'Senior Consultant - Change Management',
+  },
+  {
+    id: '10',
+    name: 'David Park',
+    email: 'david.park@company.com',
+    jobRole: 'C2',
+    manager: '8',
+    about: 'Consultant - Data Analytics',
+  },
+  {
+    id: '11',
+    name: 'Rachel Green',
+    email: 'rachel.green@company.com',
+    jobRole: 'M',
+    manager: '7',
+    about: 'Manager - Strategic Planning',
+  },
+  {
+    id: '12',
+    name: 'Thomas Hill',
+    email: 'thomas.hill@company.com',
+    jobRole: 'SC1',
+    manager: '11',
+    about: 'Senior Consultant - Market Research',
+  },
+];
+
 // Empty data for testing
 export const emptyData: User[] = [];
