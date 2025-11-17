@@ -1,7 +1,7 @@
 export * from './Insight'
 export * from './InfoTile'
 export * from './MOTD'
-export * from './OrgChart'
+// export * from './OrgChart'
 export * from './ProposalSummary'
 export * from './WhyUs'
 export * from './Content'

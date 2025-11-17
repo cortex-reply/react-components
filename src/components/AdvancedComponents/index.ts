@@ -5,3 +5,4 @@ export * from './EditableField';
 export * from './AppSidebar';
 export * from './app-header';
 export * from './notifications-panel';
+export * from './org-chart-component';
