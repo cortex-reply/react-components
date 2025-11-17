@@ -21,7 +21,7 @@ export const OrgNode: React.FC<OrgNodeProps> = ({
           relative bg-card border border-border rounded-lg shadow-sm
           transition-all duration-200 hover:shadow-md hover:border-primary/50
           ${onNodeClick ? 'cursor-pointer' : ''}
-          w-64 p-4
+          w-64 p-4 min-h-[180px] flex flex-col
         `}
         onClick={() => onNodeClick?.(node)}
       >
@@ -67,14 +67,28 @@ export const OrgNode: React.FC<OrgNodeProps> = ({
           </div>
         </div>
 
-        {/* About Section */}
-        {node.about && (
-          <div className="mt-3 pt-3 border-t border-border">
-            <p className="text-xs text-muted-foreground line-clamp-2">
-              {node.about}
-            </p>
-          </div>
-        )}
+        {/* About Section - Always present to maintain uniform height */}
+        <div className="mt-3 pt-3 border-t border-border flex-1 flex flex-col justify-start">
+          {node.about ? (
+            <>
+              <p 
+                className="text-xs text-muted-foreground line-clamp-2"
+                title={node.about.length > 100 ? node.about : undefined}
+              >
+                {node.about}
+              </p>
+              {node.about.length > 100 && (
+                <div className="mt-1 text-xs text-muted-foreground/70 italic">
+                  Hover to see full description
+                </div>
+              )}
+            </>
+          ) : (
+            <div className="text-xs text-muted-foreground/50 italic">
+              No description available
+            </div>
+          )}
+        </div>
 
         {/* Expand/Collapse Button */}
         {showExpandButton && (

@@ -404,5 +404,57 @@ export const dualPartnershipData: User[] = [
   },
 ];
 
+// Team with detailed long descriptions for testing text overflow
+export const detailedDescriptionsData: User[] = [
+  {
+    id: '1',
+    name: 'Dr. Margaret Thompson',
+    email: 'margaret.thompson@company.com',
+    jobRole: 'P',
+    manager: null,
+    about: 'Partner and Chief Technology Officer with over 20 years of experience in enterprise software architecture, digital transformation, and strategic technology leadership. Specializes in cloud-native solutions, microservices architecture, and leading large-scale technology implementations across Fortune 500 companies.',
+  },
+  {
+    id: '2',
+    name: 'Alexander Rodriguez',
+    email: 'alexander.rodriguez@company.com',
+    jobRole: 'SM',
+    manager: '1',
+    about: 'Senior Manager leading the Cloud Infrastructure practice. Expert in AWS, Azure, and GCP with extensive experience in DevOps, CI/CD pipelines, infrastructure as code, Kubernetes orchestration, and enterprise security frameworks. Previously led digital transformation initiatives at three major consulting firms.',
+  },
+  {
+    id: '3',
+    name: 'Jennifer Liu',
+    email: 'jennifer.liu@company.com',
+    jobRole: 'M',
+    manager: '2',
+    about: 'Manager focused on AI/ML solutions and data engineering platforms. PhD in Computer Science with research background in machine learning algorithms. Leads projects involving predictive analytics, natural language processing, computer vision, and big data processing using Spark, Kafka, and TensorFlow.',
+  },
+  {
+    id: '4',
+    name: 'David Park',
+    email: 'david.park@company.com',
+    jobRole: 'SC1',
+    manager: '3',
+    about: 'Senior Consultant specializing in machine learning model deployment, MLOps pipelines, and AI ethics. Certifications in AWS ML, Google Cloud AI, and Azure AI. Experience with PyTorch, scikit-learn, Docker, Kubernetes, and building scalable ML inference systems.',
+  },
+  {
+    id: '5',
+    name: 'Rachel Kumar',
+    email: 'rachel.kumar@company.com',
+    jobRole: 'SC2',
+    manager: '2',
+    about: 'Senior Consultant with expertise in cybersecurity, zero-trust architecture, and compliance frameworks including SOC2, HIPAA, and GDPR. Certified in CISSP and CISM with experience in penetration testing, security audits, and incident response planning.',
+  },
+  {
+    id: '6',
+    name: 'Michael Johnson',
+    email: 'michael.johnson@company.com',
+    jobRole: 'C3',
+    manager: '3',
+    about: 'Short description for comparison.',
+  },
+];
+
 // Empty data for testing
 export const emptyData: User[] = [];

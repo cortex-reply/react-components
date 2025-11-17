@@ -8,6 +8,7 @@ import {
   deepHierarchyData,
   wideHierarchyData,
   dualPartnershipData,
+  detailedDescriptionsData,
   emptyData,
 } from './mockData'
 
@@ -211,6 +212,18 @@ export const WideHierarchyWithCompany: Story = {
 export const DeepHierarchyExpanded: Story = {
   args: {
     users: deepHierarchyData,
+    expandable: true,
+    defaultExpandedLevels: 3,
+  },
+}
+
+/**
+ * Team with detailed long descriptions.
+ * Demonstrates how the component handles lengthy "about" text with hover tooltips.
+ */
+export const DetailedDescriptions: Story = {
+  args: {
+    users: detailedDescriptionsData,
     expandable: true,
     defaultExpandedLevels: 3,
   },
