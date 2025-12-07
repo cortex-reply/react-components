@@ -1,5 +1,5 @@
-export * from "./ChatMessage";
-export * from "./ChatInterfaceMessages";
+// export * from "./ChatMessage";
+// export * from "./ChatInterfaceMessages";
 export * from "./Components/ChatCardTask";
 export * from "../../test-data/capabilities";
 export * from "./Components/ChatCardArtefact"

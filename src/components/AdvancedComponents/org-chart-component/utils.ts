@@ -1,9 +1,9 @@
-import { User, OrgChartNode } from './types';
+import { OrgChartUser, OrgChartNode } from './types';
 
 /**
  * Build a hierarchical tree structure from flat user list
  */
-export function buildOrgTree(users: User[]): OrgChartNode[] {
+export function buildOrgTree(users: OrgChartUser[]): OrgChartNode[] {
   const userMap = new Map<string, OrgChartNode>();
   const roots: OrgChartNode[] = [];
 

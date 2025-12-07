@@ -561,7 +561,7 @@ export function ChatInterface({
                 {/* {renderMessage(message)} */}
 
                 <Message from={message.role} key={message.id}>
-                  <MessageContent variant="flat">
+                  <MessageContent variant="contained">
 
                      { messageHandler({
                         message,

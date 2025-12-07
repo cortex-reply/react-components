@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { OrgChartNode, User } from './types';
+import { OrgChartNode, OrgChartUser } from './types';
 import { OrgNode } from './OrgNode';
 import { CompanyNode } from './CompanyNode';
 
@@ -20,7 +20,7 @@ const adjustLevelsRecursively = (node: OrgChartNode, increment: number): OrgChar
 
 interface OrgTreeProps {
   nodes: OrgChartNode[];
-  onNodeClick?: (user: User) => void;
+  onNodeClick?: (user: OrgChartUser) => void;
   expandable?: boolean;
   initiallyExpanded?: boolean;
   companyInfo?: CompanyInfo;
@@ -82,7 +82,7 @@ export const OrgTree: React.FC<OrgTreeProps> = ({
 
 interface OrgTreeNodeProps {
   node: OrgChartNode;
-  onNodeClick?: (user: User) => void;
+  onNodeClick?: (user: OrgChartUser) => void;
   expandable?: boolean;
   initiallyExpanded?: boolean;
   isLast?: boolean;

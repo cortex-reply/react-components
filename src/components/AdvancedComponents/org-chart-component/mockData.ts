@@ -1,7 +1,7 @@
-import { User } from './types';
+import { OrgChartUser } from './types';
 
 // Small team example (5-10 people)
-export const smallTeamData: User[] = [
+export const smallTeamData: OrgChartUser[] = [
   {
     id: '1',
     name: 'Sarah Chen',
@@ -54,7 +54,7 @@ export const smallTeamData: User[] = [
 ];
 
 // Medium team with multiple branches
-export const mediumTeamData: User[] = [
+export const mediumTeamData: OrgChartUser[] = [
   {
     id: '1',
     name: 'Alexandra Martinez',
@@ -170,7 +170,7 @@ export const mediumTeamData: User[] = [
 ];
 
 // Single person (CEO only)
-export const singlePersonData: User[] = [
+export const singlePersonData: OrgChartUser[] = [
   {
     id: '1',
     name: 'Victoria Sterling',
@@ -182,7 +182,7 @@ export const singlePersonData: User[] = [
 ];
 
 // Deep hierarchy (5+ levels)
-export const deepHierarchyData: User[] = [
+export const deepHierarchyData: OrgChartUser[] = [
   {
     id: '1',
     name: 'William Thompson',
@@ -234,7 +234,7 @@ export const deepHierarchyData: User[] = [
 ];
 
 // Wide hierarchy (many siblings at same level)
-export const wideHierarchyData: User[] = [
+export const wideHierarchyData: OrgChartUser[] = [
   {
     id: '1',
     name: 'Richard Foster',
@@ -302,7 +302,7 @@ export const wideHierarchyData: User[] = [
 ];
 
 // Two top-level partners with their respective teams
-export const dualPartnershipData: User[] = [
+export const dualPartnershipData: OrgChartUser[] = [
   // Partner 1 and their team
   {
     id: '1',
@@ -405,7 +405,7 @@ export const dualPartnershipData: User[] = [
 ];
 
 // Team with detailed long descriptions for testing text overflow
-export const detailedDescriptionsData: User[] = [
+export const detailedDescriptionsData: OrgChartUser[] = [
   {
     id: '1',
     name: 'Dr. Margaret Thompson',
@@ -457,4 +457,4 @@ export const detailedDescriptionsData: User[] = [
 ];
 
 // Empty data for testing
-export const emptyData: User[] = [];
+export const emptyData: OrgChartUser[] = [];

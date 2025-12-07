@@ -11,6 +11,10 @@ import {
   ToolInput,
   ToolOutput,
   Response,
+  ColleagueHandoff,
+  ColleagueHandoffContent,
+  ColleagueHandoffTrigger,
+  ColleagueHandoffQuery,
 } from '.'
 
 import {
@@ -33,7 +37,6 @@ import { Badge } from '@/components/ui/badge'
 import { ChatCardTask } from '../Components/ChatCardTask'
 import { ChatCardArtefact } from '../Components/ChatCardArtefact'
 import { type UIMessage } from 'ai'
-import { render } from '@testing-library/react'
 
 const getFileIcon = (type: string) => {
   if (type.startsWith('image/')) return <ImageIcon className="h-4 w-4" />
@@ -97,6 +100,26 @@ return(
     if (part.type.startsWith('tool-')) {
       const toolPart = part as any
       const toolName = part.type.replace('tool-', '')
+      // handle Digital Colleage handoffs
+
+      if (part.type.startsWith('tool-dc_a2a')) {
+        return (
+        <ColleagueHandoff
+          key={`${key}`}
+          name={toolPart?.input?.dcName || 'Digital Colleague'}
+          className="w-full"
+          isStreaming={
+            status === 'streaming' &&
+            key === message.parts.length - 1 &&
+            message.id === messages.at(-1)?.id
+          }
+        >
+          <ColleagueHandoffTrigger />
+          <ColleagueHandoffQuery>{toolPart?.input?.query}</ColleagueHandoffQuery>
+          <ColleagueHandoffContent>{toolPart?.output}</ColleagueHandoffContent>
+        </ColleagueHandoff>
+      )
+      }
 
       // Handle task tool
       if (toolName === 'task') {

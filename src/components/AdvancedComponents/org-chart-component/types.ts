@@ -1,4 +1,5 @@
-export interface User {
+
+export interface OrgChartUser {
   id: string;
   name: string;
   email: string;
@@ -11,7 +12,7 @@ export interface User {
   };
 }
 
-export interface OrgChartNode extends User {
+export interface OrgChartNode extends OrgChartUser {
   children: OrgChartNode[];
   level: number;
 }
@@ -25,8 +26,8 @@ export interface CompanyInfo {
 }
 
 export interface OrgChartProps {
-  users: User[];
-  onNodeClick?: (user: User) => void;
+  users: OrgChartUser[];
+  onNodeClick?: (user: OrgChartUser) => void;
   className?: string;
   expandable?: boolean;
   initiallyExpanded?: boolean;
@@ -36,7 +37,7 @@ export interface OrgChartProps {
 
 export interface OrgNodeProps {
   node: OrgChartNode;
-  onNodeClick?: (user: User) => void;
+  onNodeClick?: (user:  OrgChartUser) => void;
   expandable?: boolean;
   isExpanded?: boolean;
   onToggleExpand?: () => void;
