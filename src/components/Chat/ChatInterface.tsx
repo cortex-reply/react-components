@@ -9,6 +9,7 @@ import {
   FileText,
   Image as ImageIcon,
   File,
+  MessageSquareIcon
 } from 'lucide-react'
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
@@ -22,6 +23,12 @@ import type { UIMessage, FileUpload } from './types'
 
 import { messageHandler } from './PartTypes/MessageHandler'
 import { Message, MessageContent, MessageAvatar } from './Components/Message'
+import {
+  Conversation,
+  ConversationContent,
+  ConversationEmptyState,
+  ConversationScrollButton,
+} from "./PartTypes/Conversation";
 
 interface ChatInterfaceProps {
   messages: UIMessage[]
@@ -534,102 +541,37 @@ export function ChatInterface({
       }`}
     >
       {/* Chat Messages */}
-      <ScrollArea
-        ref={scrollAreaRef}
-        className="flex-1 p-4 bg-background border-0"
-        onDragOver={handleDragOver}
-        onDragLeave={handleDragLeave}
-        onDrop={handleDrop}
-      >
-        <div
-          className={cn(
-            'space-y-4',
-            isDragOver && 'ring-2 ring-primary ring-offset-2 bg-primary/5',
-          )}
-        >
-          <motion.animate>
-            {messages.map((message) => (
-              <motion.div
-                key={message.id}
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                // className={cn(
-                //   'flex gap-3',
-                //   message.role === 'user' ? 'flex-row-reverse' : 'flex-row',
-                // )}
-              >
-                {/* {renderMessage(message)} */}
+    
 
-                <Message from={message.role} key={message.id}>
-                  <MessageContent variant="contained">
-
-                     { messageHandler({
+          <Conversation className="relative flex-1 h-full size-full">
+      <ConversationContent>
+        {messages.length === 0 ? (
+          <ConversationEmptyState
+            description="Messages will appear here as the conversation progresses."
+            icon={<MessageSquareIcon className="size-6" />}
+            title="Start a conversation"
+          />
+        ) : (
+          messages.map((message, key) => (
+            <Message from={message.from} key={key}>
+              <MessageContent>
+                { messageHandler({
                         message,
                         addToolResult: addToolResult ?? (() => {}),
                         status,
                         messages,
                       })}
-                  </MessageContent>
-                  {/* <MessageAvatar src={message.avatar} name={message.name} /> */}
-                </Message>
-              </motion.div>
-            ))}
-          </motion.animate>
+              </MessageContent>
+            </Message>
+          ))
+        )}
+      </ConversationContent>
+      <ConversationScrollButton />
+    </Conversation>
 
-          {/* Capability Menu within Chat */}
-          {isCapabilityMenuOpen && (
-            <motion.div
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -10 }}
-              className="flex gap-3"
-            >
-              <Avatar className="h-8 w-8">
-                <AvatarFallback className="bg-gradient-to-br from-purple-600 to-blue-600 text-white">
-                  <Bot className="h-4 w-4" />
-                </AvatarFallback>
-              </Avatar>
-              <div className="flex-1 bg-muted rounded-2xl px-4 py-3 shadow-sm">
-                <CapabilityMenu
-                  capabilities={capabilities}
-                  isOpen={isCapabilityMenuOpen}
-                  onToggle={() => setIsCapabilityMenuOpen(!isCapabilityMenuOpen)}
-                  onActionSelect={handleCapabilityAction}
-                  className="w-full"
-                />
-              </div>
-            </motion.div>
-          )}
 
-          {isTyping && (
-            <motion.div
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="flex gap-3"
-            >
-              <Avatar className="h-8 w-8">
-                <AvatarFallback className="bg-gradient-to-br from-purple-600 to-blue-600 text-white">
-                  <Bot className="h-4 w-4" />
-                </AvatarFallback>
-              </Avatar>
-              <div className="bg-muted rounded-2xl px-4 py-3 shadow-sm">
-                <div className="flex space-x-1">
-                  <div className="w-2 h-2 bg-muted-foreground/50 rounded-full animate-bounce"></div>
-                  <div
-                    className="w-2 h-2 bg-muted-foreground/50 rounded-full animate-bounce"
-                    style={{ animationDelay: '0.1s' }}
-                  ></div>
-                  <div
-                    className="w-2 h-2 bg-muted-foreground/50 rounded-full animate-bounce"
-                    style={{ animationDelay: '0.2s' }}
-                  ></div>
-                </div>
-              </div>
-            </motion.div>
-          )}
-        </div>
-        <div ref={messagesEndRef} />
-      </ScrollArea>
+
+
 
       {/* File Uploads */}
       {fileUploads.length > 0 && (
