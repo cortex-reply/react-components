@@ -553,7 +553,7 @@ export function ChatInterface({
           />
         ) : (
           messages.map((message, key) => (
-            <Message from={message.from} key={key}>
+            <Message from={message.role} key={key}>
               <MessageContent>
                 { messageHandler({
                         message,
