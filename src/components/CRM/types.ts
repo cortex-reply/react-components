@@ -16,7 +16,7 @@ export type EditableDeal = Omit<Partial<Deal>, 'comments' | 'customer'> & {
 //   type: "proposition" | "source" | "sector"
 // }
 
-export type CRMStatus = "Cold" | "Qualified" | "Proposal Made" | "SoW Submitted" | "Won" | "Lost" | "Dormant"
+export type CRMStatus = "Cold" | "Qualified" | "Proposal Made" | "SoW Submitted" | "Won" | "Lost"
 export type gecoStatus = 'firm' | 'forecast' | 'other'
 // export type Deal = {
 //   id: number

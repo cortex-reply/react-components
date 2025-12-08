@@ -9,7 +9,7 @@ import {
   type DropResult,
 } from '@atlaskit/pragmatic-drag-and-drop-react-beautiful-dnd-migration'
 
-const statuses: CRMStatus[] = ['Cold', 'Qualified', 'Proposal Made', 'SoW Submitted', 'Won', 'Lost', 'Dormant']
+const statuses: CRMStatus[] = ['Cold', 'Qualified', 'Proposal Made', 'SoW Submitted', 'Won', 'Lost']
 
 type KanbanBoardProps = {
   initialData: BoardData
@@ -46,7 +46,7 @@ export function CRMKanbanBoard({
       'SoW Submitted': 0.8,
       Won: 1,
       Lost: 0,
-      Dormant: 0,
+      // Dormant: 0,
     }
     return deals.reduce((sum, deal) => sum + (deal.value || 0) * weightMap[status as CRMStatus], 0)
   }
@@ -86,9 +86,9 @@ export function CRMKanbanBoard({
 
   return (
     <DragDropContext onDragEnd={onDragEnd}>
-      <div className="p-4 h-full overflow-auto">
+      <div className="h-screen flex flex-col p-4 overflow-hidden">
         {/* <h1 className="text-3xl font-bold mb-8">Cortex Sales Pipeline</h1> */}
-        <div className="flex space-x-4 pb-4">
+        <div className="flex space-x-4 flex-1 min-h-0 h-full">
           {statuses
             .filter((status) => status !== 'Lost')
             .map((status) => {

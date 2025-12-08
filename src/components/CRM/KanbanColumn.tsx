@@ -44,8 +44,8 @@ export function KanbanColumn({
   // const [isDialogOpen, setIsDialogOpen] = useState(false)
 
   return (
-    <div className="flex flex-col w-80">
-      <h2 className="text-xl font-semibold mb-4">  {status.charAt(0).toUpperCase() + status.slice(1)}</h2>
+    <div className="flex flex-col w-80 h-full">
+      <h2 className="text-xl font-semibold mb-4 flex-shrink-0">  {status.charAt(0).toUpperCase() + status.slice(1)}</h2>
       {/* {addNewDeal && (
         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
           <DialogTrigger asChild>
@@ -74,7 +74,8 @@ export function KanbanColumn({
           <div
             ref={provided.innerRef}
             {...provided.droppableProps}
-            className="bg-background/90 p-4 rounded-lg flex-grow min-h-[200px] shadow-inner"
+            className="bg-background/90 p-4 rounded-lg flex-1 min-h-0 overflow-y-auto shadow-inner scrollbar-hide"
+            style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
           >
             {deals.map((deal, index) => (
               <Draggable key={deal.id.toString()} draggableId={deal.id.toString()} index={deal.id}>
@@ -99,7 +100,7 @@ export function KanbanColumn({
           </div>
         )}
       </Droppable>
-      <div className="mt-4 text-sm p-3 rounded-lg shadow">
+      <div className="text-sm p-3 rounded-lg shadow flex-shrink-0 mt-auto">
         <p className="font-semibold">
           Total:{' '}
           <span className="text-green-600">£{calculateColumnValue(deals).toLocaleString()}</span>
