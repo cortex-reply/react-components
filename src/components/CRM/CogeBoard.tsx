@@ -10,7 +10,7 @@ import {
 } from '@atlaskit/pragmatic-drag-and-drop-react-beautiful-dnd-migration'
 
 const gcstatuses: gecoStatus[] = ['firm', 'forecast', 'other']
-const statuses: CRMStatus[] = ['Cold', 'Qualified', 'Proposal Made', 'SoW Submitted', 'Won', 'Lost', 'Dormant']
+const statuses: CRMStatus[] = ['Cold', 'Qualified', 'Proposal Made', 'SoW Submitted', 'Won', 'Lost']
 
 type CogeBoardProps = {
   initialData: BoardData
@@ -50,7 +50,7 @@ export function CRMCogeBoard({
       'SoW Submitted': 0.8,
       Won: 1,
       Lost: 0,
-      Dormant: 0,
+      // Dormant: 0,
     }
     return deals.reduce((sum, deal) => sum + (deal.value || 0) * (weightMap[deal.status] ?? 0), 0)
   }

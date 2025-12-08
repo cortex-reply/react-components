@@ -1656,7 +1656,7 @@ export interface Deal {
   customer?: (number | null) | Customer;
   value: number;
   assignee?: (number | null) | User;
-  status: 'Cold' | 'Qualified' | 'Proposal Made' | 'SoW Submitted' | 'Won' | 'Lost' | 'Dormant';
+  status: 'Cold' | 'Qualified' | 'Proposal Made' | 'SoW Submitted' | 'Won' | 'Lost';
   gecoStatus?: ('firm' | 'forecast' | 'other') | null;
   categories?: (number | DealCategory)[] | null;
   dateLogged: string;
