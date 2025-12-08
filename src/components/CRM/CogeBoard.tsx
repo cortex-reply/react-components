@@ -90,7 +90,7 @@ export function CRMCogeBoard({
 
   return (
     <DragDropContext onDragEnd={onDragEnd}>
-      <div className="p-4 h-full overflow-auto">
+      <div className="flex flex-col p-4 overflow-hidden" style={{ height: `calc(100% - 60px)` }}>
         {/* <h1 className="text-3xl font-bold mb-8">Cortex Sales Pipeline</h1> */}
         <div className="flex space-x-4 pb-4">
           {gcstatuses

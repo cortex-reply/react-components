@@ -86,7 +86,7 @@ export function CRMKanbanBoard({
 
   return (
     <DragDropContext onDragEnd={onDragEnd}>
-      <div className="h-screen flex flex-col p-4 overflow-hidden">
+      <div className="flex flex-col p-4 overflow-hidden" style={{ height: `calc(100% - 60px)` }}>
         {/* <h1 className="text-3xl font-bold mb-8">Cortex Sales Pipeline</h1> */}
         <div className="flex space-x-4 flex-1 min-h-0 h-full">
           {statuses
