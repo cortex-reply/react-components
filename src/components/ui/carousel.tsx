@@ -240,4 +240,4 @@ export {
   CarouselNext,
 }
 
-export { default as Autoplay } from 'embla-carousel-autoplay'
+export { default as CarouselAutoplay } from 'embla-carousel-autoplay'
