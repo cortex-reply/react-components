@@ -239,3 +239,5 @@ export {
   CarouselPrevious,
   CarouselNext,
 }
+
+export { default as Autoplay } from 'embla-carousel-autoplay'
