@@ -8,6 +8,7 @@ import { EventCard, type EventCardProps } from '../components/Cards/EventCard'
 import { CustomerCard, type CustomerCardProps } from '../components/Cards/CustomerCard'
 import Autoplay from 'embla-carousel-autoplay'
 import { Card, CardContent } from '@/components/ui/card'
+
 import {
   Carousel,
   CarouselContent,
@@ -139,7 +140,7 @@ export default function Intranet({ ...args }) {
   return (
     // <div className="flex fixed flex-col w-screen h-screen max-h-screen overflow-auto overscroll-contain">
     <div>
-      <SidebarProvider className="fixed top-14 mb-4 h-full max-h-[calc(100vh-3.5rem)] flex-1 flex-row overflow-y-clip">
+      <SidebarProvider className="fixed top-16 mb-4 h-full max-h-[calc(100vh-3.5rem)] flex-1 flex-row overflow-y-clip">
         <SidebarLeft {...args.sidebarLeft} className="flex-none" />
         <SidebarInset className="grow overflow-hidden">
           <header className="flex h-16 shrink-0 items-center gap-2">
@@ -160,9 +161,25 @@ export default function Intranet({ ...args }) {
             </div>
           </header>
           <MOTD {...args.motd} />
+          <div className="mx-4 bg-gradient-to-br from-gray-900 via-brand-one to-brand-two py-4 text-center sm:rounded-xl">
+                <h2 className="text-balance text-xl font-semibold tracking-tight text-white sm:text-2xl">
+                  Ways of working
+                </h2>
+                <p className="mx-3 mt-4 text-pretty text-lg/8 text-gray-300">
+                  Guides, Templates and Tools to help you work smarter.
+                </p>
+                <div className="mt-4 flex items-center justify-center gap-x-6">
+                  <a
+                    href="#"
+                    className="rounded-md bg-white px-3.5 py-2.5 text-sm font-semibold text-gray-900 shadow-sm hover:bg-accent focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
+                  >
+                    Get started
+                  </a>
+                </div>
+              </div>
           <Carousel
             plugins={[plugin.current]}
-            className="w-full h-300px p-4"
+            className="mx-16 h-300px p-4"
             onMouseEnter={plugin.current.stop}
             onMouseLeave={() => plugin.current.play(false)}
           >
@@ -176,18 +193,6 @@ export default function Intranet({ ...args }) {
                   </CarouselItem>
                 ),
               )}
-
-              {/* {Array.from({ length: 5 }).map((_, index) => (
-          <CarouselItem key={index} className="pl-1 md:basis-1/2 lg:basis-1/3">
-            <div className="p-1">
-              <Card>
-                <CardContent className="h-200 w-200 flex items-center justify-center p-6">
-                  <span className="text-4xl font-semibold">{index + 1}</span>
-                </CardContent>
-              </Card>
-            </div>
-          </CarouselItem>
-        ))} */}
             </CarouselContent>
             <CarouselPrevious />
             <CarouselNext />
@@ -203,7 +208,7 @@ export default function Intranet({ ...args }) {
           </div>
         </SidebarInset>
         <Sidebar side="right" variant="inset">
-          <SidebarHeader className="p-0 pt-4">
+          {/* <SidebarHeader className="p-0 pt-4">
             <SidebarContent>
               <div className="bg-gradient-to-br from-gray-900 via-brand-one to-brand-two py-4 text-center sm:rounded-xl">
                 <h2 className="text-balance text-xl font-semibold tracking-tight text-white sm:text-2xl">
@@ -222,7 +227,7 @@ export default function Intranet({ ...args }) {
                 </div>
               </div>
             </SidebarContent>
-          </SidebarHeader>
+          </SidebarHeader> */}
           <SidebarContent>
             <div className="mx-auto max-w-7xl flex flex-col items-center">
               {args.events.map((event: EventCardProps, index: React.Key | null | undefined) => (

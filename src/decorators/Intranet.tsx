@@ -95,7 +95,7 @@ const withIntranetLayout = (Story: any, ctx: any) => {
               logoDark={logoDark as any}
               menuItems={defaultMenuItems.menuItems as any}
               themeControl={true}
-              wide
+              wide={true}
             />
           ) : null}
           <main>
