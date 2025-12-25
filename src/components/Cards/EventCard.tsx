@@ -39,11 +39,11 @@ export function EventCard({
   const getEventColor = (eventType: EventType) => {
     switch (eventType) {
       case 'birthday':
-        return 'bg-brand-one'
+        return 'bg-brand-cyan'
       case 'workAnniversary':
-        return 'bg-brand-two'
+        return 'bg-brand-blue'
       case 'companyEvent':
-        return 'bg-brand-three'
+        return 'bg-brand-plum'
       default:
         return 'from-gray-500 to-slate-500'
     }
