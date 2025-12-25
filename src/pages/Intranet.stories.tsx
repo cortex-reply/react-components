@@ -112,7 +112,7 @@ export const Primary: Story = {
     sidebarLeft: {
       title: 'Playground',
       subTitle: 'Airview',
-      mainNav: [
+      mainNav: [ { name: 'top nav', nav: [
         {
           label: 'AWS',
           url: '#',
@@ -197,7 +197,34 @@ export const Primary: Story = {
               url: '#',
             },
           ],
+        },]},
+        { name: 'other nav', nav: [
+        
+        {
+          label: 'Documentation',
+          url: '#',
+          icon: BookOpen,
+          links: [
+            {
+              label: 'Introduction',
+              url: '#',
+            },
+            {
+              label: 'Get Started',
+              url: '#',
+            },
+            {
+              label: 'Tutorials',
+              url: '#',
+            },
+            {
+              label: 'Changelog',
+              url: '#',
+            },
+          ],
         },
+        ,]}
+
       ],
       secondaryNav: [
         {
@@ -212,6 +239,7 @@ export const Primary: Story = {
         },
       ],
       onSidebarMenu: fn(),
+    
     },
     sidebarRight: {
       tableOfContents: [

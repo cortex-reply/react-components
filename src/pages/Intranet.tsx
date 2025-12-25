@@ -37,7 +37,7 @@ import {
 } from '@/components//ui/sidebar'
 
 import { SidebarRight } from '@/components/Menus/SidebarRight'
-import { SidebarLeft } from '@/components//Menus/SidebarLeft'
+import { SidebarLeftMulti } from '@/components//Menus/SidebarLeftMulti'
 
 // import GithubControl from '@/components//Editor/GithubControl'
 import { Toaster } from '@/components//ui/toaster'
@@ -141,7 +141,7 @@ export default function Intranet({ ...args }) {
     // <div className="flex fixed flex-col w-screen h-screen max-h-screen overflow-auto overscroll-contain">
     <div>
       <SidebarProvider className="fixed top-16 mb-4 h-full max-h-[calc(100vh-3.5rem)] flex-1 flex-row overflow-y-clip">
-        <SidebarLeft {...args.sidebarLeft} className="flex-none" />
+        <SidebarLeftMulti {...args.sidebarLeft} className="flex-none" />
         <SidebarInset className="grow overflow-hidden">
           <header className="flex h-16 shrink-0 items-center gap-2">
             <div className="flex items-center gap-2 px-4">
