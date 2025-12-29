@@ -29,6 +29,29 @@ const exampleCustomerProjectPairs = [
   { customer: { id: 3, name: 'Initech' }, project: { id: 301, name: 'API Integration' } },
 ]
 
+const prefilledSubmission = {
+  customer: 1,
+  project: 101,
+  projectSummary: 'Existing project summary',
+  projectUpdate: 'Latest updates go here',
+  projectConcerns: 'Escalate dependency on vendor',
+  commercialOpportunities: 'Upsell managed services',
+  commercialRisks: 'Budget freeze risk',
+  milestones: [
+    {
+      name: 'milestone 1',
+      commentary: 'Kick-off completed',
+      dueDate: '2026-01-01T12:00:00.000Z',
+      rag: 'At Risk',
+    },
+    {
+      name: 'milestone 2',
+      commentary: 'Launch planned',
+      rag: 'Complete',
+    },
+  ],
+}
+
 export const Default: Story = {
   args: {
     customerProjectPairs: exampleCustomerProjectPairs,
@@ -39,5 +62,12 @@ export const Default: Story = {
 export const NoCustomers: Story = {
   args: {
     // customerProjectPairs: exampleCustomerProjectPairs,
+  },
+}
+
+export const PrefilledValues: Story = {
+  args: {
+    customerProjectPairs: exampleCustomerProjectPairs,
+    initialData: prefilledSubmission,
   },
 }
