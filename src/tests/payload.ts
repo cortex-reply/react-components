@@ -679,6 +679,83 @@ export const RichTextTest = {
 
 export const BlocksTest = {
   content: {
+    fullWidthCollapsable: {
+      id: '67a74c276365f244c8b6d149',
+      blockName: null,
+
+      columns: [
+        {
+          id: '67a74ea16365f244c8b6d14b',
+          size: 'full',
+
+          richText: RichTextTest.medium,
+          enableLink: null,
+
+          link: {
+            type: 'reference',
+            newTab: null,
+            url: null,
+            label: null,
+            appearance: 'default',
+          },
+        },
+      ],
+      blockType: 'content',
+
+      theme: {
+        settings: {
+          theme: 'dark',
+          background: 'transparent',
+          overlay: false,
+        },
+      },
+    },
+    halfWidthCollapsable: {
+      id: '67a74c276365f244c8b6d149',
+      blockName: null,
+
+      columns: [
+        {
+          id: '67a74ea16365f244c8b6d14b',
+          size: 'half',
+
+          richText: RichTextTest.medium,
+          enableLink: null,
+
+          link: {
+            type: 'reference',
+            newTab: null,
+            url: null,
+            label: null,
+            appearance: 'default',
+          },
+        },
+        {
+          id: '67a74ea16365f244c8b6d14b',
+          size: 'half',
+
+          richText: RichTextTest.medium,
+          enableLink: null,
+
+          link: {
+            type: 'reference',
+            newTab: null,
+            url: null,
+            label: null,
+            appearance: 'default',
+          },
+        },
+      ],
+      blockType: 'content',
+
+      theme: {
+        settings: {
+          theme: 'dark',
+          background: 'transparent',
+          overlay: false,
+        },
+      },
+    },
     halfWithEmbeddedImage: {
       id: '67a74c276365f244c8b6d149',
       blockName: null,

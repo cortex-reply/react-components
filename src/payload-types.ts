@@ -415,7 +415,7 @@ export interface ContentBlock {
        * Overlay the theme colour on top of the image
        */
       overlay?: boolean | null;
-      box?: ('none' | 'line') | null;
+      box?: ('none' | 'line' | 'collapsable') | null;
     };
   };
   columns?:

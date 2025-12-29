@@ -60,6 +60,32 @@ export const Features: Story = {
   },
 }
 
+export const FullWidthCollapsable: Story = {
+  args: {
+    ...BlocksTest.content.fullWidthCollapsable,
+    theme: {
+      ...Default.args.theme,
+      settings: {
+        ...Default.args.theme?.settings,
+        box: 'collapsable',
+      },
+    },
+  },
+}
+
+export const HalfWidthCollapsable: Story = {
+  args: {
+    ...BlocksTest.content.halfWidthCollapsable,
+    theme: {
+      ...Default.args.theme,
+      settings: {
+        ...Default.args.theme?.settings,
+        box: 'collapsable',
+      },
+    },
+  },
+}
+
 export const Test: Story = {
   args: {
     id: '681a4999a2fd5620877e41a0',
