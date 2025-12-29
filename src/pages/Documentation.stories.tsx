@@ -1,31 +1,11 @@
 import React from 'react'
 import {
-  BadgeCheck,
-  Bell,
+ 
   BookOpen,
-  Bot,
-  Check,
-  ChevronRight,
-  ChevronsUpDown,
-  Command,
-  CreditCard,
-  FilePlus,
-  Edit,
-  Printer,
-  Folder,
-  Frame,
   LifeBuoy,
-  LogOut,
-  Map,
-  MoreHorizontal,
-  PieChart,
   Send,
   Settings2,
-  Share,
-  Plus,
-  Sparkles,
-  SquareTerminal,
-  Trash2,
+ 
 } from 'lucide-react'
 import Documentation from './Documentation'
 import { fn } from '@storybook/test'

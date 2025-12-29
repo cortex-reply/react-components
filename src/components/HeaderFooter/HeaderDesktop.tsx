@@ -54,7 +54,7 @@ export function HeaderDesktop({ isMenuOpen, logoLight, logoDark, menuItems, them
   return (
     <>
       <header
-        className={`z-50 pb-10 transition-all duration-300 hidden lg:block ${
+        className={`z-50 pb-0 transition-all duration-300 hidden lg:block ${
           isScrolled || isMenuOpen ? 'translate-y-0' : '-translate-y-full bg-transparent'
         }`}
       >
@@ -66,7 +66,7 @@ export function HeaderDesktop({ isMenuOpen, logoLight, logoDark, menuItems, them
             {/* <Container className="px-0"> */}
               <BrandLogo logoDark={logoDark} logoLight={logoLight} />
               
-              <PopoverGroup className="hidden lg:flex lg:gap-x-12">
+              <PopoverGroup className={cn("hidden lg:flex lg:gap-x-12", wide && "pr-20")}>
                 {menuItems && menuItems.map((menu) => <HeaderMenu key={menu.name} {...menu} />)}
               </PopoverGroup>
              {/* <div className="flex items-center space-x-4"> */}

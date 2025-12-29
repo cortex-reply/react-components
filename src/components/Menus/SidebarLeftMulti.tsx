@@ -16,6 +16,7 @@ import {
   SidebarFooter,
   SidebarGroup,
   SidebarGroupContent,
+  SidebarGroupLabel,
   SidebarHeader,
   SidebarMenu,
   SidebarMenuAction,
@@ -55,7 +56,12 @@ type MenuStructure ={
   links?: LinkItem[] | undefined
 }
 
-export type NavigationItem = {
+type MultiMenuStructure = {
+  name: string
+  nav: MenuStructure[]
+}
+
+type NavigationItem = {
   label: string
   url: string
   isActive?: boolean // Optional property for active items
@@ -64,8 +70,8 @@ export type NavigationItem = {
   icon?: React.ComponentType<React.ComponentProps<'svg'>>
 }
 
-interface SidebarLeftProps extends React.ComponentProps<typeof Sidebar> {
-  mainNav?: MenuStructure[]
+interface SidebarLeftMultiProps extends React.ComponentProps<typeof Sidebar> {
+  mainNav?: MultiMenuStructure[]
   secondaryNav?: MenuStructure[]
   title?: string
   subTitle?: string
@@ -76,7 +82,7 @@ interface SidebarLeftProps extends React.ComponentProps<typeof Sidebar> {
   LinkComponent?: React.ComponentType<React.ComponentProps<'a'>>
 }
 
-export function SidebarLeft({
+export function SidebarLeftMulti({
   mainNav,
   secondaryNav,
   title,
@@ -87,7 +93,7 @@ export function SidebarLeft({
   loading = false,
   LinkComponent,
   ...props
-}: SidebarLeftProps) {
+}: SidebarLeftMultiProps) {
   interface ButtonProps {
     href?: string
     children: React.ReactNode
@@ -152,9 +158,15 @@ export function SidebarLeft({
         {mainNav &&
           !loading &&
           mainNav.map((item, index) => (
+            <SidebarGroup>
+          <SidebarGroupLabel>{item.name}</SidebarGroupLabel>
+            { item && !loading && item.nav.map((item, index) => (
             <Menu key={index} subNav={item} pathName={pathName} Link={Link} />
+            ))}
+          </SidebarGroup>
           ))}
-        <SidebarGroup className="">
+
+        <SidebarGroup className="mt-auto">
           <SidebarGroupContent>
             <SidebarMenu>
               {secondaryNav &&

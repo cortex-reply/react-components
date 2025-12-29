@@ -1,5 +1,5 @@
 'use client'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { Label } from '@/components/ui/label'
 import {
@@ -12,12 +12,88 @@ import {
   PlusCircle,
   Trash2,
 } from 'lucide-react'
-import { DeliveryLeadSubmissionData, Milestone } from './types'
+import { DeliveryLeadSubmissionData, DeliveryLeadSubmissionPrefill, Milestone } from './types'
 import { Select, SelectTrigger, SelectContent, SelectItem, SelectValue } from '@/components/ui/select'
 
-const initialMilestones: Milestone[] = [{ name: '', commentary: '', dueDate: '', rag: 'On-Track' }]
+const createEmptyMilestone = (): Milestone => ({
+  name: '',
+  commentary: '',
+  dueDate: '',
+  rag: 'On-Track',
+  id: null,
+})
 
 const ragOptions = ['On-Track', 'Off-Track', 'At Risk', 'Complete']
+
+const formatDateInputValue = (value?: string | null) => {
+  if (!value) return ''
+  const parsed = new Date(value)
+  if (!Number.isNaN(parsed.getTime())) {
+    return parsed.toISOString().slice(0, 10)
+  }
+  const [dateOnly] = value.split('T')
+  return dateOnly ?? ''
+}
+
+const getNumericId = (value: number | { id?: number | string | null } | null | undefined): number | null => {
+  if (typeof value === 'number') return value
+  if (value && typeof value === 'object') {
+    const numericId = value.id
+    if (typeof numericId === 'number') return numericId
+    if (typeof numericId === 'string') {
+      const parsed = Number(numericId)
+      return Number.isNaN(parsed) ? null : parsed
+    }
+  }
+  return null
+}
+
+const getCustomerOption = (customer: DeliveryLeadSubmissionPrefill['customer']) => {
+  const id = getNumericId(customer)
+  if (id === null) return null
+  if (customer && typeof customer === 'object') {
+    const name = (customer as { name?: string | null }).name ?? `Customer ${id}`
+    return { id, name }
+  }
+  return { id, name: `Customer ${id}` }
+}
+
+const getProjectOption = (
+  project: DeliveryLeadSubmissionPrefill['project'],
+  fallbackCustomerId: number | null,
+) => {
+  const id = getNumericId(project)
+  if (id === null) return null
+
+  if (project && typeof project === 'object') {
+    const name =
+      (project as { name?: string | null; projectName?: string | null }).name ??
+      (project as { projectName?: string | null }).projectName ??
+      `Project ${id}`
+    const customerId =
+      getNumericId((project as { customer?: number | { id?: number | string | null } }).customer) ??
+      fallbackCustomerId
+    return { id, name, customerId }
+  }
+
+  return { id, name: `Project ${id}`, customerId: fallbackCustomerId }
+}
+
+const buildMilestonesFromPrefill = (
+  prefilled: DeliveryLeadSubmissionPrefill['milestones'],
+): Milestone[] => {
+  if (!prefilled || prefilled.length === 0) return [createEmptyMilestone()]
+
+  return prefilled
+    .filter(Boolean)
+    .map((milestone) => ({
+      name: milestone?.name ?? '',
+      commentary: milestone?.commentary ?? '',
+      dueDate: formatDateInputValue(milestone?.dueDate ?? ''),
+      rag: milestone?.rag ?? 'On-Track',
+      id: milestone?.id ?? null,
+    }))
+}
 
 const tabConfig = [
   { name: 'Project Summary', icon: FileText },
@@ -38,28 +114,52 @@ export interface DeliveryLeadSubmissionProps {
     formData: DeliveryLeadSubmissionData,
   ) => Promise<{ success: boolean; message: string }>
   customerProjectPairs?: CustomerProjectPair[]
+  initialData?: DeliveryLeadSubmissionPrefill
 }
 
-export function DeliveryLeadSubmissionComponent({ onSubmit, customerProjectPairs }: DeliveryLeadSubmissionProps) {
+export function DeliveryLeadSubmissionComponent({ onSubmit, customerProjectPairs, initialData }: DeliveryLeadSubmissionProps) {
   const [currentTab, setCurrentTab] = useState(tabConfig[0].name)
-  const [clientId, setClientId] = useState<number | null>(null)
-  const [projectId, setProjectId] = useState<number | null>(null)
-  const [deliveryLead, setDeliveryLead] = useState('')
-  const [projectSummary, setProjectSummary] = useState('')
-  const [milestones, setMilestones] = useState(initialMilestones)
-  const [projectUpdate, setProjectUpdate] = useState('')
-  const [projectConcerns, setProjectConcerns] = useState('')
-  const [commercialOpportunities, setCommercialOpportunities] = useState('')
-  const [commercialRisks, setCommercialRisks] = useState('')
+  const [clientId, setClientId] = useState<number | null>(() => getNumericId(initialData?.customer))
+  const [projectId, setProjectId] = useState<number | null>(() => getNumericId(initialData?.project))
+  const [projectSummary, setProjectSummary] = useState(initialData?.projectSummary ?? '')
+  const [milestones, setMilestones] = useState<Milestone[]>(() => buildMilestonesFromPrefill(initialData?.milestones))
+  const [projectUpdate, setProjectUpdate] = useState(initialData?.projectUpdate ?? '')
+  const [projectConcerns, setProjectConcerns] = useState(initialData?.projectConcerns ?? '')
+  const [commercialOpportunities, setCommercialOpportunities] = useState(initialData?.commercialOpportunities ?? '')
+  const [commercialRisks, setCommercialRisks] = useState(initialData?.commercialRisks ?? '')
 
-  // Derive unique customers
-  const customers = Array.from(
-    new Map((customerProjectPairs ?? []).map(cp => [cp.customer.id, cp.customer])).values()
+  useEffect(() => {
+    setClientId(getNumericId(initialData?.customer))
+    setProjectId(getNumericId(initialData?.project))
+    setProjectSummary(initialData?.projectSummary ?? '')
+    setProjectUpdate(initialData?.projectUpdate ?? '')
+    setProjectConcerns(initialData?.projectConcerns ?? '')
+    setCommercialOpportunities(initialData?.commercialOpportunities ?? '')
+    setCommercialRisks(initialData?.commercialRisks ?? '')
+    setMilestones(buildMilestonesFromPrefill(initialData?.milestones))
+  }, [initialData])
+
+  const prefilledCustomer = getCustomerOption(initialData?.customer)
+  const customersFromPairs = Array.from(
+    new Map((customerProjectPairs ?? []).map((cp) => [cp.customer.id, cp.customer])).values(),
   )
-  // Filter projects by selected customer
-  const filteredProjects = (customerProjectPairs ?? [])
-    .filter(cp => cp.customer.id === clientId)
-    .map(cp => cp.project)
+  const customers =
+    prefilledCustomer && !customersFromPairs.some((customer) => customer.id === prefilledCustomer.id)
+      ? [...customersFromPairs, prefilledCustomer]
+      : customersFromPairs
+
+  const prefilledProject = getProjectOption(initialData?.project, getNumericId(initialData?.customer))
+  const projectsForCustomer = (customerProjectPairs ?? [])
+    .filter((cp) => cp.customer.id === clientId)
+    .map((cp) => cp.project)
+
+  const filteredProjects =
+    clientId &&
+    prefilledProject &&
+    prefilledProject.customerId === clientId &&
+    !projectsForCustomer.some((project) => project.id === prefilledProject.id)
+      ? [...projectsForCustomer, { id: prefilledProject.id, name: prefilledProject.name }]
+      : projectsForCustomer
 
   const handleMilestoneChange = (idx: number, field: string, value: string) => {
     setMilestones((prev) => {
@@ -73,7 +173,7 @@ export function DeliveryLeadSubmissionComponent({ onSubmit, customerProjectPairs
   }
 
   const addMilestone = () => {
-    setMilestones((prev) => [...prev, { name: '', commentary: '', dueDate: '', rag: 'On-Track' }])
+    setMilestones((prev) => [...prev, createEmptyMilestone()])
   }
 
   const removeMilestone = (idx: number) => {
@@ -82,11 +182,21 @@ export function DeliveryLeadSubmissionComponent({ onSubmit, customerProjectPairs
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
+
+    const normalizedMilestones =
+      milestones.length > 0
+        ? milestones.map((milestone) => ({
+            ...milestone,
+            commentary: milestone.commentary || null,
+            dueDate: milestone.dueDate || null,
+          }))
+        : null
+
     const data: DeliveryLeadSubmissionData = {
       customer: clientId as number, // must be number
       project: projectId as number, // must be number
       projectSummary,
-      milestones: milestones.length > 0 ? milestones : null,
+      milestones: normalizedMilestones,
       projectUpdate,
       projectConcerns: projectConcerns || null,
       commercialOpportunities: commercialOpportunities || null,
@@ -227,7 +337,7 @@ export function DeliveryLeadSubmissionComponent({ onSubmit, customerProjectPairs
                       <Label>Commentary</Label>
                       <input
                         className="w-full rounded-lg border border-zinc-300 dark:border-zinc-700 bg-zinc-50 dark:bg-zinc-900 text-zinc-900 dark:text-zinc-100 p-1 focus:ring-2 focus:ring-accent/40 focus:outline-none placeholder-zinc-400 dark:placeholder-zinc-500"
-                        value={m.commentary}
+                        value={m.commentary ?? ''}
                         onChange={(e) => handleMilestoneChange(idx, 'commentary', e.target.value)}
                         placeholder="Commentary"
                       />
@@ -237,7 +347,7 @@ export function DeliveryLeadSubmissionComponent({ onSubmit, customerProjectPairs
                       <input
                         type="date"
                         className="w-full rounded-lg border border-zinc-300 dark:border-zinc-700 bg-zinc-50 dark:bg-zinc-900 text-zinc-900 dark:text-zinc-100 p-1 focus:ring-2 focus:ring-accent/40 focus:outline-none"
-                        value={m.dueDate}
+                        value={m.dueDate ?? ''}
                         onChange={(e) => handleMilestoneChange(idx, 'dueDate', e.target.value)}
                         placeholder="Due date"
                       />

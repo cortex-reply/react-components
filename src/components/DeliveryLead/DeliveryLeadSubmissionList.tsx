@@ -75,7 +75,7 @@ export function DeliveryLeadSubmissionList({
 
   if (isLoading) {
     return (
-      <div className="container mx-auto p-4 max-w-6xl">
+      <div className="mx-auto p-4 max-w-6xl">
         <div className="rounded-xl shadow-lg bg-white dark:bg-zinc-900/80 border border-zinc-200 dark:border-zinc-800 p-6">
           <div className="animate-pulse">
             <div className="h-8 bg-gray-200 rounded w-1/4 mb-6"></div>
@@ -92,7 +92,7 @@ export function DeliveryLeadSubmissionList({
 
   if (submissions.length === 0) {
     return (
-      <div className="container mx-auto p-4 max-w-6xl">
+      <div className="mx-auto p-4 max-w-6xl">
         <div className="rounded-xl shadow-lg bg-white dark:bg-zinc-900/80 border border-zinc-200 dark:border-zinc-800 p-6">
           <div className="text-center py-12">
             <FileText className="mx-auto h-12 w-12 text-gray-400" />
@@ -100,7 +100,7 @@ export function DeliveryLeadSubmissionList({
               No submissions found
             </h3>
             <p className="mt-1 text-sm text-gray-500 dark:text-zinc-400">
-              You haven't submitted any delivery lead reports yet.
+              There are no submitted delivery reports yet.
             </p>
           </div>
         </div>
@@ -110,16 +110,16 @@ export function DeliveryLeadSubmissionList({
 
   return (
     <>
-      <div className="container mx-auto p-4 max-w-6xl">
+      <div className="mx-auto pt-6">
         <div className="rounded-xl shadow-lg bg-white dark:bg-zinc-900/80 border border-zinc-200 dark:border-zinc-800 p-6">
-          <div className="mb-6">
+          {/* <div className="mb-6">
             <h2 className="text-2xl font-bold text-gray-900 dark:text-zinc-100">
-              My Delivery Lead Submissions
+              Delivery Lead Reports
             </h2>
             <p className="text-sm text-gray-500 dark:text-zinc-400 mt-1">
               View all your submitted delivery lead reports
             </p>
-          </div>
+          </div> */}
 
           <div className="overflow-y-auto max-h-96">
             <table className="min-w-full divide-y divide-gray-200 dark:divide-zinc-700">
