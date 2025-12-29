@@ -337,7 +337,7 @@ export function DeliveryLeadSubmissionComponent({ onSubmit, customerProjectPairs
                       <Label>Commentary</Label>
                       <input
                         className="w-full rounded-lg border border-zinc-300 dark:border-zinc-700 bg-zinc-50 dark:bg-zinc-900 text-zinc-900 dark:text-zinc-100 p-1 focus:ring-2 focus:ring-accent/40 focus:outline-none placeholder-zinc-400 dark:placeholder-zinc-500"
-                        value={m.commentary}
+                        value={m.commentary ?? ''}
                         onChange={(e) => handleMilestoneChange(idx, 'commentary', e.target.value)}
                         placeholder="Commentary"
                       />
@@ -347,7 +347,7 @@ export function DeliveryLeadSubmissionComponent({ onSubmit, customerProjectPairs
                       <input
                         type="date"
                         className="w-full rounded-lg border border-zinc-300 dark:border-zinc-700 bg-zinc-50 dark:bg-zinc-900 text-zinc-900 dark:text-zinc-100 p-1 focus:ring-2 focus:ring-accent/40 focus:outline-none"
-                        value={m.dueDate}
+                        value={m.dueDate ?? ''}
                         onChange={(e) => handleMilestoneChange(idx, 'dueDate', e.target.value)}
                         placeholder="Due date"
                       />
