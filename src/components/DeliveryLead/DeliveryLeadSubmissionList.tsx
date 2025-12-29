@@ -75,7 +75,7 @@ export function DeliveryLeadSubmissionList({
 
   if (isLoading) {
     return (
-      <div className="container mx-auto p-4 max-w-6xl">
+      <div className="mx-auto p-4 max-w-6xl">
         <div className="rounded-xl shadow-lg bg-white dark:bg-zinc-900/80 border border-zinc-200 dark:border-zinc-800 p-6">
           <div className="animate-pulse">
             <div className="h-8 bg-gray-200 rounded w-1/4 mb-6"></div>
@@ -92,7 +92,7 @@ export function DeliveryLeadSubmissionList({
 
   if (submissions.length === 0) {
     return (
-      <div className="container mx-auto p-4 max-w-6xl">
+      <div className="mx-auto p-4 max-w-6xl">
         <div className="rounded-xl shadow-lg bg-white dark:bg-zinc-900/80 border border-zinc-200 dark:border-zinc-800 p-6">
           <div className="text-center py-12">
             <FileText className="mx-auto h-12 w-12 text-gray-400" />
@@ -110,7 +110,7 @@ export function DeliveryLeadSubmissionList({
 
   return (
     <>
-      <div className="container mx-auto p-4 max-w-6xl">
+      <div className="mx-auto p-4 max-w-6xl">
         <div className="rounded-xl shadow-lg bg-white dark:bg-zinc-900/80 border border-zinc-200 dark:border-zinc-800 p-6">
           {/* <div className="mb-6">
             <h2 className="text-2xl font-bold text-gray-900 dark:text-zinc-100">
