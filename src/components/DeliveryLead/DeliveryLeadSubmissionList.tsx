@@ -110,7 +110,7 @@ export function DeliveryLeadSubmissionList({
 
   return (
     <>
-      <div className="mx-auto p-4 max-w-6xl">
+      <div className="mx-auto pt-6">
         <div className="rounded-xl shadow-lg bg-white dark:bg-zinc-900/80 border border-zinc-200 dark:border-zinc-800 p-6">
           {/* <div className="mb-6">
             <h2 className="text-2xl font-bold text-gray-900 dark:text-zinc-100">
