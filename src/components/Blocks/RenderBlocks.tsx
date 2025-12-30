@@ -199,7 +199,7 @@ export const ThemeWithShapes: React.FC<{
     return (
       <section className='relative flex w-full'>
         <div className={cn('absolute inset-0 w-screen h-full light bg-background')}></div>
-        <div className={cn('container h-full relative pt-6 pb-12 min-h-[22em] content-center light bg-background')}>
+        <div className={cn('container h-full relative pt-6 pb-12 min-h-[22em] light bg-background')}>
           {props.children}
         </div>
       </section>
