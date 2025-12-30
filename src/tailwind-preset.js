@@ -13,17 +13,39 @@
  *   presets: [cortexPreset],
  *   content: [
  *     './src/**\/*.{js,ts,jsx,tsx}',
- *     // Include the library's components for Tailwind to scan
- *     './node_modules/cortex-react-components/dist/**\/*.{js,mjs}',
  *   ],
  *   // ... your other config
  * };
  * ```
+ * 
+ * Note: You do NOT need to add node_modules/cortex-react-components to content paths.
+ * The safelist in this preset includes all classes used by the library components.
  */
 
 /** @type {import('tailwindcss').Config} */
 const cortexPreset = {
   darkMode: ['selector'],
+  safelist: [
+    // Brand colors
+    { pattern: /bg-brand-(plum|blue|green|orange|cyan)(-\d{2,3}|foreground)?/ },
+    { pattern: /text-brand-(plum|blue|green|orange|cyan)(-\d{2,3}|foreground)?/ },
+    { pattern: /from-brand-(plum|blue|green|orange|cyan)/ },
+    { pattern: /to-brand-(plum|blue|green|orange|cyan)/ },
+    // Theme colors
+    { pattern: /bg-(background|foreground|card|popover|primary|secondary|muted|accent|destructive|border|input|ring)/ },
+    { pattern: /text-(background|foreground|card|popover|primary|secondary|muted|accent|destructive)/ },
+    { pattern: /border-(background|foreground|card|popover|primary|secondary|muted|accent|destructive|border|error|success|warning)/ },
+    // Sidebar
+    { pattern: /bg-sidebar(-background|-foreground|-primary|-accent|-border|-ring)?/ },
+    { pattern: /text-sidebar(-foreground|-primary-foreground|-accent-foreground)?/ },
+    // Status colors
+    'bg-error/30', 'bg-success/30', 'bg-warning/30',
+    'border-error', 'border-success', 'border-warning',
+    // Layout
+    'lg:col-span-4', 'lg:col-span-6', 'lg:col-span-8', 'lg:col-span-12',
+    // Charts
+    'bg-chart-1', 'bg-chart-2', 'bg-chart-3', 'bg-chart-4', 'bg-chart-5',
+  ],
   theme: {
     fontFamily: {
       sans: ['Manrope', 'sans-serif'],
@@ -255,7 +277,8 @@ const cortexPreset = {
   plugins: [
     require('tailwindcss-animated'),
     require('@tailwindcss/typography'),
-    require('tailwindcss-intersect'),
+    // Note: tailwindcss-intersect removed as it can cause CSS parsing issues with some bundlers
+    // If you need it, add it to your own tailwind.config.js: require('tailwindcss-intersect')
     function ({ addUtilities }) {
       addUtilities({
         '.no-scrollbar::-webkit-scrollbar': {

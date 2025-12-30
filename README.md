@@ -86,8 +86,7 @@ export default {
   presets: [cortexPreset],
   content: [
     './src/**/*.{js,ts,jsx,tsx,mdx}',
-    // Important: Include the library's components for Tailwind to scan
-    './node_modules/cortex-react-components/dist/**/*.{js,mjs}',
+    // Note: You don't need to add node_modules paths - the preset includes a safelist
   ],
   // ... your other configuration
 };
