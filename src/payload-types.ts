@@ -1767,7 +1767,7 @@ export interface DeliveryReport {
         name: string;
         commentary?: string | null;
         dueDate?: string | null;
-        rag: 'On-Track' | 'Off-Track' | 'At Risk' | 'Complete';
+        rag: 'Not-Started' | 'On-Track' | 'Delayed' | 'At Risk' | 'Delivered';
         id?: string | null;
       }[]
     | null;

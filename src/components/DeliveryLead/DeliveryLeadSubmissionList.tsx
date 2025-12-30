@@ -15,17 +15,11 @@ import {
   X,
 } from 'lucide-react'
 import { DeliveryReport } from '@/payload-types'
+import { RAG_COLOR_MAP, getRagStatusLabel, RagStatus } from './types'
 
 export interface DeliveryLeadSubmissionListProps {
   submissions: DeliveryReport[]
   isLoading?: boolean
-}
-
-const ragColorMap = {
-  'On-Track': 'bg-green-100 text-green-800 border-green-200',
-  'Off-Track': 'bg-red-100 text-red-800 border-red-200',
-  'At Risk': 'bg-yellow-100 text-yellow-800 border-yellow-200',
-  Complete: 'bg-blue-100 text-blue-800 border-blue-200',
 }
 
 export function DeliveryLeadSubmissionList({
@@ -170,9 +164,9 @@ export function DeliveryLeadSubmissionList({
                         {submission.milestones?.slice(0, 3).map((milestone, idx) => (
                           <span
                             key={idx}
-                            className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium border ${ragColorMap[milestone.rag]}`}
+                            className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium border ${RAG_COLOR_MAP[milestone.rag]}`}
                           >
-                            {milestone.rag}
+                            {getRagStatusLabel(milestone.rag)}
                           </span>
                         ))}
                         {submission.milestones && submission.milestones.length > 3 && (
@@ -337,9 +331,9 @@ export function DeliveryLeadSubmissionList({
                             </td>
                             <td className="px-4 py-2">
                               <span
-                                className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium border ${ragColorMap[milestone.rag]}`}
+                                className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium border ${RAG_COLOR_MAP[milestone.rag]}`}
                               >
-                                {milestone.rag}
+                                {getRagStatusLabel(milestone.rag)}
                               </span>
                             </td>
                           </tr>

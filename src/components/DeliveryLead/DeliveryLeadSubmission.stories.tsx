@@ -47,7 +47,7 @@ const prefilledSubmission = {
     {
       name: 'milestone 2',
       commentary: 'Launch planned',
-      rag: 'Complete',
+      rag: 'Delivered',
     },
   ],
 }
@@ -91,7 +91,7 @@ const payloadLikeInitialData = {
       id: '6952b85a837af7823a9d9f75',
       name: 'milestone 2',
       commentary: 'Rollout planned',
-      rag: 'Complete',
+      rag: 'Delivered',
     },
   ],
   projectUpdate: 'Prefilled update text',

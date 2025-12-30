@@ -26,7 +26,7 @@ const sampleSubmissions = [
         name: 'Requirements Gathering',
         commentary: 'Completed stakeholder interviews and documented business requirements',
         dueDate: '2024-01-15',
-        rag: 'Complete',
+        rag: 'Delivered',
       },
       {
         name: 'System Design',
@@ -45,7 +45,7 @@ const sampleSubmissions = [
         name: 'User Testing',
         commentary: 'Planned for Q2 2024',
         dueDate: '2024-06-30',
-        rag: 'On-Track',
+        rag: 'Not-Started',
       },
     ],
     projectUpdate:
@@ -70,13 +70,13 @@ const sampleSubmissions = [
         name: 'Performance Optimization',
         commentary: 'Database optimization completed, 40% improvement in load times',
         dueDate: '2024-01-31',
-        rag: 'Complete',
+        rag: 'Delivered',
       },
       {
         name: 'Mobile App Development',
         commentary: 'Development team expanded, progress is behind schedule',
         dueDate: '2024-03-15',
-        rag: 'Off-Track',
+        rag: 'Delayed',
       },
       {
         name: 'Payment Integration',
@@ -107,13 +107,13 @@ const sampleSubmissions = [
         name: 'Security Assessment',
         commentary: 'HIPAA compliance review completed successfully',
         dueDate: '2024-01-20',
-        rag: 'Complete',
+        rag: 'Delivered',
       },
       {
         name: 'Core Development',
         commentary: 'Patient portal and appointment scheduling modules completed',
         dueDate: '2024-02-28',
-        rag: 'Complete',
+        rag: 'Delivered',
       },
       {
         name: 'Integration Testing',
@@ -125,7 +125,7 @@ const sampleSubmissions = [
         name: 'Go-Live',
         commentary: 'Planned for April 2024',
         dueDate: '2024-04-15',
-        rag: 'On-Track',
+        rag: 'Not-Started',
       },
     ],
     projectUpdate:

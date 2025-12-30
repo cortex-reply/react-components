@@ -12,18 +12,16 @@ import {
   PlusCircle,
   Trash2,
 } from 'lucide-react'
-import { DeliveryLeadSubmissionData, DeliveryLeadSubmissionPrefill, Milestone } from './types'
+import { DeliveryLeadSubmissionData, DeliveryLeadSubmissionPrefill, Milestone, RAG_STATUS_OPTIONS, RagStatus } from './types'
 import { Select, SelectTrigger, SelectContent, SelectItem, SelectValue } from '@/components/ui/select'
 
 const createEmptyMilestone = (): Milestone => ({
   name: '',
   commentary: '',
   dueDate: '',
-  rag: 'On-Track',
+  rag: 'Not-Started',
   id: null,
 })
-
-const ragOptions = ['On-Track', 'Off-Track', 'At Risk', 'Complete']
 
 const formatDateInputValue = (value?: string | null) => {
   if (!value) return ''
@@ -90,7 +88,7 @@ const buildMilestonesFromPrefill = (
       name: milestone?.name ?? '',
       commentary: milestone?.commentary ?? '',
       dueDate: formatDateInputValue(milestone?.dueDate ?? ''),
-      rag: milestone?.rag ?? 'On-Track',
+      rag: milestone?.rag ?? 'Not-Started',
       id: milestone?.id ?? null,
     }))
 }
@@ -161,10 +159,12 @@ export function DeliveryLeadSubmissionComponent({ onSubmit, customerProjectPairs
       ? [...projectsForCustomer, { id: prefilledProject.id, name: prefilledProject.name }]
       : projectsForCustomer
 
+  const ragValues = RAG_STATUS_OPTIONS.map((opt) => opt.value)
+
   const handleMilestoneChange = (idx: number, field: string, value: string) => {
     setMilestones((prev) => {
       const newMilestones = [...prev]
-      if (field === 'rag' && !ragOptions.includes(value)) {
+      if (field === 'rag' && !ragValues.includes(value as RagStatus)) {
         return prev
       }
       newMilestones[idx] = { ...newMilestones[idx], [field]: value }
@@ -359,9 +359,9 @@ export function DeliveryLeadSubmissionComponent({ onSubmit, customerProjectPairs
                         value={m.rag}
                         onChange={(e) => handleMilestoneChange(idx, 'rag', e.target.value)}
                       >
-                        {ragOptions.map((opt) => (
-                          <option key={opt} value={opt}>
-                            {opt}
+                        {RAG_STATUS_OPTIONS.map((opt) => (
+                          <option key={opt.value} value={opt.value}>
+                            {opt.label}
                           </option>
                         ))}
                       </select>
