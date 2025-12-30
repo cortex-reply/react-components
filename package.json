@@ -21,6 +21,11 @@
         "default": "./dist/sections/form/server/index.mjs"
       }
     },
+    "./styles.css": "./dist/styles.css",
+    "./tailwind-preset": {
+      "import": "./dist/tailwind-preset.mjs",
+      "require": "./dist/tailwind-preset.js"
+    },
     "./globals.css": "./dist/globals.css"
   },
   "repository": "github:cortex-reply/react-components",

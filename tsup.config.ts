@@ -81,6 +81,26 @@ export default defineConfig(
         
         // Remove story files from dist
         await removeStoryFiles('dist');
+        
+        // Copy styles.css (base styles without Tailwind utilities)
+        try {
+          await fs.promises.copyFile('./src/styles.css', './dist/styles.css');
+          console.log('Copied: styles.css');
+        } catch (err) {
+          console.warn('Failed to copy styles.css:', err);
+        }
+        
+        // Copy tailwind-preset.js for consumers
+        try {
+          const presetContent = await fs.promises.readFile('./src/tailwind-preset.js', 'utf-8');
+          await fs.promises.writeFile('./dist/tailwind-preset.js', presetContent);
+          // Also create ESM version
+          const esmContent = presetContent.replace('module.exports = cortexPreset;', 'export default cortexPreset;');
+          await fs.promises.writeFile('./dist/tailwind-preset.mjs', esmContent);
+          console.log('Copied: tailwind-preset.js and tailwind-preset.mjs');
+        } catch (err) {
+          console.warn('Failed to copy tailwind-preset:', err);
+        }
       },
       ...options,
     }) as Options,
