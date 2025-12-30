@@ -46,7 +46,36 @@ Import only the CSS custom properties (design tokens) and non-Tailwind styles:
 import "cortex-react-components/styles.css";
 ```
 
-#### Step 2: Extend your Tailwind config with our preset
+#### Step 2: Load the Manrope font
+
+This library uses the [Manrope](https://fonts.google.com/specimen/Manrope) font. You need to load it in your application.
+
+**Option A: Google Fonts (HTML)**
+
+Add this to your HTML `<head>`:
+
+```html
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200;300;400;500;600;700;800&display=swap" rel="stylesheet">
+```
+
+**Option B: Next.js (next/font) - Recommended**
+
+```tsx
+// app/layout.tsx
+import { Manrope } from 'next/font/google';
+
+const manrope = Manrope({ subsets: ['latin'] });
+
+export default function RootLayout({ children }) {
+  return (
+    <html lang="en" className={manrope.className}>
+      <body>{children}</body>
+    </html>
+  );
+}
+```
+
+#### Step 3: Extend your Tailwind config with our preset
 
 ```js
 // tailwind.config.js or tailwind.config.ts

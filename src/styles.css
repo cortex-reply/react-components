@@ -7,57 +7,15 @@
  * Usage in consuming app:
  * 1. Import this CSS file: import 'cortex-react-components/styles.css';
  * 2. Extend your tailwind.config.js with our preset (see package exports)
+ * 3. Load the Manrope font (e.g., via Google Fonts or self-hosted)
+ * 
+ * To load Manrope font, add to your HTML head:
+ * <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200;300;400;500;600;700;800&display=swap" rel="stylesheet">
+ * 
+ * Or in Next.js, use next/font:
+ * import { Manrope } from 'next/font/google';
+ * const manrope = Manrope({ subsets: ['latin'] });
  */
-
-/* Font face declarations */
-@font-face {
-  font-family: 'Manrope';
-  font-style: normal;
-  font-weight: 400;
-  src: url('./fonts/Manrope-Regular.ttf') format('truetype');
-}
-
-@font-face {
-  font-family: 'Manrope';
-  font-style: normal;
-  font-weight: 300;
-  src: url('./fonts/Manrope-Light.ttf') format('truetype');
-}
-
-@font-face {
-  font-family: 'Manrope';
-  font-style: normal;
-  font-weight: 200;
-  src: url('./fonts/Manrope-ExtraLight.ttf') format('truetype');
-}
-
-@font-face {
-  font-family: 'Manrope';
-  font-style: normal;
-  font-weight: 500;
-  src: url('./fonts/Manrope-Medium.ttf') format('truetype');
-}
-
-@font-face {
-  font-family: 'Manrope';
-  font-style: normal;
-  font-weight: 600;
-  src: url('./fonts/Manrope-SemiBold.ttf') format('truetype');
-}
-
-@font-face {
-  font-family: 'Manrope';
-  font-style: normal;
-  font-weight: 700;
-  src: url('./fonts/Manrope-Bold.ttf') format('truetype');
-}
-
-@font-face {
-  font-family: 'Manrope';
-  font-style: normal;
-  font-weight: 800;
-  src: url('./fonts/Manrope-ExtraBold.ttf') format('truetype');
-}
 
 /* CSS Custom Properties (Design Tokens) */
 :root {
