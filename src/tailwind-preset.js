@@ -13,13 +13,12 @@
  *   presets: [cortexPreset],
  *   content: [
  *     './src/**\/*.{js,ts,jsx,tsx}',
+ *     // Include the library's components for Tailwind to scan
+ *     './node_modules/cortex-react-components/dist/**\/*.{js,mjs}',
  *   ],
  *   // ... your other config
  * };
  * ```
- * 
- * Note: You do NOT need to add node_modules/cortex-react-components to content paths.
- * The safelist in this preset includes all classes used by the library components.
  */
 
 /** @type {import('tailwindcss').Config} */

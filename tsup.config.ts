@@ -14,7 +14,7 @@ export default defineConfig(
       sourcemap: false,
       clean: !options.watch,
       bundle: true,
-      minify: !options.watch,
+      minify: false, // Disabled to preserve Tailwind class names for consumer scanning
       metafile: true,
       ignoreWatch: ['**/*.mdx', '**/*.md', '**/*.test.*', '**/*.spec.*', '**/*.stories.*'],
       esbuildOptions(options) {
