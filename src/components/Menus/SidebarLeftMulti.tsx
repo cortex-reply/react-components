@@ -158,7 +158,7 @@ export function SidebarLeftMulti({
         {mainNav &&
           !loading &&
           mainNav.map((item, index) => (
-            <SidebarGroup>
+            <SidebarGroup key={index}>
           <SidebarGroupLabel>{item.name}</SidebarGroupLabel>
             { item && !loading && item.nav.map((item, index) => (
             <Menu key={index} subNav={item} pathName={pathName} Link={Link} />
