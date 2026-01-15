@@ -44,8 +44,14 @@ const ButtonGroup: React.FC<ButtonGroupProps> = ({ options, value, onChange, dis
 }
 
 export function RequestLeave({ remainingDays, submitLeaveRequest }: RequestLeaveProps) {
-  const [startDate, setStartDate] = useState<Date | undefined>(new Date())
-  const [endDate, setEndDate] = useState<Date | undefined>(new Date())
+  // Helper to create a UTC midnight date from the user's local date (year, month, day)
+  // This preserves the user's selected day regardless of their timezone
+  const setToMidnightUTC = (date: Date) => {
+    return new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate(), 0, 0, 0, 0))
+  }
+
+  const [startDate, setStartDate] = useState<Date | undefined>(() => setToMidnightUTC(new Date()))
+  const [endDate, setEndDate] = useState<Date | undefined>(() => setToMidnightUTC(new Date()))
   const [leaveType, setLeaveType] = useState('Full Day')
   const [isMultipleDays, setIsMultipleDays] = useState(false)
   const [totalDays, setTotalDays] = useState(1)
@@ -137,9 +143,12 @@ export function RequestLeave({ remainingDays, submitLeaveRequest }: RequestLeave
                   mode="single"
                   selected={startDate}
                   onSelect={(date) => {
-                    setStartDate(date)
-                    if (date && (!endDate || date > endDate)) {
-                      setEndDate(date)
+                    if (date) {
+                      const dateMidnight = setToMidnightUTC(date)
+                      setStartDate(dateMidnight)
+                      if (!endDate || date > endDate) {
+                        setEndDate(dateMidnight)
+                      }
                     }
                   }}
                   initialFocus
@@ -166,7 +175,11 @@ export function RequestLeave({ remainingDays, submitLeaveRequest }: RequestLeave
                 <Calendar
                   mode="single"
                   selected={endDate}
-                  onSelect={setEndDate}
+                  onSelect={(date) => {
+                    if (date) {
+                      setEndDate(setToMidnightUTC(date))
+                    }
+                  }}
                   disabled={(date) => (startDate ? date < startDate : false)}
                   initialFocus
                 />
