@@ -341,6 +341,7 @@ describe('RequestLeave', () => {
     const startDate = new Date(startDateStr)
     const endDate = new Date(endDateStr)
     
+    
     expect(startDate.getUTCFullYear()).toBe(2026)
     expect(startDate.getUTCMonth()).toBe(0) // January (0-indexed)
     expect(startDate.getUTCDate()).toBe(22)
