@@ -50,8 +50,15 @@ export function RequestLeave({ remainingDays, submitLeaveRequest }: RequestLeave
     return new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate(), 0, 0, 0, 0))
   }
 
-  const [startDate, setStartDate] = useState<Date | undefined>(() => setToMidnightUTC(new Date()))
-  const [endDate, setEndDate] = useState<Date | undefined>(() => setToMidnightUTC(new Date()))
+  const [startDate, setStartDate] = useState<Date | undefined>(undefined)
+  const [endDate, setEndDate] = useState<Date | undefined>(undefined)
+
+  // Set initial dates on client only to avoid hydration mismatch
+  useEffect(() => {
+    if (startDate === undefined) setStartDate(setToMidnightUTC(new Date()))
+    if (endDate === undefined) setEndDate(setToMidnightUTC(new Date()))
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
   const [leaveType, setLeaveType] = useState('Full Day')
   const [isMultipleDays, setIsMultipleDays] = useState(false)
   const [totalDays, setTotalDays] = useState(1)
