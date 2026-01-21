@@ -71,7 +71,7 @@ export function RequestLeave({ remainingDays, submitLeaveRequest }: RequestLeave
   }, [])
   const [leaveType, setLeaveType] = useState('Full Day')
   const [isMultipleDays, setIsMultipleDays] = useState(false)
-  const [totalDays, setTotalDays] = useState(1)
+  const [totalDays, setTotalDays] = useState(0)
   const router = useRouter()
 
   useEffect(() => {

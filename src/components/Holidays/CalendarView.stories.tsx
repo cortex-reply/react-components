@@ -91,6 +91,7 @@ const mockHolidays: Holiday[] = [
 export const Default: Story = {
   render: () => {
     const [currentDate, setCurrentDate] = useState(new Date(2025, 0, 1)) // January 2025
+    const today = TimeUtil.toUtcMidnight(new Date(2025, 0, 1)) // Server's "today"
 
     const correctedCurrentDate = TimeUtil.toUtcMidnight(currentDate)
     return (
@@ -98,6 +99,7 @@ export const Default: Story = {
         currentDate={correctedCurrentDate}
         setCurrentDate={setCurrentDate}
         holidays={mockHolidays}
+        today={today}
       />
     )
   },
