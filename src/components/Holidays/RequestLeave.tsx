@@ -50,6 +50,16 @@ export function RequestLeave({ remainingDays, submitLeaveRequest }: RequestLeave
     return new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate(), 0, 0, 0, 0))
   }
 
+  // Format date using UTC values to avoid hydration mismatch between server/client timezones
+  const formatDateUTC = (date: Date) => {
+    const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
+    const day = date.getUTCDate()
+    const month = months[date.getUTCMonth()]
+    const year = date.getUTCFullYear()
+    const suffix = day === 1 || day === 21 || day === 31 ? 'st' : day === 2 || day === 22 ? 'nd' : day === 3 || day === 23 ? 'rd' : 'th'
+    return `${month} ${day}${suffix}, ${year}`
+  }
+
   const [startDate, setStartDate] = useState<Date | undefined>(undefined)
   const [endDate, setEndDate] = useState<Date | undefined>(undefined)
 
@@ -142,7 +152,7 @@ export function RequestLeave({ remainingDays, submitLeaveRequest }: RequestLeave
                   )}
                 >
                   <CalendarIcon className="mr-2 h-4 w-4" />
-                  {startDate ? format(startDate, 'PPP') : <span>Pick a date</span>}
+                  {startDate ? formatDateUTC(startDate) : <span>Pick a date</span>}
                 </Button>
               </PopoverTrigger>
               <PopoverContent className="w-auto p-0" align="start">
@@ -175,7 +185,7 @@ export function RequestLeave({ remainingDays, submitLeaveRequest }: RequestLeave
                   )}
                 >
                   <CalendarIcon className="mr-2 h-4 w-4" />
-                  {endDate ? format(endDate, 'PPP') : <span>Pick a date</span>}
+                  {endDate ? formatDateUTC(endDate) : <span>Pick a date</span>}
                 </Button>
               </PopoverTrigger>
               <PopoverContent className="w-auto p-0" align="start">
