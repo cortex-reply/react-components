@@ -19,7 +19,8 @@ interface HolidayTrackerProps {
   holidays: Holiday[]
   leaveApprovals: LeaveRequest[]
   employees: Employee[]
-  currentDate: string // ISO 8601 string
+  currentDate: string // ISO 8601 string - the date being viewed
+  today: string // ISO 8601 string - server's current date for "today" highlighting
   currentUser: { grade: string; remainingLeaveDays: number }
   submitLeaveRequest?: (formData: FormData) => Promise<{ success: boolean; message: string }>
   approveLeave: (ids: string[]) => Promise<{ success: boolean; message: string }>
@@ -34,6 +35,7 @@ export function HolidayTracker({
   holidays,
   currentUser,
   currentDate,
+  today,
   leaveApprovals,
   employees,
   submitLeaveRequest,
@@ -46,6 +48,7 @@ export function HolidayTracker({
   const isLoading = false
 
   const parsedCurrentDate = TimeUtil.toUtcMidnight(parseISO(currentDate))
+  const parsedToday = TimeUtil.toUtcMidnight(parseISO(today))
 
   const setCurrentDate = async (date: Date) => {
     const formattedDate = format(date, 'dd-MM-yyyy')
@@ -147,6 +150,7 @@ export function HolidayTracker({
           currentDate={parsedCurrentDate}
           setCurrentDate={setCurrentDate}
           holidays={holidays}
+          today={parsedToday}
         />
       )}
       {currentTab === 'Request Leave' && (
