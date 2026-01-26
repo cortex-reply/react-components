@@ -1,16 +1,22 @@
 import { bankHolidays } from './BankHolidays'
 
 export const isDayOff = (date: Date) => {
-  const isSunday = date.getDay() === 0
-  const isSaturday = date.getDay() === 6
-  const isBankHoliday = bankHolidays.some((h) => h.toISOString() === date.toISOString())
+  const isSunday = date.getUTCDay() === 0
+  const isSaturday = date.getUTCDay() === 6
+  const isBankHoliday = bankHolidays.some(
+    (h) =>
+      h.getFullYear() === date.getUTCFullYear() &&
+      h.getMonth() === date.getUTCMonth() &&
+      h.getDate() === date.getUTCDate()
+  )
 
   return isSunday || isSaturday || isBankHoliday
 }
 
 export const getTotalDaysBetween = (startDate: Date, endDate: Date, isHalfDay = false) => {
-  const start = new Date(startDate)
-  const end = new Date(endDate)
+  // Work with UTC day values to avoid timezone issues
+  let start = new Date(Date.UTC(startDate.getUTCFullYear(), startDate.getUTCMonth(), startDate.getUTCDate()))
+  const end = new Date(Date.UTC(endDate.getUTCFullYear(), endDate.getUTCMonth(), endDate.getUTCDate()))
 
   let count = 0
 
@@ -23,7 +29,7 @@ export const getTotalDaysBetween = (startDate: Date, endDate: Date, isHalfDay = 
       count++
     }
 
-    start.setDate(start.getDate() + 1)
+    start = new Date(start.getTime() + 24 * 60 * 60 * 1000) // Add 1 day in milliseconds
   }
 
   return count
@@ -34,6 +40,10 @@ export const getIsMultipleDays = (startDate?: Date, endDate?: Date) => {
     return false
   }
 
-  const isMultipleDays = startDate.toDateString() !== endDate.toDateString()
+  // Compare UTC dates to avoid timezone issues
+  const isMultipleDays =
+    startDate.getUTCFullYear() !== endDate.getUTCFullYear() ||
+    startDate.getUTCMonth() !== endDate.getUTCMonth() ||
+    startDate.getUTCDate() !== endDate.getUTCDate()
   return isMultipleDays
 }
