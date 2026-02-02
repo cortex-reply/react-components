@@ -4,6 +4,7 @@ import { Sparkles } from 'lucide-react'
 import { RichText } from '@/components/Payload/RichText'
 import { DynamicIcon, type DynamicIconProps, type IconType } from '../Images'
 import Image, { type StaticImageData } from 'next/image'
+import { getLinkHref } from '@/lib/utils/getLinkHref'
 
 import type { FeaturesBlock as FeaturesBlockProps, Media } from '@/payload-types'
 type Section = NonNullable<FeaturesBlockProps['features']>[number]
@@ -68,7 +69,7 @@ export function FeatureCard({
 
   return (
     <a
-      href={link?.url || '#'}
+      href={getLinkHref(link)}
       className={cn(
         'min-w-56 max-w-xl h-full flex flex-col group bg-background',
         image ? 'p-0' : 'p-6 md:p-8',

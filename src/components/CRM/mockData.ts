@@ -18,11 +18,11 @@ export const mockCategories: DealCategory[] = [
 
 
 export const mockUsers: User[] = [
-  { id: 1, name: "John Doe", email: "john.doe@example.com", role: "user", createdAt: "2023-01-01", updatedAt: "2023-01-01" },
-  { id: 2, name: "Jane Smith", email: "jane.smith@example.com", role: "user", createdAt: "2023-01-01", updatedAt: "2023-01-01" },
-  { id: 3, name: "Bob Johnson", email: "bob.johnson@example.com", role: "user", createdAt: "2023-01-01", updatedAt: "2023-01-01" },
-  { id: 4, name: "Alice Brown", email: "alice.brown@example.com", role: "user", createdAt: "2023-01-01", updatedAt: "2023-01-01" },
-  { id: 5, name: "Charlie Davis", email: "charlie.davis@example.com", role: "user", createdAt: "2023-01-01", updatedAt: "2023-01-01" },
+  { id: "1", name: "John Doe", email: "john.doe@example.com", role: "user", createdAt: "2023-01-01", updatedAt: "2023-01-01" },
+  { id: "2", name: "Jane Smith", email: "jane.smith@example.com", role: "user", createdAt: "2023-01-01", updatedAt: "2023-01-01" },
+  { id: "3", name: "Bob Johnson", email: "bob.johnson@example.com", role: "user", createdAt: "2023-01-01", updatedAt: "2023-01-01" },
+  { id: "4", name: "Alice Brown", email: "alice.brown@example.com", role: "user", createdAt: "2023-01-01", updatedAt: "2023-01-01" },
+  { id: "5", name: "Charlie Davis", email: "charlie.davis@example.com", role: "user", createdAt: "2023-01-01", updatedAt: "2023-01-01" },
 ];
 
 export const mockDeals: Deal[] = [
@@ -44,7 +44,7 @@ export const mockDeals: Deal[] = [
     id: 2,
     customer: { id: 2, name: "GlobalTech", active: true, createdAt: "2023-01-01", updatedAt: "2023-01-01" },
     value: 75000,
-    assignee: { id: 2, name: "Jane Smith", email: "jane.smith@example.com", role: "user", createdAt: "2023-01-01", updatedAt: "2023-01-01" },
+    assignee: { id: "2", name: "Jane Smith", email: "jane.smith@example.com", role: "user", createdAt: "2023-01-01", updatedAt: "2023-01-01" },
     status: "Proposal Made",
     categories: mockCategories.slice(0, 3), // Pass in 3 of the mockCategories
     dateLogged: "2023-02-01",

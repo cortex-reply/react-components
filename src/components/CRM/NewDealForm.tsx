@@ -157,7 +157,7 @@ export function NewDealForm({
 }
 
   const getUserById = (userId: string) => {
-    return users?.find((user) => (user as User).id === Number(userId))
+    return users?.find((user) => (user as User).id === userId)
   }
 
   const getCustomerById = (customerID: string) => {

@@ -3,6 +3,7 @@ import type { FeaturesBlock as FeaturesBlockProps } from '@/payload-types'
 import { cn } from '@/lib/utils/cn'
 import React from 'react'
 import { RichText } from '@/components/Payload/RichText'
+import { getLinkHref } from '@/lib/utils/getLinkHref'
 import type { Page } from '@/payload-types'
 import { ContentCard, FeatureCard } from '../Cards'
 // type Props = {
@@ -134,10 +135,7 @@ const IconFeature = ({ section, index }: { section: Section; index: number }) =>
   )
   return section.link ? (
     <a
-      href={
-        section.link.url ? section.link.url : '#'
-        // : `/${section.link.reference?.relationTo}/${(section.link.reference?.value as Page)?.slug || '#'}`
-      }
+      href={getLinkHref(section.link)}
       key={index}
       className="no-underline group"
     >
