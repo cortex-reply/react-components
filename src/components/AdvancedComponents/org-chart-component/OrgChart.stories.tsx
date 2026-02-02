@@ -84,6 +84,33 @@ export const MediumTeam: Story = {
   },
 }
 
+export const SinglePersonUser: Story = {
+  args: {
+    users: [{
+      id: 1,
+      name: 'Test user - do not delete',
+      email: 'test@test.com',
+      jobRole: null,
+      manager: null,
+      about: null,
+      profilePicture: null,
+      holidaysRemaining: 25,
+      startingHolidays: 25,
+      dateOfBirth: null,
+      joinDate: null,
+      linkedIn: null,
+      assets: [],
+      role: 'admin',
+      updatedAt: '2025-12-29T17:19:00.709Z',
+      createdAt: '2025-12-08T18:36:20.346Z',
+      enableAPIKey: null,
+      apiKey: null
+    }],
+    expandable: false,
+    initiallyExpanded: true,
+  },
+}
+
 /**
  * Single person organization (e.g., solo founder or CEO).
  * Demonstrates the component with minimal data.

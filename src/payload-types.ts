@@ -682,7 +682,7 @@ export interface Post {
  * via the `definition` "users".
  */
 export interface User {
-  id: number;
+  id: string;
   name?: string | null;
   email: string;
   jobRole?: ('C1' | 'C2' | 'C3' | 'SC1' | 'SC2' | 'M' | 'SM' | 'P') | null;
