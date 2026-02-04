@@ -29,6 +29,7 @@ export const Default: Story = {
   args: {
     // Mock holidays data
     currentDate: format(new Date(2025, 0, 2), "yyyy-MM-dd'T'HH:mm:ss.SSSxxx"), // January 2025
+    today: format(new Date(2025, 0, 2), "yyyy-MM-dd'T'HH:mm:ss.SSSxxx"), // Today's date for highlighting
     holidays: [
       {
         id: '1',
