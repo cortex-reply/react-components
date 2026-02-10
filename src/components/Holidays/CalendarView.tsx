@@ -11,6 +11,7 @@ interface CalendarViewProps {
   currentDate: Date
   setCurrentDate: (date: Date) => void
   holidays: Holiday[]
+  today: Date // Server-determined "today" to avoid hydration mismatch
 }
 
 interface Holiday {
@@ -24,18 +25,25 @@ interface Holiday {
   leaveType: 'Full Day' | 'Morning' | 'Afternoon'
 }
 
-export function CalendarView({ currentDate, setCurrentDate, holidays }: CalendarViewProps) {
+export function CalendarView({ currentDate, setCurrentDate, holidays, today }: CalendarViewProps) {
   const [selectedDay, setSelectedDay] = useState<Date | null>(null)
 
+  // Helper to compare dates by their UTC year/month/day values
+  const isSameUtcDay = (a: Date, b: Date) =>
+    a.getUTCFullYear() === b.getUTCFullYear() &&
+    a.getUTCMonth() === b.getUTCMonth() &&
+    a.getUTCDate() === b.getUTCDate()
+
   const firstDayOfMonth =
-    (new Date(currentDate.getFullYear(), currentDate.getMonth(), 1).getDay() + 6) % 7
+    (new Date(Date.UTC(currentDate.getUTCFullYear(), currentDate.getUTCMonth(), 1)).getUTCDay() + 6) % 7
 
   const days = Array.from({ length: 42 }, (_, i) => {
     const day = new Date(
-      currentDate.getFullYear(),
-      currentDate.getMonth(),
-      i - firstDayOfMonth + 1,
-      currentDate.getHours(),
+      Date.UTC(
+        currentDate.getUTCFullYear(),
+        currentDate.getUTCMonth(),
+        i - firstDayOfMonth + 1,
+      ),
     )
     const filteredHolidays = holidays.filter(
       (h) =>
@@ -44,28 +52,32 @@ export function CalendarView({ currentDate, setCurrentDate, holidays }: Calendar
     )
     return {
       date: day,
-      isCurrentMonth: day.getMonth() === currentDate.getMonth(),
-      isToday: day.toDateString() === new Date().toDateString(),
+      isCurrentMonth: day.getUTCMonth() === currentDate.getUTCMonth(),
+      isToday: isSameUtcDay(day, today),
       holidays: filteredHolidays,
     }
   })
 
   const prevMonth = () => {
-    setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() - 1, 1))
+    setCurrentDate(new Date(Date.UTC(currentDate.getUTCFullYear(), currentDate.getUTCMonth() - 1, 1)))
   }
   const nextMonth = () => {
-    setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 1))
+    setCurrentDate(new Date(Date.UTC(currentDate.getUTCFullYear(), currentDate.getUTCMonth() + 1, 1)))
   }
   const setToday = () => {
-    setCurrentDate(new Date())
+    setCurrentDate(TimeUtil.toUtcMidnight(new Date()))
   }
+
+  // Format month/year using UTC values to avoid hydration mismatch
+  const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
+  const monthYearDisplay = `${months[currentDate.getUTCMonth()]} ${currentDate.getUTCFullYear()}`
 
   return (
     <div className="lg:flex lg:h-full lg:flex-col">
       <header className="flex items-center justify-between border-b border-gray-200 px-6 py-4 lg:flex-none">
         <h1 className="text-base font-semibold text-foreground">
           <time dateTime={currentDate.toISOString()}>
-            {currentDate.toLocaleString('default', { month: 'long', year: 'numeric' })}
+            {monthYearDisplay}
           </time>
         </h1>
         <div className="flex items-center">
@@ -139,7 +151,7 @@ export function CalendarView({ currentDate, setCurrentDate, holidays }: Calendar
                     day.isToday && 'bg-indigo-600 font-semibold text-white',
                   )}
                 >
-                  {day.date.getDate()}
+                  {day.date.getUTCDate()}
                 </time>
                 {day.holidays.length > 0 && (
                   <ol className="mt-2 space-y-1 overflow-visible">
@@ -189,7 +201,7 @@ export function CalendarView({ currentDate, setCurrentDate, holidays }: Calendar
                       'flex h-6 w-6 items-center justify-center rounded-full bg-gray-900',
                   )}
                 >
-                  {day.date.getDate()}
+                  {day.date.getUTCDate()}
                 </time>
                 <span className="sr-only">{day.holidays.length} holidays</span>
                 {day.holidays.length > 0 && (

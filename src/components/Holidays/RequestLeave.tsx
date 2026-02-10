@@ -44,11 +44,34 @@ const ButtonGroup: React.FC<ButtonGroupProps> = ({ options, value, onChange, dis
 }
 
 export function RequestLeave({ remainingDays, submitLeaveRequest }: RequestLeaveProps) {
-  const [startDate, setStartDate] = useState<Date | undefined>(new Date())
-  const [endDate, setEndDate] = useState<Date | undefined>(new Date())
+  // Helper to create a UTC midnight date from the user's local date (year, month, day)
+  // This preserves the user's selected day regardless of their timezone
+  const setToMidnightUTC = (date: Date) => {
+    return new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate(), 0, 0, 0, 0))
+  }
+
+  // Format date using UTC values to avoid hydration mismatch between server/client timezones
+  const formatDateUTC = (date: Date) => {
+    const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
+    const day = date.getUTCDate()
+    const month = months[date.getUTCMonth()]
+    const year = date.getUTCFullYear()
+    const suffix = day === 1 || day === 21 || day === 31 ? 'st' : day === 2 || day === 22 ? 'nd' : day === 3 || day === 23 ? 'rd' : 'th'
+    return `${month} ${day}${suffix}, ${year}`
+  }
+
+  const [startDate, setStartDate] = useState<Date | undefined>(undefined)
+  const [endDate, setEndDate] = useState<Date | undefined>(undefined)
+
+  // Set initial dates on client only to avoid hydration mismatch
+  useEffect(() => {
+    if (startDate === undefined) setStartDate(setToMidnightUTC(new Date()))
+    if (endDate === undefined) setEndDate(setToMidnightUTC(new Date()))
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
   const [leaveType, setLeaveType] = useState('Full Day')
   const [isMultipleDays, setIsMultipleDays] = useState(false)
-  const [totalDays, setTotalDays] = useState(1)
+  const [totalDays, setTotalDays] = useState(0)
   const router = useRouter()
 
   useEffect(() => {
@@ -129,7 +152,7 @@ export function RequestLeave({ remainingDays, submitLeaveRequest }: RequestLeave
                   )}
                 >
                   <CalendarIcon className="mr-2 h-4 w-4" />
-                  {startDate ? format(startDate, 'PPP') : <span>Pick a date</span>}
+                  {startDate ? formatDateUTC(startDate) : <span>Pick a date</span>}
                 </Button>
               </PopoverTrigger>
               <PopoverContent className="w-auto p-0" align="start">
@@ -137,9 +160,12 @@ export function RequestLeave({ remainingDays, submitLeaveRequest }: RequestLeave
                   mode="single"
                   selected={startDate}
                   onSelect={(date) => {
-                    setStartDate(date)
-                    if (date && (!endDate || date > endDate)) {
-                      setEndDate(date)
+                    if (date) {
+                      const dateMidnight = setToMidnightUTC(date)
+                      setStartDate(dateMidnight)
+                      if (!endDate || date > endDate) {
+                        setEndDate(dateMidnight)
+                      }
                     }
                   }}
                   initialFocus
@@ -159,14 +185,18 @@ export function RequestLeave({ remainingDays, submitLeaveRequest }: RequestLeave
                   )}
                 >
                   <CalendarIcon className="mr-2 h-4 w-4" />
-                  {endDate ? format(endDate, 'PPP') : <span>Pick a date</span>}
+                  {endDate ? formatDateUTC(endDate) : <span>Pick a date</span>}
                 </Button>
               </PopoverTrigger>
               <PopoverContent className="w-auto p-0" align="start">
                 <Calendar
                   mode="single"
                   selected={endDate}
-                  onSelect={setEndDate}
+                  onSelect={(date) => {
+                    if (date) {
+                      setEndDate(setToMidnightUTC(date))
+                    }
+                  }}
                   disabled={(date) => (startDate ? date < startDate : false)}
                   initialFocus
                 />
