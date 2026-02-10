@@ -22,6 +22,10 @@ export function getLinkHref(link?: {
     const { relationTo, value } = link.reference
     const slug = (value as Page)?.slug
 
+    if (!slug && relationTo !== 'pages' && value.url) {
+      return value.url
+    }
+
     if (!slug) return '#'
 
     // For pages, just use the slug
