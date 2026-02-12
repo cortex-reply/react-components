@@ -111,7 +111,7 @@ export function ApproveLeave({ leaveRequests, onApprove, onReject }: ApproveLeav
                     <Avatar className="h-10 w-10">
                       <AvatarImage src={request.userImage} alt={request.userName} />
                       <AvatarFallback>
-                        {request.userName
+                        {request.userName && request.userName
                           .split(' ')
                           .map((n) => n[0])
                           .join('')}
@@ -119,7 +119,7 @@ export function ApproveLeave({ leaveRequests, onApprove, onReject }: ApproveLeav
                     </Avatar>
                     <div className="ml-3">
                       <p className="text-sm font-medium text-foreground group-hover:text-accent">
-                        {request.userName}
+                        {request.userName && request.userName}
                       </p>
                       {/* <p className="text-sm text-gray-500">{request.userEmail}</p> */}
                     </div>
