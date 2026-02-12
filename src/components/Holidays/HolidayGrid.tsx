@@ -48,10 +48,6 @@ export function HolidayGrid({
     }
   })
 
-  console.log(
-    'employeeIds',
-    employees.map((employee) => employee.id),
-  )
 
   return (
     <div className="px-4 sm:px-6 lg:px-8">
@@ -144,7 +140,7 @@ export function HolidayGrid({
                         <Avatar className="h-11 w-11">
                           <AvatarImage src={employee.image} alt={employee.name} />
                           <AvatarFallback>
-                            {employee.name
+                            {employee.name && employee.name
                               .split(' ')
                               .map((n) => n[0])
                               .join('')}
