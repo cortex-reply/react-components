@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react'
+import { fn } from '@storybook/test'
 import { PlanningView } from './PlanningView'
-import { Task, Epic, Sprint } from './ProjectView'
+import { Task, Epic, Sprint } from '../Foundary/types'
 
 const meta: Meta<typeof PlanningView> = {
   title: 'Projects/Views/PlanningView',
@@ -14,145 +15,123 @@ const meta: Meta<typeof PlanningView> = {
 export default meta
 type Story = StoryObj<typeof PlanningView>
 
+// Helper for generating ISO date strings
+const toISOString = (date: Date) => date.toISOString()
+
+// Helper for generating assignees
+const generateAssignee = () => ({
+  relationTo: 'users' as const,
+  value: 'cm1twzm1w000108jh4gzfk3m4', // Sample user ID
+})
+
 const mockTasks = [
   {
-    id: '1',
+    id: 1,
     name: 'Design login page',
     description: 'Create wireframes and mockups for the login interface',
     status: 'todo' as const,
     priority: 'high' as const,
     type: 'story' as const,
-    points: 5,
-    epicId: '1',
-    sprintId: '2',
-    assignee: 'John Doe',
-    createdAt: new Date('2024-01-15'),
+    storyPoints: 5,
+    epic: 1,
+    sprint: 2,
+    assignee: generateAssignee(),
+    dateLogged: toISOString(new Date('2026-02-15')),
+    index: 1,
+    updatedAt: toISOString(new Date()),
+    createdAt: toISOString(new Date('2026-02-15')),
   },
   {
-    id: '2',
+    id: 2,
     name: 'Research mobile frameworks',
     description: 'Investigate best practices for mobile responsive design',
     status: 'review' as const,
     priority: 'medium' as const,
     type: 'spike' as const,
-    points: 3,
-    epicId: '2',
-    sprintId: '2',
-    assignee: 'Jane Smith',
-    createdAt: new Date('2024-01-16'),
+    storyPoints: 3,
+    epic: 2,
+    sprint: 2,
+    assignee: generateAssignee(),
+    dateLogged: toISOString(new Date('2026-02-15')),
+    index: 2,
+    updatedAt: toISOString(new Date()),
+    createdAt: toISOString(new Date('2026-02-15')),
   },
   {
-    id: '3',
+    id: 3,
     name: 'Implement OAuth integration',
     description: 'Add Google and GitHub OAuth authentication',
     status: 'in-progress' as const,
     priority: 'low' as const,
     type: 'story' as const,
-    points: 8,
-    epicId: '1',
-    assignee: 'Mike Johnson',
-    createdAt: new Date('2024-01-17'),
+    storyPoints: 8,
+    epic: 1,
+    assignee: generateAssignee(),
+    dateLogged: toISOString(new Date('2026-02-15')),
+    index: 3,
+    updatedAt: toISOString(new Date()),
+    createdAt: toISOString(new Date('2026-02-15')),
   },
 ]
 
 const mockEpics = [
   {
-    id: '1',
+    id: 1,
     name: 'User Authentication',
     color: 'bg-blue-500',
     description: 'Implement secure user authentication system',
     confidence: 'high' as const,
     phase: 2,
-    startDate: new Date('2024-01-01'),
-    endDate: new Date('2024-02-15'),
+    startDate: toISOString(new Date('2026-02-01')),
+    endDate: toISOString(new Date('2026-03-15')),
     progress: 75,
-    isSelected: true,
+    updatedAt: toISOString(new Date()),
+    createdAt: toISOString(new Date('2026-02-01')),
   },
   {
-    id: '2',
+    id: 2,
     name: 'Dashboard Features',
     color: 'bg-green-500',
     description: 'Build comprehensive dashboard functionality',
     confidence: 'medium' as const,
     phase: 1,
-    startDate: new Date('2024-02-01'),
-    endDate: new Date('2024-03-15'),
+    startDate: toISOString(new Date('2026-02-01')),
+    endDate: toISOString(new Date('2026-03-15')),
     progress: 30,
-    isSelected: true,
+    updatedAt: toISOString(new Date()),
+    createdAt: toISOString(new Date('2026-02-01')),
   },
 ]
 
 const mockSprints = [
   {
-    id: 'backlog',
-    name: 'Backlog',
-    description: 'Tasks not yet assigned to a sprint',
-    startDate: new Date('2024-01-01'),
-    endDate: new Date('2024-12-31'),
-    isActive: false,
-    isSelected: false,
-  },
-  {
-    id: '1',
+    id: 1,
     name: 'Sprint 1',
-    description: 'Initial development phase',
-    startDate: new Date('2024-01-01'),
-    endDate: new Date('2024-01-14'),
-    isActive: false,
-    isSelected: false,
+    description: 'Foundation phase',
+    startDate: toISOString(new Date('2026-02-01')),
+    endDate: toISOString(new Date('2026-02-14')),
+    updatedAt: toISOString(new Date()),
+    createdAt: toISOString(new Date('2026-02-01')),
   },
   {
-    id: '2',
-    name: 'Sprint 2',
-    description: 'Feature development',
-    startDate: new Date('2024-01-15'),
-    endDate: new Date('2024-01-28'),
-    isActive: true,
-    isSelected: true,
+    id: 2,
+    name: 'Sprint 2 (Active)',
+    description: 'Current active sprint',
+    startDate: toISOString(new Date('2026-02-16')),
+    endDate: toISOString(new Date('2026-03-02')),
+    updatedAt: toISOString(new Date()),
+    createdAt: toISOString(new Date('2026-02-16')),
+  },
+  {
+    id: 3,
+    name: 'Sprint 3',
+    description: 'Upcoming sprint',
+    startDate: toISOString(new Date('2026-03-03')),
+    endDate: toISOString(new Date('2026-03-16')),
+    updatedAt: toISOString(new Date()),
+    createdAt: toISOString(new Date('2026-03-03')),
   },
 ]
-
-// Generate 20 sprints for comprehensive testing
-const generateMockSprints = (): Sprint[] => {
-  const sprints: Sprint[] = [
-    {
-      id: 'backlog',
-      name: 'Backlog',
-      description: 'Tasks not yet assigned to a sprint',
-      startDate: new Date('2024-01-01'),
-      endDate: new Date('2024-12-31'),
-      isActive: false,
-      isSelected: false,
-    },
-  ]
-
-  for (let i = 1; i <= 20; i++) {
-    const startDate = new Date('2024-01-01')
-    startDate.setDate(startDate.getDate() + (i - 1) * 14)
-    const endDate = new Date(startDate)
-    endDate.setDate(endDate.getDate() + 13)
-
-    sprints.push({
-      id: i.toString(),
-      name: `Sprint ${i}`,
-      description: `Development sprint ${i} - ${
-        i <= 5
-          ? 'Foundation'
-          : i <= 10
-          ? 'Core Features'
-          : i <= 15
-          ? 'Advanced Features'
-          : 'Polish & Release'
-      }`,
-      startDate,
-      endDate,
-      isActive: i === 3, // Sprint 3 is active
-      isSelected: i <= 3, // First 3 sprints are selected by default
-    })
-  }
-
-  return sprints
-}
 
 // Generate many tasks for comprehensive testing
 const generateMockTasks = (): Task[] => {
@@ -200,20 +179,19 @@ const generateMockTasks = (): Task[] => {
   for (let i = 0; i < 15; i++) {
     const template = taskTemplates[i % taskTemplates.length]
     tasks.push({
-      id: taskId.toString(),
+      id: taskId,
       name: `${template} (Backlog)`,
       description: `Detailed description for ${template.toLowerCase()}`,
       status: statuses[Math.floor(Math.random() * statuses.length)],
       priority: priorities[Math.floor(Math.random() * priorities.length)],
       type: taskTypes[Math.floor(Math.random() * taskTypes.length)],
-      points: Math.floor(Math.random() * 8) + 1,
-      epicId:
-        Math.floor(Math.random() * 4) + 1 <= 2
-          ? (Math.floor(Math.random() * 2) + 1).toString()
-          : '1',
-      sprintId: undefined, // Backlog tasks
-      assignee: assignees[Math.floor(Math.random() * assignees.length)],
-      createdAt: new Date('2024-01-01'),
+      storyPoints: Math.floor(Math.random() * 8) + 1,
+      epic: Math.random() > 0.5 ? Math.floor(Math.random() * 2) + 1 : 1,
+      assignee: generateAssignee(),
+      dateLogged: toISOString(new Date('2026-02-01')),
+      index: taskId,
+      updatedAt: toISOString(new Date()),
+      createdAt: toISOString(new Date('2026-02-01')),
     })
     taskId++
   }
@@ -225,20 +203,20 @@ const generateMockTasks = (): Task[] => {
     for (let i = 0; i < tasksPerSprint; i++) {
       const template = taskTemplates[i % taskTemplates.length]
       tasks.push({
-        id: taskId.toString(),
+        id: taskId,
         name: `${template} (Sprint ${sprintNum})`,
         description: `Sprint ${sprintNum} task: ${template.toLowerCase()}`,
         status: statuses[Math.floor(Math.random() * statuses.length)],
         priority: priorities[Math.floor(Math.random() * priorities.length)],
         type: taskTypes[Math.floor(Math.random() * taskTypes.length)],
-        points: Math.floor(Math.random() * 8) + 1,
-        epicId:
-          Math.floor(Math.random() * 4) + 1 <= 3
-            ? (Math.floor(Math.random() * 4) + 1).toString()
-            : '1',
-        sprintId: sprintNum.toString(),
-        assignee: assignees[Math.floor(Math.random() * assignees.length)],
-        createdAt: new Date('2024-01-01'),
+        storyPoints: Math.floor(Math.random() * 8) + 1,
+        epic: Math.random() > 0.5 ? Math.floor(Math.random() * 2) + 1 : 1,
+        sprint: sprintNum,
+        assignee: generateAssignee(),
+        dateLogged: toISOString(new Date('2026-02-01')),
+        index: taskId,
+        updatedAt: toISOString(new Date()),
+        createdAt: toISOString(new Date('2026-02-01')),
       })
       taskId++
     }
@@ -247,56 +225,88 @@ const generateMockTasks = (): Task[] => {
   return tasks
 }
 
-// Generate more epics for better testing
+// Generate 20 sprints for comprehensive testing
+const generateMockSprints = (): Sprint[] => {
+  const sprints: Sprint[] = []
+  const baseDate = new Date('2026-02-01')
+
+  for (let i = 1; i <= 20; i++) {
+    const startDate = new Date(baseDate)
+    startDate.setDate(baseDate.getDate() + (i - 1) * 14)
+    const endDate = new Date(startDate)
+    endDate.setDate(startDate.getDate() + 13)
+
+    sprints.push({
+      id: i,
+      name: `Sprint ${i}${i === 2 ? ' (Active)' : ''}`,
+      description: `Development sprint ${i} - ${
+        i <= 5
+          ? 'Foundation'
+          : i <= 10
+          ? 'Core Features'
+          : i <= 15
+          ? 'Advanced Features'
+          : 'Polish & Release'
+      }`,
+      startDate: toISOString(startDate),
+      endDate: toISOString(endDate),
+      updatedAt: toISOString(new Date()),
+      createdAt: toISOString(startDate),
+    })
+  }
+
+  return sprints
+}
+
 const generateMockEpics = (): Epic[] => {
   return [
     {
-      id: '1',
+      id: 1,
       name: 'User Authentication',
       color: 'bg-blue-500',
       description: 'Implement secure user authentication system',
       confidence: 'high' as const,
       phase: 2,
-      startDate: new Date('2024-01-01'),
-      endDate: new Date('2024-02-15'),
-      progress: 75,
-      isSelected: true,
+      startDate: toISOString(new Date('2026-02-01')),
+      endDate: toISOString(new Date('2026-03-15')),
+      updatedAt: toISOString(new Date()),
+      createdAt: toISOString(new Date('2026-02-01')),
     },
     {
-      id: '2',
+      id: 2,
       name: 'Dashboard Features',
       color: 'bg-green-500',
       description: 'Build comprehensive dashboard functionality',
       confidence: 'medium' as const,
       phase: 1,
-      startDate: new Date('2024-02-01'),
-      endDate: new Date('2024-03-15'),
-      progress: 30,
-      isSelected: true,
+      startDate: toISOString(new Date('2026-02-01')),
+      endDate: toISOString(new Date('2026-03-15')),
+      updatedAt: toISOString(new Date()),
+      createdAt: toISOString(new Date('2026-02-01')),
     },
     {
-      id: '3',
+      id: 3,
       name: 'Mobile App',
       color: 'bg-purple-500',
       description: 'Develop mobile application',
       confidence: 'low' as const,
       phase: 3,
-      startDate: new Date('2024-03-01'),
-      endDate: new Date('2024-05-15'),
-      progress: 10,
-      isSelected: true,
+      startDate: toISOString(new Date('2026-03-01')),
+      endDate: toISOString(new Date('2026-05-15')),
+      updatedAt: toISOString(new Date()),
+      createdAt: toISOString(new Date('2026-03-01')),
     },
     {
-      id: '4',
+      id: 4,
       name: 'API Integration',
       color: 'bg-orange-500',
       description: 'Integrate with external APIs and services',
       confidence: 'high' as const,
       phase: 2,
-      startDate: new Date('2024-02-15'),
-      endDate: new Date('2024-04-01'),
-      progress: 45,
-      isSelected: true,
+      startDate: toISOString(new Date('2026-02-15')),
+      endDate: toISOString(new Date('2026-04-01')),
+      updatedAt: toISOString(new Date()),
+      createdAt: toISOString(new Date('2026-02-15')),
     },
   ]
 }
@@ -306,11 +316,11 @@ export const Default: Story = {
     tasks: mockTasks,
     epics: mockEpics,
     sprints: mockSprints,
-    onUpdateTask: (taskId, updates) => console.log('onUpdateTask', taskId, updates),
-    onTaskClick: (task) => console.log('onTaskClick', task),
-    onAddSprint: (sprint) => console.log('onAddSprint', sprint),
-    onUpdateSprint: (sprintId, updates) => console.log('onUpdateSprint', sprintId, updates),
-    onDeleteSprint: (sprintId) => console.log('onDeleteSprint', sprintId),
+    onUpdateTask: fn(),
+    onTaskClick: fn(),
+    onAddSprint: fn(),
+    onUpdateSprint: fn(),
+    onDeleteSprint: fn(),
   },
 }
 
@@ -320,39 +330,39 @@ export const WithManySprintsAndTasks: Story = {
     tasks: generateMockTasks(),
     epics: generateMockEpics(),
     sprints: generateMockSprints(),
-    onUpdateTask: (taskId, updates) => console.log('onUpdateTask', taskId, updates),
-    onTaskClick: (task) => console.log('onTaskClick', task),
-    onAddSprint: (sprint) => console.log('onAddSprint', sprint),
-    onUpdateSprint: (sprintId, updates) => console.log('onUpdateSprint', sprintId, updates),
-    onDeleteSprint: (sprintId) => console.log('onDeleteSprint', sprintId),
+    onUpdateTask: fn(),
+    onTaskClick: fn(),
+    onAddSprint: fn(),
+    onUpdateSprint: fn(),
+    onDeleteSprint: fn(),
   },
 }
 
 export const EmptyBacklog: Story = {
   name: 'Empty Backlog with Active Sprints',
   args: {
-    tasks: generateMockTasks().filter((task) => task.sprintId), // Remove backlog tasks
+    tasks: generateMockTasks().filter((task) => task.sprint), // Remove backlog tasks
     epics: generateMockEpics(),
     sprints: generateMockSprints(),
-    onUpdateTask: (taskId, updates) => console.log('onUpdateTask', taskId, updates),
-    onTaskClick: (task) => console.log('onTaskClick', task),
-    onAddSprint: (sprint) => console.log('onAddSprint', sprint),
-    onUpdateSprint: (sprintId, updates) => console.log('onUpdateSprint', sprintId, updates),
-    onDeleteSprint: (sprintId) => console.log('onDeleteSprint', sprintId),
+    onUpdateTask: fn(),
+    onTaskClick: fn(),
+    onAddSprint: fn(),
+    onUpdateSprint: fn(),
+    onDeleteSprint: fn(),
   },
 }
 
 export const OnlyBacklogTasks: Story = {
   name: 'Only Backlog Tasks',
   args: {
-    tasks: generateMockTasks().filter((task) => !task.sprintId), // Only backlog tasks
+    tasks: generateMockTasks().filter((task) => !task.sprint), // Only backlog tasks
     epics: generateMockEpics(),
     sprints: generateMockSprints(),
-    onUpdateTask: (taskId, updates) => console.log('onUpdateTask', taskId, updates),
-    onTaskClick: (task) => console.log('onTaskClick', task),
-    onAddSprint: (sprint) => console.log('onAddSprint', sprint),
-    onUpdateSprint: (sprintId, updates) => console.log('onUpdateSprint', sprintId, updates),
-    onDeleteSprint: (sprintId) => console.log('onDeleteSprint', sprintId),
+    onUpdateTask: fn(),
+    onTaskClick: fn(),
+    onAddSprint: fn(),
+    onUpdateSprint: fn(),
+    onDeleteSprint: fn(),
   },
 }
 
@@ -361,11 +371,11 @@ export const NoTasks: Story = {
     tasks: [],
     epics: mockEpics,
     sprints: mockSprints,
-    onUpdateTask: (taskId, updates) => console.log('onUpdateTask', taskId, updates),
-    onTaskClick: (task) => console.log('onTaskClick', task),
-    onAddSprint: (sprint) => console.log('onAddSprint', sprint),
-    onUpdateSprint: (sprintId, updates) => console.log('onUpdateSprint', sprintId, updates),
-    onDeleteSprint: (sprintId) => console.log('onDeleteSprint', sprintId),
+    onUpdateTask: fn(),
+    onTaskClick: fn(),
+    onAddSprint: fn(),
+    onUpdateSprint: fn(),
+    onDeleteSprint: fn(),
   },
 }
 
@@ -374,104 +384,78 @@ export const NoSprints: Story = {
     tasks: mockTasks,
     epics: mockEpics,
     sprints: [],
-    onUpdateTask: (taskId, updates) => console.log('onUpdateTask', taskId, updates),
-    onTaskClick: (task) => console.log('onTaskClick', task),
-    onAddSprint: (sprint) => console.log('onAddSprint', sprint),
-    onUpdateSprint: (sprintId, updates) => console.log('onUpdateSprint', sprintId, updates),
-    onDeleteSprint: (sprintId) => console.log('onDeleteSprint', sprintId),
+    onUpdateTask: fn(),
+    onTaskClick: fn(),
+    onAddSprint: fn(),
+    onUpdateSprint: fn(),
+    onDeleteSprint: fn(),
   },
 }
 
 export const Test: Story = {
   args: {
-    ...Default.args,
+    tasks: [
+      {
+        id: 1,
+        name: 'test task',
+        description: 'description',
+        status: 'in-progress' as const,
+        assignee: {
+          relationTo: 'users',
+          value: 'cm1twzm1w000108jh4gzfk3m4',
+        },
+        priority: 'low' as const,
+        type: 'bug' as const,
+        storyPoints: 1,
+        epic: 2,
+        dateLogged: toISOString(new Date('2026-02-15')),
+        index: 1,
+        updatedAt: toISOString(new Date()),
+        createdAt: toISOString(new Date('2026-02-15')),
+        sprint: 2,
+      },
+    ],
     epics: [
       {
-        id: '2',
+        id: 2,
         name: 'epic 2',
         color: 'bg-blue-500',
-        confidence: 'medium',
+        confidence: 'medium' as const,
         phase: 1,
-        startDate: '2025-08-27T00:00:00.000Z',
-        endDate: '2025-08-27T00:00:00.000Z',
-        progress: '0.00',
+        startDate: toISOString(new Date('2026-02-01')),
+        endDate: toISOString(new Date('2026-03-15')),
         description: '',
+        updatedAt: toISOString(new Date()),
+        createdAt: toISOString(new Date('2026-02-01')),
       },
       {
-        id: '1',
+        id: 1,
         name: 'test epic',
         color: 'bg-blue-500',
-        confidence: 'medium',
+        confidence: 'medium' as const,
         phase: 1,
-        startDate: '2025-08-27T00:00:00.000Z',
-        endDate: '2025-08-27T00:00:00.000Z',
-        progress: 0,
+        startDate: toISOString(new Date('2026-02-01')),
+        endDate: toISOString(new Date('2026-03-15')),
         description: '',
+        updatedAt: toISOString(new Date()),
+        createdAt: toISOString(new Date('2026-02-01')),
       },
     ],
     sprints: [
       {
-        id: '1',
-        name: 'Sprint 1',
-        description: '',
-        startDate: '2025-08-26T00:00:00.000Z',
-        endDate: '2025-09-11T00:00:00.000Z',
-        isActive: true,
+        id: 2,
+        name: 'Sprint 2 (Active)',
+        description: 'Active sprint containing the test task',
+        startDate: toISOString(new Date('2026-02-16')),
+        endDate: toISOString(new Date('2026-03-02')),
+        updatedAt: toISOString(new Date()),
+        createdAt: toISOString(new Date('2026-02-16')),
       },
     ],
-    tasks: [
-      {
-        id: '1',
-        name: 'test task',
-        description: 'description',
-        status: 'in-progress',
-        assignee: {
-          relationTo: 'users',
-          value: {
-            id: 'c94ebfa5-8d42-4b96-9184-cce5a14d834c',
-            email: 'r.ellison@reply.com',
-            emailVerified: null,
-            name: 'Rob Ellison',
-            image: null,
-            accounts: [
-              {
-                id: '68aed1c711597a5fdc1ea2ed',
-                provider: 'keycloak',
-                providerAccountId: '470a121d-8fea-4841-bdaf-76c83dbaaa91',
-                type: 'oidc',
-              },
-            ],
-            updatedAt: '2025-08-27T09:37:11.210Z',
-            createdAt: '2025-08-27T09:37:11.191Z',
-            enableAPIKey: null,
-            apiKey: null,
-          },
-        },
-        priority: 'low',
-        type: 'bug',
-        points: 1,
-        epicId: '2',
-        createdAt: '2025-08-27T19:33:56.348Z',
-        sprintId: '1',
-        comments: [
-          {
-            id: '68b4278ecfaf8ba85d4dad9c',
-            content: 'test comment',
-            author: {
-              relationTo: 'users',
-            },
-            timestamp: '2025-08-31T10:44:30.510Z',
-          },
-          {
-            id: '68b4344ad6b414304bc9709b',
-            content: 'another comment',
-            author: {
-              relationTo: 'users',
-            },
-            timestamp: '2025-08-31T11:38:50.899Z',
-          },
-        ],
-      },
-    ],
+    onUpdateTask: fn(),
+    onTaskClick: fn(),
+    onAddSprint: fn(),
+    onUpdateSprint: fn(),
+    onDeleteSprint: fn(),
   },
 }

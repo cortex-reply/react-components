@@ -98,6 +98,11 @@ export const AddTaskModal: React.FC<AddTaskModalProps> = ({
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
     if (formData.name.trim()) {
+      const sprintValue = formData.sprint === 'none' ? null : Number(formData.sprint)
+      const assigneeValue = formData.assignee === 'none' || !formData.assignee.trim()
+        ? null
+        : { relationTo: 'digital-colleagues' as const, value: Number(formData.assignee) }
+
       onAddTask({
         name: formData.name.trim(),
         description: formData.description.trim(),
@@ -106,10 +111,8 @@ export const AddTaskModal: React.FC<AddTaskModalProps> = ({
         type: formData.type as Task['type'],
         storyPoints: formData.storyPoints,
         epic: Number(formData.epic),
-        sprint: Number(formData.sprint),
-        assignee: formData.assignee.trim()
-          ? { relationTo: 'digital-colleagues', value: Number(formData.assignee) }
-          : null,
+        sprint: sprintValue,
+        assignee: assigneeValue,
         dateLogged: new Date().toISOString(),
         index: 0,
       })
@@ -121,7 +124,7 @@ export const AddTaskModal: React.FC<AddTaskModalProps> = ({
         type: 'story',
         storyPoints: 1,
         epic: defaultEpicId || '',
-        sprint: '',
+        sprint: 'none',
         assignee: '',
       })
       onClose()

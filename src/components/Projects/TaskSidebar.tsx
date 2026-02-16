@@ -138,7 +138,7 @@ export const TaskSidebar: React.FC<TaskSidebarProps> = ({
   deleteState = 'idle',
   teamMembers,
 }) => {
-  const [storyPoints, setStoryPoints] = useState(task.storyPoints)
+  const [storyPoints, setStoryPoints] = useState(task?.storyPoints)
   const debounceTimeoutRef = useRef<NodeJS.Timeout | null>(null)
   const [members, setMembers] = useState(teamMembers)
 
@@ -223,7 +223,7 @@ export const TaskSidebar: React.FC<TaskSidebarProps> = ({
           <Label className="text-xs text-muted-foreground">Status</Label>
           <TaskSelect
             label=""
-            value={task.status}
+            value={task?.status}
             onValueChange={(value) => onUpdateTask('status', value)}
             options={[
               {
@@ -248,7 +248,7 @@ export const TaskSidebar: React.FC<TaskSidebarProps> = ({
           <Label className="text-xs text-muted-foreground">Type</Label>
           <ToggleGroup
             type="single"
-            value={task.type || ''}
+            value={task?.type || ''}
             onValueChange={(value) => value && onUpdateTask('type', value)}
             className="grid grid-cols-2 gap-1"
             disabled={isUpdating}
@@ -276,7 +276,7 @@ export const TaskSidebar: React.FC<TaskSidebarProps> = ({
           <Label className="text-xs text-muted-foreground">Priority</Label>
           <ToggleGroup
             type="single"
-            value={task.priority || ''}
+            value={task?.priority || ''}
             onValueChange={(value) => value && onUpdateTask('priority', value)}
             className="grid grid-cols-3 gap-1"
             disabled={isUpdating}
@@ -319,7 +319,7 @@ export const TaskSidebar: React.FC<TaskSidebarProps> = ({
           <Label className="text-xs text-muted-foreground">Epic</Label>
           <TaskSelect
             label=""
-            value={extractId(task.epic).toString()}
+            value={extractId(task?.epic).toString()}
             onValueChange={(value) => onUpdateTask('epic', value)}
             options={(epics || []).map((epic) => ({
               value: epic.id.toString(),
@@ -336,7 +336,7 @@ export const TaskSidebar: React.FC<TaskSidebarProps> = ({
           <Label className="text-xs text-muted-foreground">Sprint</Label>
           <TaskSelect
             label=""
-            value={extractId(task.sprint).toString() || 'none'}
+            value={extractId(task?.sprint).toString() || 'none'}
             onValueChange={(value) => onUpdateTask('sprint', value === 'none' ? '' : value)}
             options={[
               {
@@ -357,9 +357,9 @@ export const TaskSidebar: React.FC<TaskSidebarProps> = ({
           <Label className="text-xs text-muted-foreground">Assignee</Label>
           <SearchableSelect
             label=""
-            value={(task.assignee as any)?.value?.name}
+            value={(task?.assignee as any)?.value?.name}
             onValueChange={(value) => onUpdateTask('assignee', value)}
-            options={members.map((member) => ({
+            options={(members || []).map((member) => ({
               value: `${
                 typeof (member as any).email === 'string' ? 'users' : 'digital-colleagues'
               }:${member.id}`,
@@ -405,7 +405,7 @@ export const TaskSidebar: React.FC<TaskSidebarProps> = ({
             <span className="text-xs text-muted-foreground">Created</span>
             <div className="flex items-center gap-1 text-xs text-muted-foreground">
               <Calendar className="h-3 w-3" />
-              <span>{new Date(task.createdAt)?.toLocaleDateString()}</span>
+              <span>{task?.createdAt ? new Date(task.createdAt)?.toLocaleDateString() : 'N/A'}</span>
             </div>
           </div>
 

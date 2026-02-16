@@ -53,7 +53,6 @@ export const PlanningView: React.FC<PlanningViewProps> = ({
     description: '',
     startDate: '',
     endDate: '',
-    isActive: false,
   })
   const [availableSprints, setAvailableSprints] = useState<Sprint[]>([])
   const [sprintFilter, setSprintFilter] = useState<'all' | 'active' | 'upcoming'>('upcoming')
@@ -62,6 +61,26 @@ export const PlanningView: React.FC<PlanningViewProps> = ({
 
   const heroRef = useRef<HTMLDivElement>(null)
   const containerRef = useRef<HTMLDivElement>(null)
+
+  // Load saved sprint selection from localStorage
+  useEffect(() => {
+    const savedSprintIds = localStorage.getItem('planningView_selectedSprints')
+    if (savedSprintIds) {
+      try {
+        const parsed = JSON.parse(savedSprintIds)
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          setSelectedSprintIds(parsed)
+        }
+      } catch (e) {
+        console.error('Failed to parse saved sprint IDs:', e)
+      }
+    }
+  }, [])
+
+  // Save sprint selection to localStorage whenever it changes
+  useEffect(() => {
+    localStorage.setItem('planningView_selectedSprints', JSON.stringify(selectedSprintIds))
+  }, [selectedSprintIds])
 
   // Calculate hero height for proper layout
   useEffect(() => {
@@ -80,7 +99,20 @@ export const PlanningView: React.FC<PlanningViewProps> = ({
     return () => resizeObserver.disconnect()
   }, [])
 
-  // Helper functions
+  // Helper function to check if a sprint is active based on current date
+  const isSprintActive = (sprint: Sprint): boolean => {
+    const today = new Date()
+    today.setHours(0, 0, 0, 0)
+    
+    const startDate = new Date(sprint.startDate)
+    startDate.setHours(0, 0, 0, 0)
+    
+    const endDate = new Date(sprint.endDate)
+    endDate.setHours(0, 0, 0, 0)
+    
+    return today >= startDate && today <= endDate
+  }
+
   const getEpicById = (epicId: string): Epic | undefined => {
     return epics.find((epic) => epic.id === Number(epicId))
   }
@@ -192,7 +224,6 @@ export const PlanningView: React.FC<PlanningViewProps> = ({
       endDate: sprint.endDate
         ? new Date(sprint.endDate).toISOString().split('T')[0]
         : sprint.endDate,
-      isActive: false,
     })
   }
 
@@ -203,7 +234,6 @@ export const PlanningView: React.FC<PlanningViewProps> = ({
         description: sprintEditForm.description,
         startDate: sprintEditForm.startDate,
         endDate: sprintEditForm.endDate,
-        // isActive: sprintEditForm.isActive,
       })
       setAvailableSprints((prev) =>
         prev.map((sprint) => {
@@ -227,7 +257,6 @@ export const PlanningView: React.FC<PlanningViewProps> = ({
       description: '',
       startDate: '',
       endDate: '',
-      isActive: false,
     })
   }
 
@@ -511,6 +540,40 @@ export const PlanningView: React.FC<PlanningViewProps> = ({
                                   className="text-sm min-h-[60px]"
                                   placeholder="Sprint description"
                                 />
+                                <div className="grid grid-cols-2 gap-2">
+                                  <div>
+                                    <label className="text-xs text-muted-foreground block mb-1">
+                                      Start Date
+                                    </label>
+                                    <Input
+                                      type="date"
+                                      value={sprintEditForm.startDate}
+                                      onChange={(e) =>
+                                        setSprintEditForm((prev) => ({
+                                          ...prev,
+                                          startDate: e.target.value,
+                                        }))
+                                      }
+                                      className="text-sm"
+                                    />
+                                  </div>
+                                  <div>
+                                    <label className="text-xs text-muted-foreground block mb-1">
+                                      End Date
+                                    </label>
+                                    <Input
+                                      type="date"
+                                      value={sprintEditForm.endDate}
+                                      onChange={(e) =>
+                                        setSprintEditForm((prev) => ({
+                                          ...prev,
+                                          endDate: e.target.value,
+                                        }))
+                                      }
+                                      className="text-sm"
+                                    />
+                                  </div>
+                                </div>
                                 <div className="flex gap-2">
                                   <Button
                                     size="sm"
@@ -539,14 +602,14 @@ export const PlanningView: React.FC<PlanningViewProps> = ({
                                       <h4 className="font-medium text-sm text-foreground truncate">
                                         {sprint.name}
                                       </h4>
-                                      {/* {sprint.isActive && ( */}
-                                      <Badge
-                                        variant="default"
-                                        className="text-xs bg-green-100 text-green-800 border-green-200"
-                                      >
-                                        Active
-                                      </Badge>
-                                      {/* )} */}
+                                      {isSprintActive(sprint) && (
+                                        <Badge
+                                          variant="default"
+                                          className="text-xs bg-green-100 text-green-800 border-green-200"
+                                        >
+                                          Active
+                                        </Badge>
+                                      )}
                                     </div>
                                     <p className="text-xs text-muted-foreground line-clamp-2 mb-2">
                                       {sprint.description}

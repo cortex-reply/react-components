@@ -107,9 +107,9 @@ const mockSprints = [
 export const Default: Story = {
   args: {
     isOpen: true,
-    task: {
+    initialTask: {
       id: '1',
-      title: 'Design login page',
+      name: 'Design login page',
       description: 'Create wireframes and mockups for the login interface',
       status: 'in-progress',
       priority: 'high',
@@ -122,6 +122,7 @@ export const Default: Story = {
     },
     epics: mockEpics,
     sprints: mockSprints,
+    colleagues: [],
     onClose: () => {},
     onUpdateTask: mockUpdateTask,
     onDeleteTask: mockDeleteTask,
@@ -131,9 +132,9 @@ export const Default: Story = {
 export const WithLoadingStates: Story = {
   args: {
     isOpen: true,
-    task: {
+    initialTask: {
       id: '1',
-      title: 'Design login page',
+      name: 'Design login page',
       description: 'Create wireframes and mockups for the login interface',
       status: 'in-progress',
       priority: 'high',
@@ -146,6 +147,7 @@ export const WithLoadingStates: Story = {
     },
     epics: mockEpics,
     sprints: mockSprints,
+    colleagues: [],
     onClose: () => {},
     onUpdateTask: mockUpdateTask,
     onDeleteTask: mockDeleteTask,
@@ -155,9 +157,9 @@ export const WithLoadingStates: Story = {
 export const WithErrorStates: Story = {
   args: {
     isOpen: true,
-    task: {
+    initialTask: {
       id: '1',
-      title: 'Design login page',
+      name: 'Design login page',
       description: 'Create wireframes and mockups for the login interface',
       status: 'in-progress',
       priority: 'high',
@@ -170,6 +172,7 @@ export const WithErrorStates: Story = {
     },
     epics: mockEpics,
     sprints: mockSprints,
+    colleagues: [],
     onClose: () => {},
     onUpdateTask: mockUpdateTaskFail,
     onDeleteTask: mockDeleteTaskFail,
@@ -179,9 +182,9 @@ export const WithErrorStates: Story = {
 export const BugTask: Story = {
   args: {
     isOpen: true,
-    task: {
+    initialTask: {
       id: '2',
-      title: 'Fix login redirect bug',
+      name: 'Fix login redirect bug',
       description: 'Users are not being redirected after successful login',
       type: 'bug',
       priority: 'high',
@@ -194,6 +197,7 @@ export const BugTask: Story = {
     },
     epics: mockEpics,
     sprints: mockSprints,
+    colleagues: [],
     onClose: () => {},
     onUpdateTask: mockUpdateTask,
     onDeleteTask: mockDeleteTask,
@@ -203,9 +207,9 @@ export const BugTask: Story = {
 export const CompletedTask: Story = {
   args: {
     isOpen: true,
-    task: {
+    initialTask: {
       id: '3',
-      title: 'Set up CI/CD pipeline',
+      name: 'Set up CI/CD pipeline',
       description: 'Configure automated testing and deployment',
       type: 'task',
       priority: 'low',
@@ -218,6 +222,7 @@ export const CompletedTask: Story = {
     },
     epics: mockEpics,
     sprints: mockSprints,
+    colleagues: [],
     onClose: () => {},
     onUpdateTask: mockUpdateTask,
     onDeleteTask: mockDeleteTask,
@@ -227,9 +232,9 @@ export const CompletedTask: Story = {
 export const SpikeTask: Story = {
   args: {
     isOpen: true,
-    task: {
+    initialTask: {
       id: '4',
-      title: 'Research OAuth providers',
+      name: 'Research OAuth providers',
       description: 'Investigate different OAuth integration options',
       type: 'spike',
       priority: 'medium',
@@ -242,6 +247,7 @@ export const SpikeTask: Story = {
     },
     epics: mockEpics,
     sprints: mockSprints,
+    colleagues: [],
     onClose: () => {},
     onUpdateTask: mockUpdateTask,
     onDeleteTask: mockDeleteTask,
@@ -251,9 +257,9 @@ export const SpikeTask: Story = {
 export const NoSprint: Story = {
   args: {
     isOpen: true,
-    task: {
+    initialTask: {
       id: '5',
-      title: 'Update documentation',
+      name: 'Update documentation',
       description: 'Refresh API documentation with latest changes',
       status: 'in-progress',
       priority: 'high',
@@ -266,6 +272,112 @@ export const NoSprint: Story = {
     },
     epics: mockEpics,
     sprints: mockSprints,
+    colleagues: [],
+    onClose: () => {},
+    onUpdateTask: mockUpdateTask,
+    onDeleteTask: mockDeleteTask,
+  },
+};
+
+export const LongDescription: Story = {
+  args: {
+    isOpen: true,
+    initialTask: {
+      id: '6',
+      name: 'Implement advanced search functionality',
+      description: `This task involves implementing a comprehensive search system that will allow users to query across multiple data sources including user profiles, documents, projects, and archived items. The search functionality needs to support various filtering options such as date range, document type, priority level, and team member assignments. It should also include real-time search suggestions with autocomplete capabilities, full-text search with relevance ranking, and the ability to save custom search filters for future use. The implementation must be optimized for performance and handle large datasets gracefully with pagination support. Additionally, we need to integrate the search results with the existing analytics system to track user search patterns and improve the overall search experience over time.`,
+      status: 'in-progress',
+      priority: 'high',
+      type: 'story',
+      epicId: '2',
+      sprintId: '2',
+      assignee: 'John Doe',
+      points: 13,
+      createdAt: new Date('2024-01-15'),
+    },
+    epics: mockEpics,
+    sprints: mockSprints,
+    colleagues: [],
+    onClose: () => {},
+    onUpdateTask: mockUpdateTask,
+    onDeleteTask: mockDeleteTask,
+  },
+};
+
+export const VeryLongDescription: Story = {
+  args: {
+    isOpen: true,
+    initialTask: {
+      id: '7',
+      name: 'Refactor authentication system',
+      description: `The current authentication system needs a complete overhaul to improve security, performance, and maintainability. This comprehensive refactoring will involve:
+
+1. Implementing OAuth 2.0 and OpenID Connect standards for more secure token management
+2. Adding support for multi-factor authentication (MFA) including TOTP, SMS, and hardware keys
+3. Migrating from session-based authentication to JWT tokens with proper refresh mechanisms
+4. Implementing rate limiting and brute force attack prevention mechanisms
+5. Adding audit logging for all authentication events for compliance and security monitoring
+6. Creating a comprehensive test suite with 95%+ code coverage
+7. Implementing automatic session cleanup and token expiration policies
+8. Adding support for single sign-on (SSO) across multiple applications
+9. Implementing passwordless authentication options for modern user experience
+10. Creating detailed documentation and developer guides
+
+This refactoring is critical for improving our security posture, meeting compliance requirements for GDPR and SOC 2, and providing a better user experience. The work will be broken down into multiple sprints and requires coordination between frontend and backend teams.`,
+      status: 'todo',
+      priority: 'critical',
+      type: 'epic',
+      epicId: '1',
+      sprintId: '2',
+      assignee: 'Jane Smith',
+      points: 21,
+      createdAt: new Date('2024-01-18'),
+    },
+    epics: mockEpics,
+    sprints: mockSprints,
+    colleagues: [],
+    onClose: () => {},
+    onUpdateTask: mockUpdateTask,
+    onDeleteTask: mockDeleteTask,
+  },
+};
+
+export const MultilineDescription: Story = {
+  args: {
+    isOpen: true,
+    initialTask: {
+      id: '8',
+      name: 'Add support for real-time notifications',
+      description: `Requirements:
+• Implement WebSocket connection for real-time updates
+• Support for email, SMS, and in-app notifications
+• User preferences for notification types and frequency
+• Notification history and archiving
+• Batch processing for high-volume notifications
+• Graceful degradation when WebSocket unavailable
+
+Acceptance Criteria:
+- Notifications delivered within 2 seconds
+- Support at least 10,000 concurrent connections
+- 99.9% delivery success rate
+- Full test coverage for notification logic
+- Documentation for notification API
+
+Technical Notes:
+Use existing database schema. Consider using Redis for caching.
+Integrate with current user preference system.`,
+      status: 'review',
+      priority: 'high',
+      type: 'story',
+      epicId: '2',
+      sprintId: '2',
+      assignee: 'Mike Johnson',
+      points: 8,
+      createdAt: new Date('2024-01-16'),
+    },
+    epics: mockEpics,
+    sprints: mockSprints,
+    colleagues: [],
     onClose: () => {},
     onUpdateTask: mockUpdateTask,
     onDeleteTask: mockDeleteTask,

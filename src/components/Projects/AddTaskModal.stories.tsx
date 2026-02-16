@@ -97,6 +97,24 @@ const mockSprints = [
   },
 ];
 
+const mockAssignees = [
+  {
+    id: 1,
+    name: 'John Doe',
+    email: 'john@example.com',
+  },
+  {
+    id: 2,
+    name: 'Jane Smith',
+    email: 'jane@example.com',
+  },
+  {
+    id: 3,
+    name: 'Bob Johnson',
+    email: 'bob@example.com',
+  },
+];
+
 export const Default: Story = {
   args: {
     isOpen: true,
@@ -104,6 +122,7 @@ export const Default: Story = {
     onAddTask: action('onAddTask'),
     epics: mockEpics,
     sprints: mockSprints,
+    assignees: mockAssignees,
   },
 };
 
@@ -114,6 +133,7 @@ export const Closed: Story = {
     onAddTask: action('onAddTask'),
     epics: mockEpics,
     sprints: mockSprints,
+    assignees: mockAssignees,
   },
 };
 
@@ -124,5 +144,6 @@ export const NoEpics: Story = {
     onAddTask: action('onAddTask'),
     epics: [],
     sprints: mockSprints,
+    assignees: mockAssignees,
   },
 };

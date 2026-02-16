@@ -81,10 +81,10 @@ export const TaskDetailsModal: React.FC<TaskDetailsModalProps> = ({
   }, [initialTask])
 
   const handleFieldUpdate = async (fieldName: string, value: string) => {
-    if (value !== task[fieldName as keyof Task]) {
+    if (!task || value !== task[fieldName as keyof Task]) {
       setUpdateState('loading')
       try {
-        await onUpdateTask(task.id.toString(), { [fieldName]: value })
+        await onUpdateTask(task?.id.toString() || '', { [fieldName]: value })
         // setTask(updatedTask)
         setLastUpdated(new Date())
         setUpdateState('success')
@@ -100,10 +100,10 @@ export const TaskDetailsModal: React.FC<TaskDetailsModalProps> = ({
   }
 
   const handleSidebarUpdate = async (fieldName: string, value: string) => {
-    if (value !== task[fieldName as keyof Task]) {
+    if (!task || value !== task[fieldName as keyof Task]) {
       setUpdateState('loading')
       try {
-        await onUpdateTask(task.id.toString(), { [fieldName]: value })
+        await onUpdateTask(task?.id.toString() || '', { [fieldName]: value })
         // setTask(updatedTask)
         setLastUpdated(new Date())
         setUpdateState('success')
@@ -119,7 +119,7 @@ export const TaskDetailsModal: React.FC<TaskDetailsModalProps> = ({
   }
 
   const handleAddComment = async (text: string) => {
-    if (!onAddComment) return
+    if (!onAddComment || !task) return
     setUpdateState('loading')
     try {
       await onAddComment?.({ content: text, taskId: task.id.toString() })
@@ -143,6 +143,7 @@ export const TaskDetailsModal: React.FC<TaskDetailsModalProps> = ({
   }
 
   const handleDelete = async () => {
+    if (!task) return
     setDeleteState('loading')
     try {
       await onDeleteTask(task.id.toString())
@@ -160,7 +161,7 @@ export const TaskDetailsModal: React.FC<TaskDetailsModalProps> = ({
   }
 
   const handleUploadFile = async (formData: FormData) => {
-    if (!onUploadFile) return
+    if (!onUploadFile || !task) return
 
     setUpdateState('loading')
     try {
@@ -177,7 +178,7 @@ export const TaskDetailsModal: React.FC<TaskDetailsModalProps> = ({
   }
 
   const handleDeleteFile = async (file: FileType) => {
-    if (!onDeleteFile) return
+    if (!onDeleteFile || !task) return
 
     setUpdateState('loading')
     try {
@@ -193,7 +194,7 @@ export const TaskDetailsModal: React.FC<TaskDetailsModalProps> = ({
   }
 
   // Extract files from task - handle both File objects and file IDs
-  const taskFiles: FileType[] = (task.files || [])
+  const taskFiles: FileType[] = (task?.files || [])
     .map((file) => {
       if (typeof file === 'number') {
         // If it's just an ID, we can't display it without fetching
@@ -261,7 +262,7 @@ export const TaskDetailsModal: React.FC<TaskDetailsModalProps> = ({
             {/* Editable Title in Header */}
             <EditableField
               fieldName="name"
-              value={task.name || ''}
+              value={task?.name || ''}
               label=""
               onSave={handleFieldUpdate}
               className="border-b border-border pb-3"
@@ -271,7 +272,7 @@ export const TaskDetailsModal: React.FC<TaskDetailsModalProps> = ({
             {/* Description */}
             <EditableField
               fieldName="description"
-              value={task.description || ''}
+              value={task?.description || ''}
               label="Description"
               multiline
               onSave={handleFieldUpdate}
@@ -317,8 +318,8 @@ export const TaskDetailsModal: React.FC<TaskDetailsModalProps> = ({
             {/* Comments Section */}
             <CommentSection
               comments={(task?.comments || []).map((el) => ({
-                author: (el as any).author?.value.name || '',
-                createdAt: new Date(el.timestamp),
+                author: (el as any).author?.value?.name || '',
+                createdAt: new Date(el?.timestamp || new Date()),
                 text: el.text,
                 id: el.id || '',
               }))}
