@@ -99,9 +99,18 @@ export const AddTaskModal: React.FC<AddTaskModalProps> = ({
     e.preventDefault()
     if (formData.name.trim()) {
       const sprintValue = formData.sprint === 'none' ? null : Number(formData.sprint)
-      const assigneeValue = formData.assignee === 'none' || !formData.assignee.trim()
-        ? null
-        : { relationTo: 'digital-colleagues' as const, value: Number(formData.assignee) }
+      
+      let assigneeValue = null
+      if (formData.assignee !== 'none' && formData.assignee.trim()) {
+        const selectedAssignee = assignees.find(a => a.id.toString() === formData.assignee)
+        if (selectedAssignee) {
+          if ('collection' in selectedAssignee) {
+            assigneeValue = { relationTo: 'users' as const, value: selectedAssignee }
+          } else {
+            assigneeValue = { relationTo: 'digital-colleagues' as const, value: selectedAssignee }
+          }
+        }
+      }
 
       onAddTask({
         name: formData.name.trim(),
