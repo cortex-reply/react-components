@@ -98,20 +98,73 @@ const mockSprints = [
 ];
 
 const mockAssignees = [
+  // Digital Colleagues
   {
     id: 1,
-    name: 'John Doe',
-    email: 'john@example.com',
+    name: 'HR Business Partner',
+    model: null,
+    capabilities: [],
+    knowledge: null,
+    coreKnowledge: null,
+    description: null,
+    jobDescription: null,
+    workInstructions: null,
+    capabilityLevel: 1,
+    systemMsg: null,
+    identity: 1,
+    metadata: null,
+    updatedAt: '2025-11-20T19:16:27.180Z',
+    createdAt: '2025-11-20T19:15:06.620Z',
   },
   {
     id: 2,
-    name: 'Jane Smith',
-    email: 'jane@example.com',
+    name: 'Technical Support Bot',
+    model: null,
+    capabilities: [],
+    knowledge: null,
+    coreKnowledge: null,
+    description: null,
+    jobDescription: null,
+    workInstructions: null,
+    capabilityLevel: 2,
+    systemMsg: null,
+    identity: 2,
+    metadata: null,
+    updatedAt: '2025-11-20T19:16:27.180Z',
+    createdAt: '2025-11-20T19:15:06.620Z',
+  },
+  // Users
+  {
+    id: '99ccf092-f9a0-4325-9343-58ebe4d5eb04',
+    email: 'rob.ellison@example.com',
+    emailVerified: null,
+    name: 'Rob Ellison',
+    image: null,
+    role: 'user',
+    enabled: true,
+    accounts: [],
+    sessions: [],
+    updatedAt: '2026-02-16T23:47:00.735Z',
+    createdAt: '2025-12-15T16:52:22.363Z',
+    enableAPIKey: null,
+    apiKey: null,
+    collection: 'users',
   },
   {
-    id: 3,
-    name: 'Bob Johnson',
-    email: 'bob@example.com',
+    id: 'a1b2c3d4-e5f6-4g5h-6i7j-8k9l0m1n2o3p',
+    email: 'sarah.johnson@example.com',
+    emailVerified: null,
+    name: 'Sarah Johnson',
+    image: null,
+    role: 'user',
+    enabled: true,
+    accounts: [],
+    sessions: [],
+    updatedAt: '2026-02-16T23:47:00.735Z',
+    createdAt: '2025-12-15T16:52:22.363Z',
+    enableAPIKey: null,
+    apiKey: null,
+    collection: 'users',
   },
 ];
 
@@ -145,5 +198,23 @@ export const NoEpics: Story = {
     epics: [],
     sprints: mockSprints,
     assignees: mockAssignees,
+  },
+};
+
+export const MixedAssignees: Story = {
+  args: {
+    isOpen: true,
+    onClose: action('onClose'),
+    onAddTask: action('onAddTask'),
+    epics: mockEpics,
+    sprints: mockSprints,
+    assignees: mockAssignees,
+  },
+  parameters: {
+    docs: {
+      description: {
+        story: 'Demonstrates the modal with both Digital Colleagues and Users as assignees. Digital Colleagues will show with a different badge than Users.',
+      },
+    },
   },
 };

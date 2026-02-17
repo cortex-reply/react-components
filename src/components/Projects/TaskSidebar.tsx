@@ -2,6 +2,7 @@ import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import { Label } from '@/components/ui/label'
 import { Button } from '@/components/ui/button'
+import { Badge } from '@/components/ui/badge'
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group'
 import {
   Calendar,
@@ -359,12 +360,13 @@ export const TaskSidebar: React.FC<TaskSidebarProps> = ({
             label=""
             value={(task?.assignee as any)?.value?.name}
             onValueChange={(value) => onUpdateTask('assignee', value)}
-            options={(members || []).map((member) => ({
-              value: `${
-                typeof (member as any).email === 'string' ? 'users' : 'digital-colleagues'
-              }:${member.id}`,
-              label: member?.name || '',
-            }))}
+            options={(members || []).map((member) => {
+              const isUser = 'collection' in member
+              return {
+                value: `${isUser ? 'users' : 'digital-colleagues'}:${member.id}`,
+                label: `${member?.name || ''} ${isUser ? '(User)' : '(Digital Colleague)'}`,
+              }
+            })}
             placeholder="Search team members..."
             allowCustomValue={true}
             disabled={isUpdating}

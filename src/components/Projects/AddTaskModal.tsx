@@ -105,9 +105,9 @@ export const AddTaskModal: React.FC<AddTaskModalProps> = ({
         const selectedAssignee = assignees.find(a => a.id.toString() === formData.assignee)
         if (selectedAssignee) {
           if ('collection' in selectedAssignee) {
-            assigneeValue = { relationTo: 'users' as const, value: selectedAssignee }
+            assigneeValue = { relationTo: 'users' as const, value: selectedAssignee.id as string }
           } else {
-            assigneeValue = { relationTo: 'digital-colleagues' as const, value: selectedAssignee }
+            assigneeValue = { relationTo: 'digital-colleagues' as const, value: Number(selectedAssignee.id) }
           }
         }
       }
@@ -284,7 +284,7 @@ export const AddTaskModal: React.FC<AddTaskModalProps> = ({
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="sprint">Assignee</Label>
+            <Label htmlFor="assignee">Assignee</Label>
             <Select
               value={formData.assignee}
               onValueChange={(value) => handleChange('assignee', value)}
@@ -294,11 +294,21 @@ export const AddTaskModal: React.FC<AddTaskModalProps> = ({
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="none">No Assignee</SelectItem>
-                {assignees.map((user) => (
-                  <SelectItem key={user.id} value={user.id.toString()}>
-                    <div className="flex items-center gap-2">{user.name}</div>
-                  </SelectItem>
-                ))}
+                {assignees.map((assignee) => {
+                  const isUser = 'collection' in assignee
+                  return (
+                    <SelectItem key={assignee.id} value={assignee.id.toString()}>
+                      <div className="flex items-center gap-2">
+                        {assignee.name}
+                        {isUser ? (
+                          <Badge variant="secondary" className="text-xs">User</Badge>
+                        ) : (
+                          <Badge variant="outline" className="text-xs">Digital Colleague</Badge>
+                        )}
+                      </div>
+                    </SelectItem>
+                  )
+                })}
               </SelectContent>
             </Select>
           </div>
