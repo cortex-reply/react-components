@@ -218,15 +218,31 @@ export const KanbanBoardView: React.FC<KanbanBoardProps> = ({
     }
   }
 
-  const handleAddTask = (newTask: Omit<Task, 'id' | 'createdAt' | 'updatedAt'>) => {
-    const task: Task = {
+  const handleAddTask = async (newTask: Omit<Task, 'id' | 'createdAt' | 'updatedAt'>) => {
+    // Create a temporary task for immediate UI feedback
+    const temporaryTask: Task = {
       ...newTask,
       id: Date.now(),
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
     }
-    setTasks((prev) => [...prev, task])
-    onAddTask?.(newTask)
+
+    // Add temporary task to state immediately for UX
+    setTasks((prev) => [...prev, temporaryTask])
+
+    try {
+      // Wait for the real task to be created on the server
+      const realTask = await onAddTask?.(newTask)
+
+      if (realTask) {
+        // Replace the temporary task with the real one
+        setTasks((prev) => prev.map((task) => (task.id === temporaryTask.id ? realTask : task)))
+      }
+    } catch (error) {
+      // Remove temporary task if creation failed
+      setTasks((prev) => prev.filter((task) => task.id !== temporaryTask.id))
+      throw error
+    }
   }
 
   const handleUpdateTask = async (taskId: string, updates: Partial<Task>): Promise<void> => {
@@ -238,7 +254,7 @@ export const KanbanBoardView: React.FC<KanbanBoardProps> = ({
     }
 
     if (selectedTask?.id === Number(taskId)) {
-      setSelectedTask((prev) => ({ ...prev, ...updates } as Task))
+      setSelectedTask((prev) => ({ ...prev, ...updates }) as Task)
     }
   }
 
@@ -307,7 +323,6 @@ export const KanbanBoardView: React.FC<KanbanBoardProps> = ({
             {columns.map((column) => {
               const columnTasks = getTasksByStatus(column.status)
               const tasksByEpic = getTasksByEpic(columnTasks)
-
 
               return (
                 <KanbanColumn
