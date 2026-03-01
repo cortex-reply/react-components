@@ -5,7 +5,7 @@ import type { KnowledgeDocument } from './types'
 import { mockKnowledgeDocuments } from '../../../tests/mockKnowledgeDocuments'
 
 const meta: Meta<typeof KnowledgeSearch> = {
-  title: 'Foundary/KnowledgeSearch',
+  title: 'Foundry/KnowledgeSearch',
   component: KnowledgeSearch,
   parameters: {
     layout: 'centered',

@@ -120,7 +120,7 @@ const extendedMockDocuments: KnowledgeDocument[] = [
 ]
 
 const meta: Meta<typeof KnowledgeBrowser> = {
-  title: 'Foundary/KnowledgeBrowser',
+  title: 'Foundry/KnowledgeBrowser',
   component: KnowledgeBrowser,
   parameters: {
     layout: 'fullscreen',

@@ -142,7 +142,7 @@ const mockExistingDigitalColleagues: DigitalColleague[] = [
 ]
 
 const meta: Meta<typeof ColleaguesView> = {
-  title: 'Foundary/Views/ColleaguesView',
+  title: 'Foundry/Views/ColleaguesView',
   component: ColleaguesView,
   parameters: {
     layout: 'fullscreen',

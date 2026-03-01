@@ -3,7 +3,7 @@ import TeamsIndexView from './TeamsIndexView'
 import { mockTeamSummary } from '../../DigitalColleagues/test-data'
 
 const meta: Meta<typeof TeamsIndexView> = {
-  title: 'Foundary/Views/TeamsIndexView',
+  title: 'Foundry/Views/TeamsIndexView',
   component: TeamsIndexView,
   parameters: {
     layout: 'fullscreen',

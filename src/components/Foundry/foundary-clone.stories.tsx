@@ -121,7 +121,7 @@ const mockDigitalColleagues: DigitalColleague[] = [
 ]
 
 const meta: Meta<typeof DigitalColleagueClone> = {
-  title: 'Foundary/DigitalColleagueClone',
+  title: 'Foundry/DigitalColleagueClone',
   component: DigitalColleagueClone,
   parameters: {
     layout: 'fullscreen',

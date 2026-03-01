@@ -81,7 +81,7 @@ const storyRenderers: DocumentRenderers = {
 }
 
 const meta: Meta<typeof DocumentPreview> = {
-  title: 'Foundary/DocumentPreview',
+  title: 'Foundry/DocumentPreview',
   component: DocumentPreview,
   parameters: {
     layout: 'fullscreen',

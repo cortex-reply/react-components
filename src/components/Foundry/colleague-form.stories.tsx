@@ -4,7 +4,7 @@ import { ColleagueForm } from './colleague-form'
 import { mockColleagues } from './test-data'
 
 const meta: Meta<typeof ColleagueForm> = {
-  title: 'Foundary/ColleagueForm',
+  title: 'Foundry/ColleagueForm',
   component: ColleagueForm,
   parameters: {
     layout: 'centered',

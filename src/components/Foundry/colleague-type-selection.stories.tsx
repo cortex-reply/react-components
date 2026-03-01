@@ -4,7 +4,7 @@ import { action } from '@storybook/addon-actions'
 import type { Meta, StoryObj } from '@storybook/react'
 
 const meta: Meta<typeof ColleagueTypeSelection> = {
-  title: 'Foundary/ColleagueTypeSelection',
+  title: 'Foundry/ColleagueTypeSelection',
   component: ColleagueTypeSelection,
   parameters: {
     layout: 'fullscreen',

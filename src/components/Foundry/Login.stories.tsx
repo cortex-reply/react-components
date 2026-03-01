@@ -3,7 +3,7 @@ import { action } from '@storybook/addon-actions'
 import { Login } from './Login'
 
 const meta: Meta<typeof Login> = {
-  title: 'Foundary/Login',
+  title: 'Foundry/Login',
   component: Login,
   parameters: {
     layout: 'fullscreen',

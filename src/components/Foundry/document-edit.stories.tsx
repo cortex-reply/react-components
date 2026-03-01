@@ -4,7 +4,7 @@ import { DocumentEdit } from './document-edit'
 import type { KnowledgeDocument, KnowledgeContext } from './types'
 
 const meta: Meta<typeof DocumentEdit> = {
-  title: 'Foundary/DocumentEdit',
+  title: 'Foundry/DocumentEdit',
   component: DocumentEdit,
   parameters: {
     layout: 'fullscreen',

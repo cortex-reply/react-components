@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import { fn } from '@storybook/test'
 import { PlanningView } from './PlanningView'
-import { Task, Epic, Sprint } from '../Foundary/types'
+import { Task, Epic, Sprint } from '../Foundry/types'
 
 const meta: Meta<typeof PlanningView> = {
   title: 'Projects/Views/PlanningView',

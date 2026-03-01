@@ -1,7 +1,7 @@
 
 import type { Meta, StoryObj } from '@storybook/react';
 import { TaskSidebar } from './TaskSidebar';
-import { Task, Epic, Sprint, DigitalColleague, User } from '../Foundary/types';
+import { Task, Epic, Sprint, DigitalColleague, User } from '../Foundry/types';
 
 const meta: Meta<typeof TaskSidebar> = {
   title: 'Projects/Tasks/TaskSidebar',

@@ -3,7 +3,7 @@ import { action } from '@storybook/addon-actions'
 import { ManagementSidebar } from './ManagementSidebar'
 
 const meta: Meta<typeof ManagementSidebar> = {
-  title: 'Foundary/ManagementSidebar',
+  title: 'Foundry/ManagementSidebar',
   component: ManagementSidebar,
   parameters: {
     layout: 'fullscreen',

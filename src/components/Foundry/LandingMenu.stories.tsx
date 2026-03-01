@@ -4,7 +4,7 @@ import { action } from '@storybook/addon-actions'
 import { LandingMenu } from './LandingMenu'
 
 const meta: Meta<typeof LandingMenu> = {
-  title: 'Foundary/LandingMenu',
+  title: 'Foundry/LandingMenu',
   component: LandingMenu,
   parameters: {
     layout: 'fullscreen',

@@ -17,7 +17,7 @@ const mockExistingTeam: Team = {
 }
 
 const meta = {
-  title: 'Foundary/TeamForm',
+  title: 'Foundry/TeamForm',
   component: TeamForm,
   parameters: {
     layout: 'fullscreen',

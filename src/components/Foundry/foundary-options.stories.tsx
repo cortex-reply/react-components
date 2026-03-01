@@ -4,7 +4,7 @@ import { action } from '@storybook/addon-actions'
 import type { Meta, StoryObj } from '@storybook/react'
 
 const meta: Meta<typeof DigitalColleagueOptions> = {
-  title: 'Foundary/DigitalColleagueOptions',
+  title: 'Foundry/DigitalColleagueOptions',
   component: DigitalColleagueOptions,
   parameters: {
     layout: 'fullscreen',

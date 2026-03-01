@@ -52,7 +52,7 @@ const ServiceIcon = () => <DynamicIcon iconName="cloud-network-sharing" size="4x
 const ProductIcon = () => <DynamicIcon iconName="development" size="4x" type="kit" />
 
 export default {
-  title: 'Foundary/Main Page',
+  title: 'Foundry/Main Page',
   component: MainPage,
   decorators: [
     (Story: React.FC) => (

@@ -1,7 +1,7 @@
 
 import type { Meta, StoryObj } from '@storybook/react';
 import { TaskDetailsModal } from './TaskDetailsModal';
-import { DigitalColleague, User } from '../Foundary/types';
+import { DigitalColleague, User } from '../Foundry/types';
 
 const meta: Meta<typeof TaskDetailsModal> = {
   title: 'Projects/Tasks/TaskDetailsModal',

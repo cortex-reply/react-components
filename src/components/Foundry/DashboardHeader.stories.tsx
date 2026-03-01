@@ -3,7 +3,7 @@ import { action } from '@storybook/addon-actions'
 import { DashboardHeader } from './DashboardHeader'
 
 const meta: Meta<typeof DashboardHeader> = {
-  title: 'Foundary/DashboardHeader',
+  title: 'Foundry/DashboardHeader',
   component: DashboardHeader,
   parameters: {
     layout: 'fullscreen',

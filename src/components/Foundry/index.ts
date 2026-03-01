@@ -1,7 +1,7 @@
 // Main Components
 export { AppSidebarLeft } from './AppSidebarLeft'
 export { DashboardHeader } from './DashboardHeader'
-export { FoundaryLayout } from './foundary-layout'
+export { FoundryLayout } from './foundary-layout'
 export { Login } from './Login'
 export { LandingMenu } from './LandingMenu'
 export { default as MainPage } from './MainPage'

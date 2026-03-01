@@ -5,7 +5,7 @@ import type { KnowledgeDocument, KnowledgeContext } from '../../DigitalColleague
 import { Server, Code, Users, BookOpen, Database, Shield, FileText } from 'lucide-react'
 
 const meta: Meta<typeof KnowledgeView> = {
-  title: 'Foundary/Views/KnowledgeView',
+  title: 'Foundry/Views/KnowledgeView',
   component: KnowledgeView,
   tags: ['autodocs'],
   parameters: {

@@ -4,7 +4,7 @@ import { ColleagueCard } from './colleague-card'
 import { mockColleagues } from './test-data'
 
 const meta: Meta<typeof ColleagueCard> = {
-  title: 'Foundary/ColleagueCard',
+  title: 'Foundry/ColleagueCard',
   component: ColleagueCard,
   parameters: {
     layout: 'centered',

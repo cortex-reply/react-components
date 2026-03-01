@@ -10,7 +10,7 @@ import {
 import type { Meta, StoryObj } from '@storybook/react'
 
 const meta: Meta<typeof Home> = {
-  title: 'Foundary/Pages/DashboardPage',
+  title: 'Foundry/Pages/DashboardPage',
   component: Home,
   parameters: {
     layout: 'fullscreen',
