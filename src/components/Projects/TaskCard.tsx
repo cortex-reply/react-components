@@ -1,7 +1,7 @@
 import React from 'react'
 import { Card } from '@/components/ui/card'
 import { User, AlertCircle, Bug, Zap, BookOpen, Calendar } from 'lucide-react'
-import { Task, Epic } from '../Foundary/types'
+import { Task, Epic } from '../Foundry/types'
 
 interface TaskCardProps {
   task: Task

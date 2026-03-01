@@ -34,7 +34,7 @@ import {
   BellOff,
 } from 'lucide-react'
 
-import { type Reminder, type Colleague } from '../Foundary/types'
+import { type Reminder, type Colleague } from '../Foundry/types'
 
 export interface TasksViewProps {
   initialReminders?: Reminder[]

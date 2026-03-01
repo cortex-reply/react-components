@@ -9,7 +9,7 @@ import { Input } from '@/components/ui/input'
 import { NavigationTabs } from '../AdvancedComponents/navigation-tabs'
 import { FileList } from './file-list'
 import { DashboardHero } from '../Heros/DashboardHero/DashboardHero'
-import { File as FileType } from '../Foundary/types'
+import { File as FileType } from '../Foundry/types'
 import { motion, AnimatePresence } from 'motion/react'
 import { AddFileModal } from './AddFileModal'
 

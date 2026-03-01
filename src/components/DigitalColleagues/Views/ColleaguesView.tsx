@@ -26,7 +26,7 @@ import {
   type Colleague,
   type DigitalColleague,
   TypedDigitalColleague,
-} from '../../Foundary/types'
+} from '../../Foundry/types'
 import { motion, AnimatePresence } from 'motion/react'
 import { DashboardHero } from '../../Heros/DashboardHero'
 interface ColleaguesViewProps {

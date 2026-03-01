@@ -9,7 +9,7 @@ import { TaskDetailsModal } from './TaskDetailsModal'
 import { AddEpicModal } from './AddEpicModal'
 import { DashboardHero } from '../Heros/DashboardHero'
 
-import { Project, Epic, Sprint, Task, DigitalColleague, User, Colleague } from '../Foundary/types'
+import { Project, Epic, Sprint, Task, DigitalColleague, User, Colleague } from '../Foundry/types'
 import { extractId } from '@/lib/utils/extract-id'
 
 export interface KanbanBoardProps {

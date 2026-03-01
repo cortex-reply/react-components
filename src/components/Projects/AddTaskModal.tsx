@@ -20,7 +20,7 @@ import { Label } from '@/components/ui/label'
 import { Badge } from '@/components/ui/badge'
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group'
 import { BookOpen, Bug, Zap, AlertCircle } from 'lucide-react'
-import { Task, Epic, Sprint, User, DigitalColleague } from '../Foundary/types'
+import { Task, Epic, Sprint, User, DigitalColleague } from '../Foundry/types'
 
 interface AddTaskModalProps {
   isOpen: boolean

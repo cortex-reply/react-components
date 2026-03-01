@@ -3,11 +3,11 @@
 import { motion } from 'motion/react'
 import { MoreHorizontal, Trash2, Edit, List, Grid3x3 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
-import { File as FileType, KnowledgeDocument, KnowledgeContext } from '../Foundary/types'
+import { File as FileType, KnowledgeDocument, KnowledgeContext } from '../Foundry/types'
 import { Dialog, DialogPortal, DialogOverlay, DialogTitle } from '@/components/ui/dialog'
 import * as DialogPrimitive from '@radix-ui/react-dialog'
 import { cn } from '@/lib/utils'
-import { FileEdit } from '../Foundary/file-edit'
+import { FileEdit } from '../Foundry/file-edit'
 import { Loader2 } from 'lucide-react'
 import { useState } from 'react'
 

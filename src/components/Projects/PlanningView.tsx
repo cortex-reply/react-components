@@ -4,7 +4,7 @@ import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
-import { Task, Epic, Sprint } from '../Foundary/types'
+import { Task, Epic, Sprint } from '../Foundry/types'
 import {
   Calendar,
   User,

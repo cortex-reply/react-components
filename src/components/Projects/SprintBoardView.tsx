@@ -10,7 +10,7 @@ import { AddEpicModal } from './AddEpicModal'
 import { AddSprintModal } from './AddSprintModal'
 import { DashboardHero } from '../Heros/DashboardHero'
 
-import { Project, Epic, Sprint, Task, DigitalColleague, User, Colleague } from '../Foundary/types'
+import { Project, Epic, Sprint, Task, DigitalColleague, User, Colleague } from '../Foundry/types'
 import { extractId } from '@/lib/utils/extract-id'
 import { useLocalStorage } from '@/hooks/use-local-storage'
 import { Calendar, Plus, X } from 'lucide-react'

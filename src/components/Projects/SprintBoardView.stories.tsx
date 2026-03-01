@@ -3,7 +3,7 @@ import type { Meta, StoryObj } from '@storybook/react'
 import { fn } from '@storybook/test'
 
 import { SprintBoardView } from './SprintBoardView'
-import { Task, Epic, Sprint, Colleague } from '../Foundary/types'
+import { Task, Epic, Sprint, Colleague } from '../Foundry/types'
 
 const meta: Meta<typeof SprintBoardView> = {
   title: 'Projects/Views/SprintBoard',

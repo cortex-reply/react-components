@@ -21,7 +21,7 @@ import type {
   Colleague,
   User,
 } from '../types'
-import type { File as FileType } from '../../Foundary/types'
+import type { File as FileType } from '../../Foundry/types'
 // import { ColleaguesManagement } from "../colleagues-management"
 import ColleaguesView from './../Views/ColleaguesView'
 import KnowledgeView from '../Views/KnowledgeView'

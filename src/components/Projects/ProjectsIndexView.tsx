@@ -13,7 +13,7 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog'
 
-import type { ProjectSummary, ProjectFormData, ProjectCreationData } from '../Foundary/types'
+import type { ProjectSummary, ProjectFormData, ProjectCreationData } from '../Foundry/types'
 
 const AnimatedCircles = () => (
   <motion.div

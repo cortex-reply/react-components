@@ -6,7 +6,7 @@ import { DigitalColleageusLayout } from '../DigitalColleagues/DigitalColleageusL
 import { type BusinessUnit } from '../DigitalColleagues/types'
 import { mockSidebarItems, mockNotifications } from '../DigitalColleagues/test-data'
 
-import type { App, RecentFile, Epic, Sprint, Project, Task } from '../Foundary/types'
+import type { App, RecentFile, Epic, Sprint, Project, Task } from '../Foundry/types'
 // import type { Epic, Sprint, Project, Task } from '@/components/Projects/ProjectView'
 
 import ProjectView from './ProjectView'

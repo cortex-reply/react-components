@@ -17,9 +17,9 @@ import {
   Check,
   X,
 } from 'lucide-react'
-import { Task, Epic, Sprint, DigitalColleague, User as UserType } from '../Foundary/types'
+import { Task, Epic, Sprint, DigitalColleague, User as UserType } from '../Foundry/types'
 import { TaskSelect } from './TaskSelect'
-import { SearchableSelect } from '../Foundary/SearchableSelect'
+import { SearchableSelect } from '../Foundry/SearchableSelect'
 import { extractId } from '@/lib/utils/extract-id'
 
 type UpdateState = 'idle' | 'loading' | 'success' | 'error'

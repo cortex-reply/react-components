@@ -17,7 +17,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
-import { Epic } from '../Foundary/types'
+import { Epic } from '../Foundry/types'
 
 interface AddEpicModalProps {
   isOpen: boolean

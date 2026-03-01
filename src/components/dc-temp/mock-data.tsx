@@ -27,7 +27,7 @@ import type {
   // FileType,
 } from '../DigitalColleagues/types'
 
-import type { File as FileType } from '../Foundary/types'
+import type { File as FileType } from '../Foundry/types'
 
 export const mockApps: App[] = [
   {

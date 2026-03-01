@@ -8,7 +8,7 @@ import { Input } from '@/components/ui/input'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Badge } from '@/components/ui/badge'
 import { motion, AnimatePresence } from 'motion/react'
-import { type User as UserType } from '../Foundary/types'
+import { type User as UserType } from '../Foundry/types'
 
 interface UserSelectionProps {
   users: UserType[]

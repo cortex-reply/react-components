@@ -22,7 +22,7 @@ import type {
   Sprint,
   Project,
   Colleague,
-} from '../Foundary/types'
+} from '../Foundry/types'
 // import { Epic, Sprint, Project, Task } from "@/components/DigitalColleagues/KanbanBoard"
 import { useRouter } from 'next/navigation'
 import { extractId } from '@/lib/utils/extract-id'

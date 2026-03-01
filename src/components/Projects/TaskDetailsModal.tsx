@@ -8,7 +8,7 @@ import {
   User,
   Colleague,
   File as FileType,
-} from '../Foundary/types'
+} from '../Foundry/types'
 import { EditableField } from '../AdvancedComponents/EditableField'
 import { CommentSection } from '../AdvancedComponents/CommentSection'
 import { TaskSidebar } from './TaskSidebar'
