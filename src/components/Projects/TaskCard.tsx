@@ -81,7 +81,9 @@ export const TaskCard: React.FC<TaskCardProps> = ({
           >
             {getTypeIcon()}
           </div>
-          <h4 className="font-medium text-foreground text-sm mb-1 line-clamp-2 select-none-important">
+          <h4 className={`font-medium text-foreground text-sm mb-1 line-clamp-2 select-none-important ${
+            task.status === 'done' || task.status === 'cancelled' ? 'line-through opacity-60' : ''
+          }`}>
             {task.name}
           </h4>
         </div>
@@ -121,7 +123,9 @@ export const TaskCard: React.FC<TaskCardProps> = ({
         </div>
       </div>
 
-      <h4 className="font-semibold text-foreground mb-2 select-none-important">{task.name}</h4>
+      <h4 className={`font-semibold text-foreground mb-2 select-none-important ${
+        task.status === 'done' || task.status === 'cancelled' ? 'line-through opacity-60' : ''
+      }`}>{task.name}</h4>
 
       <p className="text-sm text-muted-foreground mb-3 line-clamp-2 select-none-important">
         {task.description}

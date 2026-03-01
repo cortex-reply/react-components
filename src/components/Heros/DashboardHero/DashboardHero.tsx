@@ -1,12 +1,20 @@
 "use client"
 
 import type React from "react"
+import { useState } from "react"
 
 import { motion } from "motion/react"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { useLocalStorage } from "@/hooks/use-local-storage"
 import { FaChevronDown, FaChevronUp } from "react-icons/fa"
+import { EllipsisVertical } from "lucide-react"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
 
 interface HeroSectionProps {
   title: string
@@ -17,6 +25,10 @@ interface HeroSectionProps {
     onClick: () => void
   }
   secondaryAction?: {
+    label: string
+    onClick: () => void
+  }
+  tertiaryAction?: {
     label: string
     onClick: () => void
   }
@@ -31,6 +43,7 @@ export function DashboardHero({
   badge,
   primaryAction,
   secondaryAction,
+  tertiaryAction,
   gradient,
   children,
   className,
@@ -39,6 +52,7 @@ export function DashboardHero({
     `hero-section-minimized-${title.replace(/\s+/g, "-").toLowerCase()}`,
     !secondaryAction && !description ? true : false
   )
+  const [actionsMenuOpen, setActionsMenuOpen] = useState(false)
 
   // Always minimize if there's no content to expand to
   const shouldBeMinimized = (!secondaryAction && !description) || minimized
@@ -63,6 +77,33 @@ export function DashboardHero({
             >
               {primaryAction.label}
             </Button>
+          )}
+
+          {shouldBeMinimized && (secondaryAction || tertiaryAction) && (
+            <DropdownMenu open={actionsMenuOpen} onOpenChange={setActionsMenuOpen}>
+              <DropdownMenuTrigger asChild>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="rounded-2xl bg-white/20 text-white hover:bg-white/30 p-2"
+                  aria-label="More actions"
+                >
+                  <EllipsisVertical size={20} />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-48">
+                {secondaryAction && (
+                  <DropdownMenuItem onClick={secondaryAction.onClick}>
+                    {secondaryAction.label}
+                  </DropdownMenuItem>
+                )}
+                {tertiaryAction && (
+                  <DropdownMenuItem onClick={tertiaryAction.onClick}>
+                    {tertiaryAction.label}
+                  </DropdownMenuItem>
+                )}
+              </DropdownMenuContent>
+            </DropdownMenu>
           )}
 
           {(secondaryAction || description) && (
@@ -98,6 +139,15 @@ export function DashboardHero({
                   onClick={secondaryAction.onClick}
                 >
                   {secondaryAction.label}
+                </Button>
+              )}
+              {tertiaryAction && (
+                <Button
+                  variant="outline"
+                  className="rounded-2xl bg-transparent border-white text-white hover:bg-white/10"
+                  onClick={tertiaryAction.onClick}
+                >
+                  {tertiaryAction.label}
                 </Button>
               )}
             </div>
