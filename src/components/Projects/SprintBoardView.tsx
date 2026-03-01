@@ -61,6 +61,8 @@ export const SprintBoardView: React.FC<SprintBoardViewProps> = ({
   const [tasks, setTasks] = useState<Task[]>([])
   const [epics, setEpics] = useState<Epic[]>([])
   const [sprints, setSprints] = useState<Sprint[]>([])
+  const [colleagues, setColleagues] = useState<Colleague[]>([])
+  const [users, setUsers] = useState<User[]>([])
   const [selectedSprintIds, setSelectedSprintIds] = useLocalStorage<string[]>(
     'sprintBoardView_selectedSprints',
     [],
@@ -70,10 +72,10 @@ export const SprintBoardView: React.FC<SprintBoardViewProps> = ({
   const [isAddSprintModalOpen, setIsAddSprintModalOpen] = useState(false)
   const [selectedTask, setSelectedTask] = useState<Task | null>(null)
   const [draggedTask, setDraggedTask] = useState<Task | null>(null)
-  const [users, setUsers] = useState<User[]>([])
-  const [colleagues, setColleagues] = useState<Colleague[]>([])
-  const [heroHeight, setHeroHeight] = useState(0)
+  const [dragOverSprintId, setDragOverSprintId] = useState<number | null>(null)
+  const [dragOverBacklog, setDragOverBacklog] = useState(false)
   const [isSprintSelectorOpen, setIsSprintSelectorOpen] = useState(false)
+  const [heroHeight, setHeroHeight] = useState(0)
 
   const heroRef = useRef<HTMLDivElement>(null)
   const containerRef = useRef<HTMLDivElement>(null)
@@ -197,6 +199,50 @@ export const SprintBoardView: React.FC<SprintBoardViewProps> = ({
     setDraggedTask(task)
   }
 
+  const handleDragOverSprint = (e: React.DragEvent) => {
+    e.preventDefault()
+    e.dataTransfer.dropEffect = 'move'
+  }
+
+  const handleDragOverBacklog = (e: React.DragEvent) => {
+    e.preventDefault()
+    e.dataTransfer.dropEffect = 'move'
+  }
+
+  const handleDropOnSprint = (sprintId: number) => {
+    if (!draggedTask) return
+
+    const currentSprint = extractId(draggedTask.sprint)
+    if (currentSprint !== sprintId) {
+      setTasks((prev) =>
+        prev.map((task) =>
+          task.id === draggedTask.id ? { ...task, sprint: sprintId } : task,
+        ),
+      )
+      onUpdateTask?.(draggedTask.id.toString(), { sprint: sprintId })
+    }
+
+    setDraggedTask(null)
+    setDragOverSprintId(null)
+  }
+
+  const handleDropOnBacklog = () => {
+    if (!draggedTask) return
+
+    const currentSprint = extractId(draggedTask.sprint)
+    if (currentSprint) {
+      setTasks((prev) =>
+        prev.map((task) =>
+          task.id === draggedTask.id ? { ...task, sprint: null } : task,
+        ),
+      )
+      onUpdateTask?.(draggedTask.id.toString(), { sprint: null })
+    }
+
+    setDraggedTask(null)
+    setDragOverBacklog(false)
+  }
+
   const handleAddTask = async (newTask: Omit<Task, 'id' | 'createdAt' | 'updatedAt'>) => {
     const temporaryTask: Task = {
       ...newTask,
@@ -283,7 +329,7 @@ export const SprintBoardView: React.FC<SprintBoardViewProps> = ({
   const calculatedHeight =
     heroHeight > 0 ? `calc(100vh - ${heroHeight + 120}px)` : 'calc(100vh - 12rem)'
 
-  const selectedEpicIds = React.useMemo(
+  const selectedEpicIds = React.useMemo<number[]>(
     () => [...epics.map((e) => e.id), 0], // include "no-epic" sentinel id 0
     [epics],
   )
@@ -482,8 +528,14 @@ export const SprintBoardView: React.FC<SprintBoardViewProps> = ({
             <div className="grid gap-6 h-full overflow-x-auto" style={{ gridTemplateColumns: `repeat(${visibleSprints.length + 1}, minmax(350px, 1fr))` }}>
               {/* Backlog Column */}
               <Card
-                className="p-4 bg-card border-l-4 border-l-amber-500 shadow-sm hover:shadow-md transition-shadow duration-200 flex flex-col"
+                className={`p-4 bg-card border-l-4 border-l-amber-500 shadow-sm hover:shadow-md transition-all duration-200 flex flex-col ${
+                  dragOverBacklog ? 'ring-2 ring-amber-500 bg-amber-50/50 dark:bg-amber-950/20' : ''
+                }`}
                 style={{ height: calculatedHeight }}
+                onDragOver={handleDragOverBacklog}
+                onDragEnter={() => setDragOverBacklog(true)}
+                onDragLeave={() => setDragOverBacklog(false)}
+                onDrop={handleDropOnBacklog}
               >
                 {/* Column Header */}
                 <div className="flex items-center justify-between mb-4 flex-shrink-0">
@@ -584,8 +636,14 @@ export const SprintBoardView: React.FC<SprintBoardViewProps> = ({
                 return (
                   <Card
                     key={sprint.id}
-                    className="p-4 bg-card border-l-4 border-l-blue-500 shadow-sm hover:shadow-md transition-shadow duration-200 flex flex-col"
+                    className={`p-4 bg-card border-l-4 border-l-blue-500 shadow-sm hover:shadow-md transition-all duration-200 flex flex-col ${
+                      dragOverSprintId === sprint.id ? 'ring-2 ring-blue-500 bg-blue-50/50 dark:bg-blue-950/20' : ''
+                    }`}
                     style={{ height: calculatedHeight }}
+                    onDragOver={handleDragOverSprint}
+                    onDragEnter={() => setDragOverSprintId(sprint.id)}
+                    onDragLeave={() => setDragOverSprintId(null)}
+                    onDrop={() => handleDropOnSprint(sprint.id)}
                   >
                     {/* Column Header */}
                     <div className="flex items-center justify-between mb-4 flex-shrink-0">
