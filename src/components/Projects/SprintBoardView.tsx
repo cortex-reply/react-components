@@ -277,6 +277,8 @@ export const SprintBoardView: React.FC<SprintBoardViewProps> = ({
     selectedSprintIds.includes(sprint.id.toString()),
   )
 
+  const backlogTasks = tasks.filter((task) => !extractId(task.sprint))
+
   // Calculate the height to pass to columns
   const calculatedHeight =
     heroHeight > 0 ? `calc(100vh - ${heroHeight + 120}px)` : 'calc(100vh - 12rem)'
@@ -476,8 +478,105 @@ export const SprintBoardView: React.FC<SprintBoardViewProps> = ({
           </div>
 
           {/* Sprint Columns Grid */}
-          {visibleSprints.length > 0 ? (
-            <div className="grid gap-6 h-full overflow-x-auto" style={{ gridTemplateColumns: `repeat(${visibleSprints.length}, minmax(350px, 1fr))` }}>
+          {visibleSprints.length > 0 || backlogTasks.length > 0 ? (
+            <div className="grid gap-6 h-full overflow-x-auto" style={{ gridTemplateColumns: `repeat(${visibleSprints.length + 1}, minmax(350px, 1fr))` }}>
+              {/* Backlog Column */}
+              <Card
+                className="p-4 bg-card border-l-4 border-l-amber-500 shadow-sm hover:shadow-md transition-shadow duration-200 flex flex-col"
+                style={{ height: calculatedHeight }}
+              >
+                {/* Column Header */}
+                <div className="flex items-center justify-between mb-4 flex-shrink-0">
+                  <div className="flex items-center gap-2 flex-1 min-w-0">
+                    <div className="flex-1 min-w-0">
+                      <h3 className="font-semibold text-foreground text-lg truncate">
+                        Backlog
+                      </h3>
+                      <p className="text-xs text-muted-foreground">
+                        Unscheduled tasks
+                      </p>
+                    </div>
+                  </div>
+                  <Badge variant="secondary" className="bg-muted text-muted-foreground flex-shrink-0">
+                    {backlogTasks.length}
+                  </Badge>
+                </div>
+
+                {/* Tasks Container */}
+                <div className="flex-1 overflow-y-auto space-y-4 min-h-0">
+                  {/* Unassigned Tasks (No Epic) */}
+                  {backlogTasks.filter((t) => !extractId(t.epic)).length > 0 && (
+                    <div className="space-y-3">
+                      {backlogTasks
+                        .filter((t) => !extractId(t.epic))
+                        .map((task) => (
+                          <TaskCard
+                            key={task.id}
+                            task={task}
+                            epic={null}
+                            onDragStart={handleDragStart}
+                            onTaskClick={handleTaskClick}
+                            isCompact={false}
+                          />
+                        ))}
+                    </div>
+                  )}
+
+                  {/* Tasks Grouped by Epic */}
+                  {selectedEpicIds.map((epicId) => {
+                    const epic = epics.find((e) => e.id === epicId)
+                    const epicTasks = backlogTasks.filter((t) => extractId(t.epic) === epicId) || []
+
+                    if (epicTasks.length === 0) return null
+
+                    return (
+                      <div key={epicId} className="mb-6">
+                        <div className="flex items-center gap-2 mb-3">
+                          <div className={`w-3 h-3 rounded-full ${epic?.color}`}></div>
+                          <span className="text-sm font-medium text-muted-foreground select-none">
+                            {epic?.name}
+                          </span>
+                          <Badge variant="secondary" className="text-xs">
+                            {epicTasks.length}
+                          </Badge>
+                        </div>
+                        <div className="space-y-3">
+                          {epicTasks.map((task) => (
+                            <TaskCard
+                              key={task.id}
+                              task={task}
+                              epic={epic!}
+                              onDragStart={handleDragStart}
+                              onTaskClick={handleTaskClick}
+                              isCompact={false}
+                            />
+                          ))}
+                        </div>
+                      </div>
+                    )
+                  })}
+
+                  {/* Empty State */}
+                  {backlogTasks.length === 0 && (
+                    <div className="flex items-center justify-center h-32 text-center">
+                      <div>
+                        <p className="text-sm text-muted-foreground">No backlog tasks</p>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => setIsAddTaskModalOpen(true)}
+                          className="mt-2 gap-1"
+                        >
+                          <Plus className="h-3 w-3" />
+                          Add task
+                        </Button>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </Card>
+
+              {/* Sprint Columns */}
               {visibleSprints.map((sprint) => {
                 const sprintTasks = tasks.filter((task) => extractId(task.sprint) === sprint.id)
                 const tasksByEpic = getTasksByEpic(sprintTasks)
@@ -586,16 +685,16 @@ export const SprintBoardView: React.FC<SprintBoardViewProps> = ({
             <div className="flex items-center justify-center h-full">
               <div className="text-center">
                 <Calendar className="h-12 w-12 text-muted-foreground mx-auto mb-4 opacity-50" />
-                <p className="text-lg font-medium text-foreground mb-2">No sprints selected</p>
+                <p className="text-lg font-medium text-foreground mb-2">No tasks in backlog</p>
                 <p className="text-sm text-muted-foreground mb-4">
-                  Select up to 3 sprints to get started
+                  Create your first task to get started
                 </p>
                 <Button
-                  onClick={() => setIsSprintSelectorOpen(true)}
+                  onClick={() => setIsAddTaskModalOpen(true)}
                   className="gap-1"
                 >
-                  <Calendar className="h-4 w-4" />
-                  Select Sprints
+                  <Plus className="h-3 w-3" />
+                  Add Task
                 </Button>
               </div>
             </div>
