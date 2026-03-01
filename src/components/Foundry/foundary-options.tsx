@@ -1,18 +1,20 @@
 "use client"
 
-import { Bot, ChevronLeft, Copy, Plus, Sparkles } from "lucide-react"
+import { Bot, ChevronLeft, Copy, Plus, Sparkles, UserPlus } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { motion, AnimatePresence } from "motion/react"
 
 interface DigitalColleagueOptionsProps {
   onCloneExisting: () => void
+  onAddExisting: () => void
   onCreateNew: () => void
   onCancel: () => void
 }
 
 export function DigitalColleagueOptions({
   onCloneExisting,
+  onAddExisting,
   onCreateNew,
   onCancel,
 }: DigitalColleagueOptionsProps) {
@@ -39,7 +41,43 @@ export function DigitalColleagueOptions({
           </div>
 
           {/* Options Cards */}
-          <div className="grid gap-6 md:grid-cols-2 max-w-4xl mx-auto">
+          <div className="grid gap-6 md:grid-cols-3 max-w-6xl mx-auto">
+            <motion.div
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+              transition={{ type: "spring", stiffness: 300, damping: 20 }}
+            >
+              <Card 
+                className="cursor-pointer transition-all hover:shadow-lg border-2 hover:border-primary/50"
+                onClick={onAddExisting}
+              >
+                <CardHeader className="text-center pb-4">
+                  <div className="mx-auto w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mb-4">
+                    <UserPlus className="h-8 w-8 text-purple-600" />
+                  </div>
+                  <CardTitle className="text-xl">Add Existing</CardTitle>
+                </CardHeader>
+                <CardContent className="text-center">
+                  <p className="text-muted-foreground mb-4">
+                    Add an already configured digital colleague directly to your team.
+                  </p>
+                  <div className="space-y-2 text-sm">
+                    <div className="flex items-center gap-2 justify-center">
+                      <Bot className="h-4 w-4 text-purple-600" />
+                      <span>Fully configured</span>
+                    </div>
+                    <div className="flex items-center gap-2 justify-center">
+                      <UserPlus className="h-4 w-4 text-purple-600" />
+                      <span>Ready to use</span>
+                    </div>
+                  </div>
+                  <Button className="mt-6 w-full" onClick={onAddExisting}>
+                    Browse & Add
+                  </Button>
+                </CardContent>
+              </Card>
+            </motion.div>
+
             <motion.div
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}

@@ -17,6 +17,8 @@ import { ColleagueCard } from '../colleague-card'
 import { ColleagueForm } from '../colleague-form'
 import { UserSelection } from '../../AdvancedComponents/user-selection'
 import { DigitalColleagueClone } from '../foundary-clone'
+import { DigitalColleagueSelection } from '../digital-colleague-selection'
+import { AddColleagueToTeamForm } from '../add-colleague-to-team-form'
 import { ColleagueTypeSelection } from '../colleague-type-selection'
 import { DigitalColleagueOptions } from '../foundary-options'
 import {
@@ -28,6 +30,7 @@ import {
   type DigitalColleague,
   // type KnowledgeDocument,
   type User as UserType,
+  type Team,
 } from '../types'
 import { motion, AnimatePresence } from 'motion/react'
 import { DashboardHero } from '../../Heros/DashboardHero'
@@ -37,12 +40,14 @@ interface ColleaguesViewProps {
   onColleagueAdd?: (colleague: Colleague) => void
   onColleagueEdit?: (colleague: Colleague) => void
   onColleagueDelete?: (colleague: string, type: 'human' | 'digital') => void
+  onColleagueAddToTeam?: (colleague: DigitalColleague, teamId: number) => void
   compactView?: boolean
   departments?: string[]
   className?: string
   // New props for user and colleague selection
   availableUsers?: UserType[]
   existingDigitalColleagues?: DigitalColleague[]
+  currentTeam?: Team
   availableKnowledgeDocuments?: Knowledge[]
   availableCapabilities?: Array<{
     relationTo: 'mcpTools' | 'capabilities' | 'internalTools' | 'digital-colleagues'
@@ -59,11 +64,13 @@ export default function ColleaguesView({
   onColleagueAdd,
   onColleagueEdit,
   onColleagueDelete,
+  onColleagueAddToTeam,
   compactView = false,
   departments = ['Design', 'Engineering', 'Marketing', 'Product', 'Sales', 'Operations'],
   className,
   availableUsers = [],
   existingDigitalColleagues = [],
+  currentTeam,
   availableKnowledgeDocuments = [],
   availableCapabilities = [],
   availableModels = [],
@@ -75,6 +82,7 @@ export default function ColleaguesView({
   const [activeTab, setActiveTab] = useState('all')
   const [editingColleague, setEditingColleague] = useState<DigitalColleague | null>(null)
   const [viewingColleague, setViewingColleague] = useState<DigitalColleague | null>(null)
+  const [selectedColleagueForTeam, setSelectedColleagueForTeam] = useState<DigitalColleague | null>(null)
 
   useEffect(() => {
     setColleagues(initialColleagues || [])
@@ -88,7 +96,7 @@ export default function ColleaguesView({
 
   // New state for selection flows
   const [currentView, setCurrentView] = useState<
-    'main' | 'typeSelection' | 'userSelection' | 'digitalOptions' | 'digitalClone' | 'form' | 'view'
+    'main' | 'typeSelection' | 'userSelection' | 'digitalOptions' | 'digitalClone' | 'digitalSelection' | 'addToTeam' | 'form' | 'view'
   >('main')
 
   const filteredColleagues = colleagues.filter((colleague) => {
@@ -182,6 +190,31 @@ export default function ColleaguesView({
     setColleagues((prev) => [...prev, { ...clonedColleague, type: 'digital' }])
     onColleagueAdd?.({ ...clonedColleague, type: 'digital' })
     setCurrentView('main')
+  }
+
+  const handleDigitalColleagueSelect = (selectedColleague: DigitalColleague) => {
+    if (!selectedColleague || !selectedColleague.id) {
+      console.error(
+        'Invalid selected colleague provided to handleDigitalColleagueSelect:',
+        selectedColleague,
+      )
+      return
+    }
+
+    setSelectedColleagueForTeam(selectedColleague)
+    setCurrentView('addToTeam')
+  }
+
+  const handleAddColleagueToTeam = (colleague: DigitalColleague, teamId: number) => {
+    onColleagueAddToTeam?.(colleague, teamId)
+    setColleagues((prev) => [...prev, { ...colleague, type: 'digital' }])
+    setSelectedColleagueForTeam(null)
+    setCurrentView('main')
+  }
+
+  const handleCancelAddToTeam = () => {
+    setSelectedColleagueForTeam(null)
+    setCurrentView('digitalSelection')
   }
 
   const handleCreateNewDigital = () => {
@@ -304,9 +337,35 @@ export default function ColleaguesView({
   if (currentView === 'digitalOptions') {
     return (
       <DigitalColleagueOptions
+        onAddExisting={() => setCurrentView('digitalSelection')}
         onCloneExisting={() => setCurrentView('digitalClone')}
         onCreateNew={handleCreateNewDigital}
         onCancel={() => setCurrentView('typeSelection')}
+      />
+    )
+  }
+
+  if (currentView === 'digitalSelection') {
+    return (
+      <DigitalColleagueSelection
+        digitalColleagues={safeExistingDigitalColleagues}
+        onColleagueSelect={handleDigitalColleagueSelect}
+        onCancel={() => setCurrentView('digitalOptions')}
+      />
+    )
+  }
+
+  if (currentView === 'addToTeam') {
+    if (!selectedColleagueForTeam || !currentTeam) {
+      setCurrentView('digitalSelection')
+      return null
+    }
+    return (
+      <AddColleagueToTeamForm
+        colleague={selectedColleagueForTeam}
+        team={currentTeam}
+        onSave={handleAddColleagueToTeam}
+        onCancel={handleCancelAddToTeam}
       />
     )
   }

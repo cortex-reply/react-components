@@ -89,7 +89,7 @@ export function UserSelection({
           </Card>
 
           {/* Users Grid */}
-          <div className="container grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+          <div className="container grid gap-4 md:grid-cols-2 lg:grid-cols-3 mt-4">
             {filteredUsers.map((user) => {
               // Safety check - skip rendering if user is invalid
               if (!user || !user.id) return null

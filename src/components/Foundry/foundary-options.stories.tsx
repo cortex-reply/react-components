@@ -17,6 +17,7 @@ type Story = StoryObj<typeof DigitalColleagueOptions>
 
 export const Default: Story = {
   args: {
+    onAddExisting: action('onAddExisting'),
     onCloneExisting: action('onCloneExisting'),
     onCreateNew: action('onCreateNew'),
     onCancel: action('onCancel'),

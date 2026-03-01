@@ -13,6 +13,8 @@ export { ColleagueCard } from './colleague-card'
 export { ColleagueForm } from './colleague-form'
 export { ColleagueTypeSelection } from './colleague-type-selection'
 export { DigitalColleagueClone } from './foundary-clone'
+export { DigitalColleagueSelection } from './digital-colleague-selection'
+export { AddColleagueToTeamForm } from './add-colleague-to-team-form'
 export { DigitalColleagueOptions } from './foundary-options'
 export { TeamForm } from './team-form'
 
