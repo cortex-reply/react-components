@@ -61,7 +61,7 @@ export const ManagementSidebar: React.FC<ManagementSidebarProps> = ({
   children
 }) => {
   return (
-    <div className="flex w-full h-screen">
+    <div className="flex w-full h-full">
       {/* Sidebar */}
       <div className="w-12 h-full bg-sidebar-background flex flex-col flex-shrink-0 z-50 relative overflow-visible">
         {viewConfig.map((view) => {
