@@ -28,7 +28,10 @@
     },
     "./globals.css": "./dist/globals.css"
   },
-  "repository": "github:cortex-reply/react-components",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/cortex-reply/react-components.git"
+  },
   "sideEffects": false,
   "files": [
     "dist/**"
