@@ -11,35 +11,17 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
+    - name: Install pnpm
+      uses: pnpm/action-setup@v4
+      with:
+        version: 9
     - name: Setup Node.js
-      uses: actions/setup-node@v1
+      uses: actions/setup-node@v4
       with:
         node-version: 20.x
-    - name: Cache node modules
-      id: cache-pnpm
-      uses: actions/cache@v3
-      env:
-        cache-name: cache-node-modules
-      with:
-        # npm cache files are stored in `~/.npm` on Linux/macOS
-        path: ~/.pnpm-store
-        key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/pnpm-lock.yaml') }}
-        restore-keys: |
-          ${{ runner.os }}-build-${{ env.cache-name }}-
-          ${{ runner.os }}-build-
-          ${{ runner.os }}-
-
-    - if: ${{ steps.cache-npm.outputs.cache-hit != 'true' }}
-      name: List the state of node modules
-      continue-on-error: true
-      run: pnpm list
-
+        cache: pnpm
     - name: Install dependencies
-      run: |
-        # npm config set "@fortawesome:registry" https://npm.fontawesome.com/
-        # npm config set "//npm.fontawesome.com/:_authToken" $FONTAWESOME_NPM_AUTH_TOKEN
-        npm i -g pnpm && pnpm i
-        
+      run: pnpm install
       env:
         FONTAWESOME_NPM_AUTH_TOKEN: ${{ secrets.FONTAWESOME_NPM_AUTH_TOKEN }}
     # - name: Install semantic-release extra plugins
