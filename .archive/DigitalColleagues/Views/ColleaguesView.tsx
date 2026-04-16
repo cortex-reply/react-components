@@ -12,10 +12,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
-import { NavigationTabs, type TabOption } from '../../AdvancedComponents/navigation-tabs'
+import { NavigationTabs, type TabOption } from '../../../AdvancedComponents/navigation-tabs'
 import { ColleagueCard } from '../colleague-card'
 import { ColleagueForm } from '../colleague-form'
-import { UserSelection } from '../../AdvancedComponents/user-selection'
+import { UserSelection } from '../../../AdvancedComponents/user-selection'
 import { DigitalColleagueClone } from '../digital-colleague-clone'
 import { ColleagueTypeSelection } from '../colleague-type-selection'
 import { DigitalColleagueOptions } from '../digital-colleague-options'
@@ -26,9 +26,9 @@ import {
   type Colleague,
   type DigitalColleague,
   TypedDigitalColleague,
-} from '../../Foundry/types'
+} from '../../../Foundry/types'
 import { motion, AnimatePresence } from 'motion/react'
-import { DashboardHero } from '../../Heros/DashboardHero'
+import { DashboardHero } from '../../../Heros/DashboardHero'
 interface ColleaguesViewProps {
   initialColleagues?: Colleague[]
   onColleagueAdd?: (colleague: Colleague) => void

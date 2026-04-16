@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { render, screen, fireEvent } from '@testing-library/react'
-import TeamsIndexView from '../DigitalColleagues/Views/TeamsIndexView'
-import { mockTeamSummary } from '../DigitalColleagues/test-data'
+import TeamsIndexView from '../Foundry/Views/TeamsIndexView'
+import { mockTeamSummary } from '../Foundry/test-data'
 
 describe('TeamsIndexView', () => {
   const mockOnCreateTeam = vi.fn()

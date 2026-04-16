@@ -2,9 +2,10 @@
 
 import React, { useEffect, useState } from 'react'
 
-import { ManagementSidebar } from '@/components/DigitalColleagues/ManagementSidebar'
+import { ManagementSidebar } from '@/components/Foundry/ManagementSidebar'
 import { KanbanBoardView } from '@/components/Projects/KanbanBoardView'
 import { EpicsView } from '@/components/Projects/EpicsView'
+import { GanttView } from '@/components/Projects/GanttView'
 import { PlanningView } from '@/components/Projects/PlanningView'
 import { TasksView } from '@/components/Projects/TasksView'
 import FileView from './FileView'
@@ -72,7 +73,7 @@ import { extractId } from '@/lib/utils/extract-id'
 //   comments?: Comment[]
 // }
 
-type View = 'kanban' | 'planning' | 'tasks' | 'files' | 'epics'
+type View = 'kanban' | 'planning' | 'tasks' | 'files' | 'epics' | 'gantt'
 
 interface Props {
   title?: string
@@ -498,6 +499,8 @@ export default function ProjectView({
         return 'Documentation'
       case 'epics':
         return 'Epic Planning'
+      case 'gantt':
+        return 'Gantt Chart'
       default:
         return 'Project Board'
     }
@@ -594,6 +597,17 @@ export default function ProjectView({
             onAddEpic={handleAddEpicClick}
             onUpdateEpic={handleUpdateEpic}
             onDeleteEpic={handleDeleteEpic}
+          />
+        </div>
+      )}
+      {currentView === 'gantt' && (
+        <div className="hidden md:block h-full">
+          <GanttView
+            tasks={tasks}
+            epics={epics}
+            sprints={sprints}
+            onUpdateEpic={handleUpdateEpic}
+            onTaskClick={handleTaskClick}
           />
         </div>
       )}

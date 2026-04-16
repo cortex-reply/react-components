@@ -18,8 +18,8 @@ import {
 import { Checkbox } from '@/components/ui/checkbox'
 import { BusinessUnitSwitcher } from '../Projects/business-unit-switcher'
 import { cn } from '@/lib/utils'
-import { businessUnits } from '../DigitalColleagues/test-data'
-import type { BusinessUnit, SidebarItem } from '../DigitalColleagues/types'
+import { businessUnits } from '../Foundry/test-data'
+import type { BusinessUnit, SidebarItem } from '../Foundry/types'
 import { useLocalStorage } from '@/hooks/use-local-storage'
 
 interface SidebarProps {

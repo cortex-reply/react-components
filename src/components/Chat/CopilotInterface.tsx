@@ -7,11 +7,11 @@ import { useChat } from '@ai-sdk/react'
 import { useState } from "react"
 import { motion, AnimatePresence } from "motion/react"
 import { Users, Upload, Paperclip, X, FileText, Image as ImageIcon, File } from "lucide-react"
-import { DigitalColleageusLayout } from "../DigitalColleagues/DigitalColleageusLayout"
+import { FoundryLayout } from "../Foundry/foundary-layout"
 import { ChatSessionSidebar, type ChatSession } from "./chat-session-sidebar"
 import { ChatInterface } from "./ChatInterface"
 import type { Capability } from "../../test-data/capabilities"
-import type { BusinessUnit } from "../DigitalColleagues/types"
+import type { BusinessUnit } from "../Foundry/types"
 import type { FileUpload } from "./types"
 
 interface CopilotInterfaceProps {
@@ -276,7 +276,7 @@ export function CopilotInterface({
 
 
   return (
-    <DigitalColleageusLayout
+    <FoundryLayout
       sidebarItems={sidebarItems || []}
       title={title}
       notifications={notifications || []}
@@ -338,6 +338,6 @@ export function CopilotInterface({
           </div>
         </motion.div>
       </AnimatePresence>
-    </DigitalColleageusLayout>
+    </FoundryLayout>
   )
 }

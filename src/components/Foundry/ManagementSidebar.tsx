@@ -1,10 +1,10 @@
 "use client"
 import React from 'react';
-import { Calendar, Kanban, FileText, Target } from 'lucide-react';
+import { BarChart2, Calendar, Kanban, FileText, Target } from 'lucide-react';
 
 interface ManagementSidebarProps {
-  currentView: 'kanban' | 'planning' | 'tasks' | 'files' | 'epics';
-  onViewChange: (view: 'kanban' | 'planning' | 'tasks' | 'files' | 'epics') => void;
+  currentView: 'kanban' | 'planning' | 'tasks' | 'files' | 'epics' | 'gantt';
+  onViewChange: (view: 'kanban' | 'planning' | 'tasks' | 'files' | 'epics' | 'gantt') => void;
   children?: React.ReactNode;
 }
 
@@ -44,6 +44,14 @@ const viewConfig = [
     label: 'Tasks',
     color: 'bg-brand-cyan',
     title: 'Tasks'
+  },
+  {
+    key: 'gantt' as const,
+    icon: BarChart2,
+    label: 'Gantt',
+    color: 'bg-brand-blue',
+    title: 'Gantt Chart',
+    hiddenOnMobile: true,
   }
 ];
 
@@ -55,7 +63,7 @@ export const ManagementSidebar: React.FC<ManagementSidebarProps> = ({
   return (
     <div className="flex w-full h-screen">
       {/* Sidebar */}
-      <div className="w-12 h-full bg-sidebar-background flex flex-col flex-shrink-0">
+      <div className="w-12 h-full bg-sidebar-background flex flex-col flex-shrink-0 z-50 relative overflow-visible">
         {viewConfig.map((view) => {
           const Icon = view.icon;
           const isActive = currentView === view.key;
@@ -64,9 +72,9 @@ export const ManagementSidebar: React.FC<ManagementSidebarProps> = ({
             <button
               key={view.key}
               onClick={() => onViewChange(view.key)}
-              className={`flex-1 w-12 flex items-center justify-center text-sidebar-foreground transition-all duration-200 relative overflow-hidden group/btn ${
-                isActive ? view.color : `${view.color}/75 hover:${view.color}`
-              } ${view.hiddenOnMobile ? 'hidden md:flex' : ''} hover:w-28 hover:justify-start hover:pl-3`}
+              className={`flex-1 w-12 flex items-center justify-center text-sidebar-foreground transition-all duration-200 relative group/btn z-50 hover:w-28 hover:justify-start hover:pl-3 ${
+                isActive ? view.color : `${view.color} brightness-75 hover:brightness-100`
+              } ${view.hiddenOnMobile ? 'hidden md:flex' : ''}`}
               title={view.title}
             >
               <Icon className="h-4 w-4 flex-shrink-0" />
@@ -79,7 +87,7 @@ export const ManagementSidebar: React.FC<ManagementSidebarProps> = ({
       </div>
       
       {/* Main content */}
-      <div className="flex-1 min-w-0 px-4 md:px-6 h-full overflow-auto">
+      <div className="flex-1 min-w-0 px-4 md:px-6 h-full overflow-auto z-0 relative">
         <div className="w-full h-full">
           {children}
         </div>

@@ -4,7 +4,7 @@ import { ChevronDown, Grid3X3 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import { cn } from "@/lib/utils"
-import type { BusinessUnit } from "../DigitalColleagues/types"
+import type { BusinessUnit } from "../Foundry/types"
 
 interface TeamSwitcherBarProps {
   teams: BusinessUnit[]

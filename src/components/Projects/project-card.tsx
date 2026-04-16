@@ -6,7 +6,7 @@ import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Progress } from "@/components/ui/progress"
-import type { ProjectSummary } from "../DigitalColleagues/types"
+import type { ProjectSummary } from "../Foundry/types"
 
 interface ProjectCardProps {
   project: ProjectSummary

@@ -9,7 +9,7 @@
 
 import { useChat } from '@ai-sdk/react'
 import { CopilotInterface } from './CopilotInterface'
-import { businessUnits, mockSidebarItems, mockNotifications } from '../DigitalColleagues/test-data'
+import { businessUnits, mockSidebarItems, mockNotifications } from '../Foundry/test-data'
 import { testCapabilities as capabilities } from '../../test-data/capabilities'
 
 // Mock chat sessions for demo

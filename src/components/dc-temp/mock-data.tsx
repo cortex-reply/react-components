@@ -25,7 +25,7 @@ import type {
   Tutorial,
   CommunityPost,
   // FileType,
-} from '../DigitalColleagues/types'
+} from '../Foundry/types'
 
 import type { File as FileType } from '../Foundry/types'
 

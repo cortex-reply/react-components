@@ -1,17 +1,16 @@
 import React from 'react';
+import { describe, it, expect, vi } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
-import '@testing-library/jest-dom';
 import { TasksView } from './TasksView';
-import type { Reminder, DigitalColleague } from './TasksView';
 
 // Mock colleagues for testing
-const mockColleagues: DigitalColleague[] = [
+const mockColleagues = [
   { id: '1', name: 'Alex AI', department: 'Development', role: 'Senior Developer' },
   { id: '2', name: 'Maya Bot', department: 'Design', role: 'UX Designer' },
-];
+] as any[];
 
 // Mock reminders for testing
-const mockReminders: Reminder[] = [
+const mockReminders = [
   {
     id: '1',
     title: 'Test reminder',
@@ -27,7 +26,7 @@ const mockReminders: Reminder[] = [
     createdAt: new Date(2024, 2, 10),
     tags: ['test']
   },
-];
+] as any[];
 
 describe('TasksView', () => {
   it('renders the TasksView component', () => {
@@ -38,8 +37,8 @@ describe('TasksView', () => {
       />
     );
     
-    expect(screen.getByText('Task Reminders')).toBeInTheDocument();
-    expect(screen.getByText('Test reminder')).toBeInTheDocument();
+    expect(screen.getByText('Task Reminders')).toBeTruthy();
+    expect(screen.getByText('Test reminder')).toBeTruthy();
   });
 
   it('displays stats correctly', () => {
@@ -50,13 +49,13 @@ describe('TasksView', () => {
       />
     );
     
-    expect(screen.getByText('1')).toBeInTheDocument(); // Total count
-    expect(screen.getByText('Total')).toBeInTheDocument();
-    expect(screen.getByText('Pending')).toBeInTheDocument();
+    expect(screen.getByText('1')).toBeTruthy(); // Total count
+    expect(screen.getByText('Total')).toBeTruthy();
+    expect(screen.getByText('Pending')).toBeTruthy();
   });
 
   it('can toggle reminder completion', () => {
-    const mockOnUpdate = jest.fn();
+    const mockOnUpdate = vi.fn();
     
     render(
       <TasksView
@@ -86,8 +85,8 @@ describe('TasksView', () => {
     const filterSelect = screen.getByRole('combobox');
     fireEvent.click(filterSelect);
     
-    expect(screen.getByText('All (1)')).toBeInTheDocument();
-    expect(screen.getByText('Pending (1)')).toBeInTheDocument();
+    expect(screen.getByText('All (1)')).toBeTruthy();
+    expect(screen.getByText('Pending (1)')).toBeTruthy();
   });
 
   it('can search reminders', () => {
@@ -101,7 +100,7 @@ describe('TasksView', () => {
     const searchInput = screen.getByPlaceholderText('Search reminders...');
     fireEvent.change(searchInput, { target: { value: 'test' } });
     
-    expect(screen.getByText('Test reminder')).toBeInTheDocument();
+    expect(screen.getByText('Test reminder')).toBeTruthy();
   });
 
   it('shows empty state when no reminders', () => {
@@ -112,7 +111,7 @@ describe('TasksView', () => {
       />
     );
     
-    expect(screen.getByText('No reminders yet')).toBeInTheDocument();
-    expect(screen.getByText('Create your first reminder to get started')).toBeInTheDocument();
+    expect(screen.getByText('No reminders yet')).toBeTruthy();
+    expect(screen.getByText('Create your first reminder to get started')).toBeTruthy();
   });
 });

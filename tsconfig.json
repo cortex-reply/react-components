@@ -14,6 +14,6 @@
       "@/common-types" : ["./src/common-types"],
     }
   },
-  "include": [".", "src/components/.archive/ai-assistants.ts", "src/components/.archive/ai-chat-interface-capabilities.stories.tsx", "src/components/.archive/ai-chat-interface.stories.tsx", "src/components/.archive/ai-chat-interface.tsx", "src/components/.archive/ai-chat.stories.tsx", "src/components/.archive/ai-chat.tsx", "src/components/.archive/app-card.stories.tsx", "src/components/.archive/app-card.tsx", "src/components/.archive/AssistantInterface.stories.tsx", "src/components/.archive/AssistantInterface.tsx", "src/components/.archive/ChatInterface.stories.tsx", "src/components/.archive/ChatInterface.tsx", "src/components/.archive/document-sidebar.tsx", "src/components/.archive/documents.ts", "src/components/.archive/DocumentationView.stories.tsx", "src/components/.archive/DocumentationView.tsx"],
-  "exclude": ["dist", "build", "node_modules", "**/*.mdx", "**/*.stories.*", "src/components/.archive/*"]
+  "include": [".", ".archive/ai-assistants.ts", ".archive/ai-chat-interface-capabilities.stories.tsx", ".archive/ai-chat-interface.stories.tsx", ".archive/ai-chat-interface.tsx", ".archive/ai-chat.stories.tsx", ".archive/ai-chat.tsx", ".archive/app-card.stories.tsx", ".archive/app-card.tsx", ".archive/AssistantInterface.stories.tsx", ".archive/AssistantInterface.tsx", ".archive/ChatInterface.stories.tsx", ".archive/ChatInterface.tsx", ".archive/document-sidebar.tsx", ".archive/documents.ts", ".archive/DocumentationView.stories.tsx", ".archive/DocumentationView.tsx", ".archive/DigitalColleagues"],
+  "exclude": ["dist", "build", "node_modules", "**/*.mdx", "**/*.stories.*", ".archive/*"]
 }

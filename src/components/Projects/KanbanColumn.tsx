@@ -2,7 +2,7 @@
 import React from 'react';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Task } from '../DigitalColleagues/types';
+import { Task } from '../Foundry/types';
 
 interface KanbanColumnProps {
   title: string;

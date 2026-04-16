@@ -5,15 +5,15 @@
  * Add this case to the renderTabContent switch statement in dashboardpage.tsx
  */
 
-import TeamsIndexView from '../DigitalColleagues/Views/TeamsIndexView'
-import { mockTeamSummary } from '../DigitalColleagues/test-data'
+import TeamsIndexView from '../Foundry/Views/TeamsIndexView'
+import { mockTeamSummary } from '../Foundry/test-data'
 
 // This is the complete teams case for the dashboard
 export const teamsCase = () => {
   return (
     <TeamsIndexView
       teams={mockTeamSummary}
-      onCreateTeam={() => {
+      onCreateTeam={async () => {
         console.log('Create new team')
         // Future: Open team creation dialog
       }}

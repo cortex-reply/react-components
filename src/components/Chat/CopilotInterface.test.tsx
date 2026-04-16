@@ -12,9 +12,9 @@ vi.mock('framer-motion', () => ({
   AnimatePresence: ({ children }: any) => <div>{children}</div>,
 }))
 
-// Mock the DigitalColleageusLayout component to simplify testing
-vi.mock('../DigitalColleagues/DigitalColleageusLayout', () => ({
-  DigitalColleageusLayout: ({ children, title, ...props }: any) => (
+// Mock the FoundryLayout component to simplify testing
+vi.mock('../Foundry/foundary-layout', () => ({
+  FoundryLayout: ({ children, title, ...props }: any) => (
     <div data-testid="digital-colleagues-layout" data-title={title} {...props}>
       {children}
     </div>
@@ -30,9 +30,9 @@ vi.mock('./chat-session-sidebar', () => ({
   ),
 }))
 
-// Mock the AIChatInterface component
-vi.mock('../.archive/ai-chat-interface', () => ({
-  AIChatInterface: ({ messages, capabilities, businessUnit }: any) => (
+// Mock the ChatInterface component
+vi.mock('./ChatInterface', () => ({
+  ChatInterface: ({ messages, capabilities, businessUnit }: any) => (
     <div data-testid="ai-chat-interface">
       <div data-testid="messages-count">Messages: {messages?.length || 0}</div>
       <div data-testid="capabilities-count">Capabilities: {capabilities?.length || 0}</div>
@@ -41,6 +41,12 @@ vi.mock('../.archive/ai-chat-interface', () => ({
   ),
 }))
 
+const defaultProps = {
+  onNewChat: vi.fn(),
+  onSessionSelect: vi.fn(),
+  onSessionDelete: vi.fn(),
+}
+
 describe('CopilotInterface', () => {
   beforeEach(() => {
     vi.clearAllMocks()
@@ -48,7 +54,7 @@ describe('CopilotInterface', () => {
 
   describe('when app props are undefined', () => {
     it('renders with default values when no props are provided', () => {
-      render(<CopilotInterface />)
+      render(<CopilotInterface {...defaultProps} />)
       
       // Should render the main layout
       expect(screen.getByTestId('digital-colleagues-layout')).toBeTruthy()
@@ -63,7 +69,7 @@ describe('CopilotInterface', () => {
     })
 
     it('uses default values for all optional props when undefined', () => {
-      render(<CopilotInterface />)
+      render(<CopilotInterface {...defaultProps} />)
       
       // Check that chat session sidebar shows 0 sessions (default)
       expect(screen.getByText('Sessions: 0')).toBeTruthy()
@@ -74,37 +80,37 @@ describe('CopilotInterface', () => {
     })
 
     it('handles undefined initialTeam prop with default value', () => {
-      render(<CopilotInterface initialTeam={undefined} />)
+      render(<CopilotInterface {...defaultProps} initialTeam={undefined} />)
       
       // Should still render without errors
       expect(screen.getByTestId('digital-colleagues-layout')).toBeTruthy()
       expect(screen.getByTestId('ai-chat-interface')).toBeTruthy()
     })
 
-    it('handles undefined initialMessages prop', () => {
-      render(<CopilotInterface initialMessages={undefined} />)
+    it('handles undefined messages prop', () => {
+      render(<CopilotInterface {...defaultProps} messages={undefined} />)
       
       // Should render with default messages
       const messagesCount = screen.getByTestId('messages-count')
       expect(messagesCount.textContent).toContain('Messages: 1') // Default welcome message
     })
 
-    it('handles undefined initialSessions prop', () => {
-      render(<CopilotInterface initialSessions={undefined} />)
+    it('handles undefined sessions prop', () => {
+      render(<CopilotInterface {...defaultProps} sessions={undefined} />)
       
       // Should render chat session sidebar with no sessions
       expect(screen.getByText('Sessions: 0')).toBeTruthy()
     })
 
     it('handles undefined showCapabilities prop with default value', () => {
-      render(<CopilotInterface showCapabilities={undefined} />)
+      render(<CopilotInterface {...defaultProps} showCapabilities={undefined} />)
       
       // Should still render the AI chat interface
       expect(screen.getByTestId('ai-chat-interface')).toBeTruthy()
     })
 
     it('handles undefined title prop with default value', () => {
-      render(<CopilotInterface title={undefined} />)
+      render(<CopilotInterface {...defaultProps} title={undefined} />)
       
       // Should use default title
       const layoutElement = screen.getByTestId('digital-colleagues-layout')
@@ -112,7 +118,7 @@ describe('CopilotInterface', () => {
     })
 
     it('handles undefined businessUnits prop with default value', () => {
-      render(<CopilotInterface businessUnits={undefined} />)
+      render(<CopilotInterface {...defaultProps} businessUnits={undefined} />)
       
       // Should still render without errors
       expect(screen.getByTestId('digital-colleagues-layout')).toBeTruthy()
@@ -120,28 +126,28 @@ describe('CopilotInterface', () => {
     })
 
     it('handles undefined enableFileUpload prop with default value', () => {
-      render(<CopilotInterface enableFileUpload={undefined} />)
+      render(<CopilotInterface {...defaultProps} enableFileUpload={undefined} />)
       
       // Should still render without errors
       expect(screen.getByTestId('ai-chat-interface')).toBeTruthy()
     })
 
     it('handles undefined maxFileSize prop with default value', () => {
-      render(<CopilotInterface maxFileSize={undefined} />)
+      render(<CopilotInterface {...defaultProps} maxFileSize={undefined} />)
       
       // Should still render without errors
       expect(screen.getByTestId('ai-chat-interface')).toBeTruthy()
     })
 
     it('handles undefined allowedFileTypes prop with default value', () => {
-      render(<CopilotInterface allowedFileTypes={undefined} />)
+      render(<CopilotInterface {...defaultProps} allowedFileTypes={undefined} />)
       
       // Should still render without errors
       expect(screen.getByTestId('ai-chat-interface')).toBeTruthy()
     })
 
     it('handles completely empty props object', () => {
-      render(<CopilotInterface {...{}} />)
+      render(<CopilotInterface {...defaultProps} />)
       
       // Should render with all default values
       expect(screen.getByTestId('digital-colleagues-layout')).toBeTruthy()

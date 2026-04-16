@@ -6,7 +6,7 @@ import { Card } from "@/components/ui/card"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
 import { cn } from "@/lib/utils"
-import type { BusinessUnit } from "../DigitalColleagues/types"
+import type { BusinessUnit } from "../Foundry/types"
 
 export interface ChatSession {
   id: string

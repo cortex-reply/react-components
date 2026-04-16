@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { render, screen, fireEvent } from '@testing-library/react'
 import { TeamCard } from './team-card'
-import { mockTeamSummary } from '../DigitalColleagues/test-data'
+import { mockTeamSummary } from '../Foundry/test-data'
 
 describe('TeamCard', () => {
   const mockOnOpen = vi.fn()

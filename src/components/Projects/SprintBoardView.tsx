@@ -3,6 +3,8 @@ import React, { useEffect, useState, useRef } from 'react'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
+import { Input } from '@/components/ui/input'
+import { Textarea } from '@/components/ui/textarea'
 import { TaskCard } from './TaskCard'
 import { AddTaskModal } from './AddTaskModal'
 import { TaskDetailsModal } from './TaskDetailsModal'
@@ -13,9 +15,10 @@ import { DashboardHero } from '../Heros/DashboardHero'
 import { Project, Epic, Sprint, Task, DigitalColleague, User, Colleague } from '../Foundry/types'
 import { extractId } from '@/lib/utils/extract-id'
 import { useLocalStorage } from '@/hooks/use-local-storage'
-import { Calendar, Plus, X } from 'lucide-react'
+import { Calendar, Check, Edit2, Plus, Trash2, X } from 'lucide-react'
 
 export interface SprintBoardViewProps {
+  projectId?: string | number
   initialTasks?: Task[]
   initialEpics?: Epic[]
   initialSprints?: Sprint[]
@@ -31,6 +34,8 @@ export interface SprintBoardViewProps {
   onAddEpic?: (newEpic: Omit<Epic, 'id' | 'updatedAt' | 'createdAt'>) => void
   // Sprint handlers
   onAddSprint?: (sprint: Omit<Sprint, 'id'>) => void
+  onUpdateSprint?: (sprintId: string, updates: Partial<Sprint>) => void
+  onDeleteSprint?: (sprintId: string) => void
   onAddComment?: ({ content, taskId }: { taskId: string; content: string }) => void
   onUploadFile?: (taskId: string, file: FormData) => Promise<void>
   onDeleteFile?: (taskId: string, fileId: string) => Promise<void>
@@ -38,6 +43,7 @@ export interface SprintBoardViewProps {
 }
 
 export const SprintBoardView: React.FC<SprintBoardViewProps> = ({
+  projectId,
   initialTasks = [],
   initialEpics = [],
   initialSprints = [],
@@ -53,6 +59,8 @@ export const SprintBoardView: React.FC<SprintBoardViewProps> = ({
   onAddEpic,
   // Sprint handlers
   onAddSprint,
+  onUpdateSprint,
+  onDeleteSprint,
   onAddComment,
   onUploadFile,
   onDeleteFile,
@@ -64,9 +72,16 @@ export const SprintBoardView: React.FC<SprintBoardViewProps> = ({
   const [colleagues, setColleagues] = useState<Colleague[]>([])
   const [users, setUsers] = useState<User[]>([])
   const [selectedSprintIds, setSelectedSprintIds] = useLocalStorage<string[]>(
-    'sprintBoardView_selectedSprints',
+    `sprintBoardView_selectedSprints${projectId ? `_${projectId}` : ''}`,
     [],
   )
+  const [editingSprintId, setEditingSprintId] = useState<string | null>(null)
+  const [sprintEditForm, setSprintEditForm] = useState({
+    name: '',
+    description: '',
+    startDate: '',
+    endDate: '',
+  })
   const [isAddTaskModalOpen, setIsAddTaskModalOpen] = useState(false)
   const [isAddEpicModalOpen, setIsAddEpicModalOpen] = useState(false)
   const [isAddSprintModalOpen, setIsAddSprintModalOpen] = useState(false)
@@ -131,6 +146,9 @@ export const SprintBoardView: React.FC<SprintBoardViewProps> = ({
     const next = getHash(initialSprints)
     if (next !== prevSprintHash.current) {
       setSprints(initialSprints)
+      // Clean up stale IDs that no longer correspond to existing sprints
+      const validIds = new Set(initialSprints.map((s) => s.id.toString()))
+      setSelectedSprintIds(selectedSprintIds.filter((id) => validIds.has(id)))
       prevSprintHash.current = next
     }
   }, [initialSprints])
@@ -304,6 +322,38 @@ export const SprintBoardView: React.FC<SprintBoardViewProps> = ({
     setIsAddSprintModalOpen(false)
   }
 
+  const handleSprintEditStart = (sprint: Sprint) => {
+    setEditingSprintId(sprint.id.toString())
+    setSprintEditForm({
+      name: sprint.name,
+      description: sprint.description || '',
+      startDate: sprint.startDate ? new Date(sprint.startDate).toISOString().split('T')[0] : '',
+      endDate: sprint.endDate ? new Date(sprint.endDate).toISOString().split('T')[0] : '',
+    })
+  }
+
+  const handleSprintEditSave = () => {
+    if (!editingSprintId) return
+    onUpdateSprint?.(editingSprintId, sprintEditForm)
+    setSprints((prev) =>
+      prev.map((s) =>
+        s.id.toString() === editingSprintId ? { ...s, ...sprintEditForm } : s,
+      ),
+    )
+    setEditingSprintId(null)
+  }
+
+  const handleSprintEditCancel = () => {
+    setEditingSprintId(null)
+    setSprintEditForm({ name: '', description: '', startDate: '', endDate: '' })
+  }
+
+  const handleDeleteSprint = (sprintId: string) => {
+    onDeleteSprint?.(sprintId)
+    setSprints((prev) => prev.filter((s) => s.id.toString() !== sprintId))
+    setSelectedSprintIds(selectedSprintIds.filter((id) => id !== sprintId))
+  }
+
   const handleTaskClick = (task: Task) => {
     setSelectedTask(task)
     onTaskClick?.(task)
@@ -461,54 +511,148 @@ export const SprintBoardView: React.FC<SprintBoardViewProps> = ({
                         return (
                           <div
                             key={sprint.id}
-                            className={`p-3 rounded-lg border cursor-pointer transition-all ${
+                            className={`p-3 rounded-lg border transition-all ${
                               isSelected
                                 ? 'bg-primary/10 border-primary/30 ring-1 ring-primary/20'
                                 : canSelect
-                                ? 'bg-card border-border hover:border-primary/50 hover:bg-muted/50'
+                                ? 'bg-card border-border'
                                 : 'bg-muted/30 border-border/30 opacity-60'
                             }`}
-                            onClick={() => {
-                              if (canSelect) {
-                                toggleSprintView(sprint.id.toString())
-                              } else if (isSelected) {
-                                toggleSprintView(sprint.id.toString())
-                              }
-                            }}
                           >
-                            <div className="flex items-start justify-between">
-                              <div className="flex-1 min-w-0">
-                                <p className="font-medium text-sm text-foreground truncate">
-                                  {sprint.name}
-                                </p>
-                                {sprint.description && (
-                                  <p className="text-xs text-muted-foreground line-clamp-2 mt-1">
-                                    {sprint.description}
-                                  </p>
-                                )}
-                                {sprint.startDate && sprint.endDate && (
-                                  <div className="flex items-center gap-1 mt-2 text-xs text-muted-foreground">
-                                    <Calendar className="h-3 w-3" />
-                                    <span>
-                                      {new Date(sprint.startDate).toLocaleDateString()} -{' '}
-                                      {new Date(sprint.endDate).toLocaleDateString()}
-                                    </span>
-                                  </div>
-                                )}
-                              </div>
-                              <div className="ml-2 flex items-center gap-2">
-                                <Badge variant="secondary" className="text-xs">
-                                  {taskCount}
-                                </Badge>
-                                <div
-                                  className={`h-4 w-4 rounded border-2 transition-all ${
-                                    isSelected
-                                      ? 'bg-primary border-primary'
-                                      : 'border-muted-foreground hover:border-foreground'
-                                  }`}
+                            {editingSprintId === sprint.id.toString() ? (
+                              <div className="space-y-3">
+                                <Input
+                                  value={sprintEditForm.name}
+                                  onChange={(e) =>
+                                    setSprintEditForm((prev) => ({ ...prev, name: e.target.value }))
+                                  }
+                                  className="text-sm"
+                                  placeholder="Sprint name"
                                 />
+                                <Textarea
+                                  value={sprintEditForm.description}
+                                  onChange={(e) =>
+                                    setSprintEditForm((prev) => ({
+                                      ...prev,
+                                      description: e.target.value,
+                                    }))
+                                  }
+                                  className="text-sm min-h-[60px]"
+                                  placeholder="Sprint description"
+                                />
+                                <div className="grid grid-cols-2 gap-2">
+                                  <div>
+                                    <label className="text-xs text-muted-foreground block mb-1">
+                                      Start Date
+                                    </label>
+                                    <Input
+                                      type="date"
+                                      value={sprintEditForm.startDate}
+                                      onChange={(e) =>
+                                        setSprintEditForm((prev) => ({
+                                          ...prev,
+                                          startDate: e.target.value,
+                                        }))
+                                      }
+                                      className="text-sm"
+                                    />
+                                  </div>
+                                  <div>
+                                    <label className="text-xs text-muted-foreground block mb-1">
+                                      End Date
+                                    </label>
+                                    <Input
+                                      type="date"
+                                      value={sprintEditForm.endDate}
+                                      onChange={(e) =>
+                                        setSprintEditForm((prev) => ({
+                                          ...prev,
+                                          endDate: e.target.value,
+                                        }))
+                                      }
+                                      className="text-sm"
+                                    />
+                                  </div>
+                                </div>
+                                <div className="flex gap-2">
+                                  <Button
+                                    size="sm"
+                                    onClick={handleSprintEditSave}
+                                    className="flex-1"
+                                  >
+                                    <Check className="h-3 w-3 mr-1" />
+                                    Save
+                                  </Button>
+                                  <Button
+                                    size="sm"
+                                    variant="outline"
+                                    onClick={handleSprintEditCancel}
+                                    className="flex-1"
+                                  >
+                                    <X className="h-3 w-3 mr-1" />
+                                    Cancel
+                                  </Button>
+                                </div>
                               </div>
-                            </div>
+                            ) : (
+                              <div>
+                                <div className="flex items-start justify-between">
+                                  <div className="flex-1 min-w-0">
+                                    <p className="font-medium text-sm text-foreground truncate">
+                                      {sprint.name}
+                                    </p>
+                                    {sprint.description && (
+                                      <p className="text-xs text-muted-foreground line-clamp-2 mt-1">
+                                        {sprint.description}
+                                      </p>
+                                    )}
+                                    {sprint.startDate && sprint.endDate && (
+                                      <div className="flex items-center gap-1 mt-2 text-xs text-muted-foreground">
+                                        <Calendar className="h-3 w-3" />
+                                        <span>
+                                          {new Date(sprint.startDate).toLocaleDateString()} -{' '}
+                                          {new Date(sprint.endDate).toLocaleDateString()}
+                                        </span>
+                                      </div>
+                                    )}
+                                  </div>
+                                  <div className="ml-2 flex items-center gap-1">
+                                    <Badge variant="secondary" className="text-xs">
+                                      {taskCount}
+                                    </Badge>
+                                    <Button
+                                      size="sm"
+                                      variant="ghost"
+                                      onClick={() => handleSprintEditStart(sprint)}
+                                      className="h-6 w-6 p-0"
+                                    >
+                                      <Edit2 className="h-3 w-3" />
+                                    </Button>
+                                    <Button
+                                      size="sm"
+                                      variant="ghost"
+                                      onClick={() => handleDeleteSprint(sprint.id.toString())}
+                                      className="h-6 w-6 p-0 text-destructive hover:text-destructive"
+                                    >
+                                      <Trash2 className="h-3 w-3" />
+                                    </Button>
+                                  </div>
+                                </div>
+                                <Button
+                                  variant={isSelected ? 'default' : 'outline'}
+                                  size="sm"
+                                  className="w-full mt-2 text-xs h-7"
+                                  onClick={() => toggleSprintView(sprint.id.toString())}
+                                  disabled={!isSelected && selectedSprintIds.length >= 3}
+                                >
+                                  {isSelected
+                                    ? 'Deselect'
+                                    : selectedSprintIds.length >= 3
+                                    ? 'Limit reached'
+                                    : 'Select'}
+                                </Button>
+                              </div>
+                            )}
                           </div>
                         )
                       })

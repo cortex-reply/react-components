@@ -1,6 +1,6 @@
 
 import { useState } from "react"
-import { DashboardHero } from "../../Heros/DashboardHero/DashboardHero"
+import { DashboardHero } from "../../../Heros/DashboardHero/DashboardHero"
 import type { KnowledgeDocument, KnowledgeContext } from "../types"
 import { KnowledgeBrowser } from "../knowledge-browser"
 

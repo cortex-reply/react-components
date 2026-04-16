@@ -4,10 +4,10 @@ import type React from "react"
 
 import { useState } from "react"
 import { cn } from "@/lib/utils"
-import { AppSidebar } from "../AdvancedComponents/AppSidebar"
-import { AppHeader } from "../AdvancedComponents/app-header"
+import { AppSidebar } from "../../src/components/AdvancedComponents/AppSidebar"
+import { AppHeader } from "../../src/components/AdvancedComponents/app-header"
 import type { SidebarItem, BusinessUnit } from "./types"
-import type { Notification } from "../AdvancedComponents/notifications-panel"
+import type { Notification } from "../../src/components/AdvancedComponents/notifications-panel"
 import { User } from "lucide-react"
 
 interface DigitalColleageusLayoutProps {

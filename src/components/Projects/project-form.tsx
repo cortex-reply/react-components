@@ -7,7 +7,7 @@ import { Textarea } from '@/components/ui/textarea'
 import { Checkbox } from '@/components/ui/checkbox'
 import { Label } from '@/components/ui/label'
 
-import { ProjectCreationData } from '../DigitalColleagues/types'
+import { ProjectCreationData } from '../Foundry/types'
 import { Loader2, Plus, X } from 'lucide-react'
 
 interface ProjectFormProps {

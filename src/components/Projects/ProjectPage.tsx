@@ -2,9 +2,9 @@
 
 import { useState } from 'react'
 import { motion, AnimatePresence } from 'motion/react'
-import { DigitalColleageusLayout } from '../DigitalColleagues/DigitalColleageusLayout'
-import { type BusinessUnit } from '../DigitalColleagues/types'
-import { mockSidebarItems, mockNotifications } from '../DigitalColleagues/test-data'
+import { FoundryLayout } from '../Foundry/foundary-layout'
+import { type BusinessUnit } from '../Foundry/types'
+import { mockSidebarItems, mockNotifications } from '../Foundry/test-data'
 
 import type { App, RecentFile, Epic, Sprint, Project, Task } from '../Foundry/types'
 // import type { Epic, Sprint, Project, Task } from '@/components/Projects/ProjectView'
@@ -52,7 +52,7 @@ interface HomeProps {
   onUpdateProject?: (projectId: string, updates: Partial<Project>) => void
   onDeleteProject?: (projectId: string) => void
   // View handlers
-  onViewChange?: (view: 'kanban' | 'planning' | 'tasks' | 'files' | 'epics') => void
+  onViewChange?: (view: 'kanban' | 'planning' | 'tasks' | 'files' | 'epics' | 'gantt') => void
   mobileMenuOpen?: boolean
   onToggleMobileMenu?: () => void
   // Team handlers
@@ -171,7 +171,7 @@ export default function ProjectPage({
   }
 
   return (
-    <DigitalColleageusLayout
+    <FoundryLayout
       sidebarItems={mockSidebarItems}
       title={title}
       notifications={mockNotifications}
@@ -193,6 +193,6 @@ export default function ProjectPage({
           {renderTabContent()}
         </motion.div>
       </AnimatePresence>
-    </DigitalColleageusLayout>
+    </FoundryLayout>
   )
 }

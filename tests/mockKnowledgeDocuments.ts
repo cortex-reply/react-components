@@ -1,4 +1,4 @@
-import type { KnowledgeDocument } from '../src/components/DigitalColleagues/types'
+import type { KnowledgeDocument } from '../.archive/DigitalColleagues/types'
 
 // Mock knowledge documents - in a real app, this would come from an API
 export const mockKnowledgeDocuments: KnowledgeDocument[] = [

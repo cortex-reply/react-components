@@ -12,7 +12,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { cn } from "@/lib/utils"
-import { type BusinessUnit } from "../DigitalColleagues/types"
+import { type BusinessUnit } from "../Foundry/types"
 
 interface BusinessUnitSwitcherProps {
   currentUnit: BusinessUnit

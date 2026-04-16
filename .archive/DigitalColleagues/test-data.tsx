@@ -1,28 +1,302 @@
-import type {
-  Project,
-  Epic,
-  Sprint,
-  Task,
+import { Project, Epic, Sprint, Task } from './types'
+import {
   ProjectSummary,
   TeamSummary,
   Colleague,
-  KnowledgeDocument,
-} from '../Foundry/types'
+  BusinessUnit,
+  Reminder,
+  RecentFile,
+  DigitalColleague,
+  SidebarItem,
+  Notification,
+} from './types'
+import {
+  Home,
+  Layers,
+  Bot,
+  Building2,
+  Code,
+  Palette,
+  TrendingUp,
+  Users,
+  Wrench,
+  DollarSign,
+  Scale,
+  Package,
+  Zap,
+  FileText,
+  FileImage,
+  FileVideo,
+  Music,
+  File,
+} from 'lucide-react'
 
 // Helper function to convert strings to KnowledgeDocument objects
-const createKnowledgeDocument = (
-  title: string,
-): KnowledgeDocument => ({
+const createKnowledgeDocument = (title: string): import('./types').KnowledgeDocument => ({
   id: Math.random().toString(36).substr(2, 9),
   title,
   format: 'markdown' as const,
   createdAt: new Date(),
-} as unknown as KnowledgeDocument)
+})
+
+export const mockSidebarItems: SidebarItem[] = [
+  {
+    id: 'home',
+    title: 'Home',
+    icon: <Home />,
+    isActive: true,
+  },
+  // {
+  //   title: "Apps",
+  //   icon: <Grid />,
+  //   badge: "2",
+  //   items: [
+  //     { title: "All Apps", url: "#" },
+  //     { title: "Recent", url: "#" },
+  //     { title: "Updates", url: "#", badge: "2" },
+  //     { title: "Installed", url: "#" },
+  //   ],
+  // },
+  // {
+  //   title: "Files",
+  //   icon: <FileText />,
+  //   items: [
+  //     { title: "Recent", url: "#" },
+  //     { title: "Shared with me", url: "#", badge: "3" },
+  //     { title: "Favorites", url: "#" },
+  //     { title: "Trash", url: "#" },
+  //   ],
+  // },
+  {
+    id: 'teams',
+    title: 'Teams',
+    icon: <Users />,
+    maxItems: 2,
+    items: [
+      { id: 'design', title: 'Design', url: '#' },
+      { id: 'marketing', title: 'Marketing', url: '#' },
+      { id: 'finance', title: 'Finance', url: '#' },
+      { id: 'engineering', title: 'Engineering', url: '#' },
+      { id: 'sales', title: 'Sales', url: '#' },
+    ],
+  },
+  {
+    id: 'projects',
+    title: 'Projects',
+    icon: <Layers />,
+    badge: '4',
+    maxItems: 2,
+    items: [
+      { id: 'active-projects', title: 'Active Projects', url: '#', badge: '4' },
+      { id: 'archived', title: 'Archived', url: '#' },
+      { id: 'templates', title: 'Templates', url: '#' },
+      { id: 'drafts', title: 'Drafts', url: '#' },
+      { id: 'shared', title: 'Shared with Me', url: '#', badge: '2' },
+    ],
+  },
+  {
+    id: 'copilot',
+    title: 'Copilot',
+    icon: <Bot />,
+    url: '/copilot',
+  },
+
+  // {
+  //   title: "Learn",
+  //   icon: <BookOpen />,
+  //   items: [
+  //     { title: "Tutorials", url: "#" },
+  //     { title: "Courses", url: "#" },
+  //     { title: "Webinars", url: "#" },
+  //     { title: "Resources", url: "#" },
+  //   ],
+  // },
+  // {
+  //   title: "Community",
+  //   icon: <Users />,
+  //   items: [
+  //     { title: "Explore", url: "#" },
+  //     { title: "Following", url: "#" },
+  //     { title: "Challenges", url: "#" },
+  //     { title: "Events", url: "#" },
+  //   ],
+  // },
+  // {
+  //   title: "Resources",
+  //   icon: <Bookmark />,
+  //   items: [
+  //     { title: "Stock Photos", url: "#" },
+  //     { title: "Fonts", url: "#" },
+  //     { title: "Icons", url: "#" },
+  //     { title: "Templates", url: "#" },
+  //   ],
+  // },
+  {
+    id: 'knowledge',
+    title: 'Knowledge',
+    icon: <FileText />,
+    url: '/knowledge',
+  },
+]
+
+export const mockNotifications: Notification[] = [
+  {
+    id: '1',
+    title: 'New comment on your post',
+    description: "Alex Morgan commented on your 'Minimalist Logo Design' post.",
+    time: 'Just now',
+    read: false,
+    type: 'info',
+    actionLabel: 'View comment',
+    onAction: () => console.log('View comment clicked'),
+  },
+  {
+    id: '2',
+    title: 'Project deadline approaching',
+    description: "The 'Website Redesign' project is due in 2 days.",
+    time: '5 minutes ago',
+    read: false,
+    type: 'warning',
+    actionLabel: 'View project',
+    onAction: () => console.log('View project clicked'),
+  },
+  {
+    id: '3',
+    title: 'File shared with you',
+    description: "Emma Thompson shared 'Brand Guidelines.pdf' with you.",
+    time: '1 hour ago',
+    read: false,
+    type: 'info',
+    actionLabel: 'Open file',
+    onAction: () => console.log('Open file clicked'),
+  },
+  {
+    id: '4',
+    title: 'Update successful',
+    description: 'PixelMaster has been updated to version 2.4.0.',
+    time: '3 hours ago',
+    read: true,
+    type: 'success',
+    actionLabel: "See what's new",
+    onAction: () => console.log("See what's new clicked"),
+  },
+  {
+    id: '5',
+    title: 'Storage limit reached',
+    description: "You've used 95% of your storage. Consider upgrading your plan.",
+    time: 'Yesterday',
+    read: true,
+    type: 'error',
+    actionLabel: 'Upgrade plan',
+    onAction: () => console.log('Upgrade plan clicked'),
+  },
+  {
+    id: '6',
+    title: 'Weekly summary',
+    description: 'Check out your activity summary for the past week.',
+    time: '2 days ago',
+    read: true,
+    type: 'info',
+    actionLabel: 'View summary',
+    onAction: () => console.log('View summary clicked'),
+  },
+  {
+    id: '7',
+    title: 'New tutorial available',
+    description: "A new tutorial on 'Advanced Animation Techniques' is now available.",
+    time: '3 days ago',
+    read: true,
+    type: 'info',
+    actionLabel: 'Start learning',
+    onAction: () => console.log('Start learning clicked'),
+  },
+]
+
+export const businessUnits: BusinessUnit[] = [
+  {
+    id: 'design',
+    name: 'Design',
+    description: 'Creative and visual design team',
+    icon: <Palette className="h-4 w-4" />,
+    color: 'bg-purple-600',
+    accentColor: 'text-purple-600',
+  },
+  {
+    id: 'engineering',
+    name: 'Engineering',
+    description: 'Software development and technical teams',
+    icon: <Code className="h-4 w-4" />,
+    color: 'bg-blue-600',
+    accentColor: 'text-blue-600',
+  },
+  {
+    id: 'marketing',
+    name: 'Marketing',
+    description: 'Brand, campaigns, and growth marketing',
+    icon: <TrendingUp className="h-4 w-4" />,
+    color: 'bg-pink-600',
+    accentColor: 'text-pink-600',
+  },
+  {
+    id: 'sales',
+    name: 'Sales',
+    description: 'Revenue generation and customer acquisition',
+    icon: <DollarSign className="h-4 w-4" />,
+    color: 'bg-green-600',
+    accentColor: 'text-green-600',
+  },
+  {
+    id: 'hr',
+    name: 'Human Resources',
+    description: 'People operations and talent management',
+    icon: <Users className="h-4 w-4" />,
+    color: 'bg-orange-600',
+    accentColor: 'text-orange-600',
+  },
+  {
+    id: 'operations',
+    name: 'Operations',
+    description: 'Business operations and process optimization',
+    icon: <Wrench className="h-4 w-4" />,
+    color: 'bg-indigo-600',
+    accentColor: 'text-indigo-600',
+  },
+  {
+    id: 'legal',
+    name: 'Legal',
+    description: 'Legal affairs and compliance',
+    icon: <Scale className="h-4 w-4" />,
+    color: 'bg-slate-600',
+    accentColor: 'text-slate-600',
+  },
+  {
+    id: 'product',
+    name: 'Product',
+    description: 'Product strategy and management',
+    icon: <Package className="h-4 w-4" />,
+    color: 'bg-violet-600',
+    accentColor: 'text-violet-600',
+  },
+  {
+    id: 'it',
+    name: 'IT Support',
+    description: 'Information technology and infrastructure',
+    icon: <Zap className="h-4 w-4" />,
+    color: 'bg-cyan-600',
+    accentColor: 'text-cyan-600',
+  },
+  {
+    id: 'company',
+    name: 'Company',
+    description: 'Company-wide resources and information',
+    icon: <Building2 className="h-4 w-4" />,
+    color: 'bg-gray-600',
+    accentColor: 'text-gray-600',
+  },
+]
 
 // Mock data for testing and stories
-// Note: Test data uses simplified shapes (string IDs, Date objects) rather than
-// the full Payload-generated types. Type assertions are used to bridge the gap.
-export const mockProjects = [
+export const mockProjects: Project[] = [
   {
     id: '1',
     name: 'E-commerce Platform',
@@ -60,7 +334,7 @@ export const mockProjectSummary: ProjectSummary[] = [
     progress: 60,
     dueDate: 'July 30, 2025',
     members: 6,
-    files: 0,
+    files: 42,
   },
   {
     id: 3,
@@ -135,7 +409,7 @@ export const mockTeamSummary: TeamSummary[] = [
   },
 ]
 
-export const mockEpics = [
+export const mockEpics: Epic[] = [
   {
     id: '1',
     name: 'User Authentication',
@@ -186,7 +460,7 @@ export const mockEpics = [
   },
 ]
 
-export const mockSprints = [
+export const mockSprints: Sprint[] = [
   {
     id: 'backlog',
     name: 'Backlog',
@@ -225,7 +499,7 @@ export const mockSprints = [
   },
 ]
 
-export const mockTasks = [
+export const mockTasks: Task[] = [
   {
     id: '1',
     name: 'Design login page',
@@ -319,7 +593,7 @@ export const mockTasks = [
 ]
 
 // Additional tasks for high density testing
-export const highDensityTasks = [
+export const highDensityTasks: Task[] = [
   ...mockTasks,
   {
     id: '8',
@@ -389,7 +663,7 @@ export const highDensityTasks = [
 ]
 
 // Additional projects for testing
-export const extendedProjects = [
+export const extendedProjects: Project[] = [
   ...mockProjects,
   {
     id: '4',
@@ -450,23 +724,23 @@ export const singleEpicData = {
 }
 
 // Utility functions for common data manipulations
-export const getTasksByStatus = (tasks: typeof mockTasks, status: string) => {
+export const getTasksByStatus = (tasks: Task[], status: Task['status']) => {
   return tasks.filter((task) => task.status === status)
 }
 
-export const getTasksByEpic = (tasks: typeof mockTasks, epicId: string) => {
+export const getTasksByEpic = (tasks: Task[], epicId: string) => {
   return tasks.filter((task) => task.epicId === epicId)
 }
 
-export const getTasksBySprint = (tasks: typeof mockTasks, sprintId: string) => {
+export const getTasksBySprint = (tasks: Task[], sprintId: string) => {
   return tasks.filter((task) => task.sprintId === sprintId)
 }
 
-export const getSelectedEpics = (epics: typeof mockEpics) => {
+export const getSelectedEpics = (epics: Epic[]) => {
   return epics.filter((epic) => epic.isSelected)
 }
 
-export const getActiveSprints = (sprints: typeof mockSprints) => {
+export const getActiveSprints = (sprints: Sprint[]) => {
   return sprints.filter((sprint) => sprint.isActive)
 }
 
@@ -504,7 +778,7 @@ export const testScenarios = {
   },
 }
 
-export const mockColleagues = [
+export const mockColleagues: Colleague[] = [
   {
     id: '1',
     type: 'human',
@@ -618,4 +892,198 @@ export const mockColleagues = [
     ],
     bio: 'User researcher dedicated to understanding user needs and improving product experiences.',
   },
+  {
+    id: '6',
+    type: 'digital',
+    name: 'DataAnalyzer Pro',
+    status: 'active',
+    joinedDate: new Date('2024-01-10'),
+    lastActive: new Date(),
+    jobDescription:
+      'Advanced AI assistant specializing in data analysis, reporting, and business intelligence.',
+    workInstructions:
+      'Analyze complex datasets, generate insightful reports, create data visualizations, and provide actionable business recommendations.',
+    capabilities: [
+      'Data Analysis',
+      'Report Generation',
+      'Data Visualization',
+      'Business Intelligence',
+      'Statistical Analysis',
+    ],
+    knowledge: ['Python', 'SQL', 'Tableau', 'Excel', 'R', 'Statistics'].map(
+      createKnowledgeDocument,
+    ),
+    coreKnowledge: ['Company data sources', 'KPI definitions', 'Reporting standards'].map(
+      createKnowledgeDocument,
+    ),
+    version: '3.1',
+    lastUpdated: new Date('2024-02-20'),
+    isActive: true,
+  },
+  {
+    id: '7',
+    type: 'digital',
+    name: 'ProjectManager AI',
+    status: 'active',
+    joinedDate: new Date('2024-01-05'),
+    lastActive: new Date(),
+    jobDescription:
+      'Intelligent project management assistant that helps coordinate tasks, track progress, and manage timelines.',
+    workInstructions:
+      'Coordinate project activities, track milestones, manage resource allocation, and provide project status updates.',
+    capabilities: [
+      'Project Planning',
+      'Task Coordination',
+      'Timeline Management',
+      'Resource Allocation',
+      'Progress Tracking',
+    ],
+    knowledge: ['Agile', 'Scrum', 'Gantt Charts', 'Risk Management', 'Stakeholder Management'].map(
+      createKnowledgeDocument,
+    ),
+    coreKnowledge: [
+      'Company project templates',
+      'Resource availability',
+      'Project methodologies',
+    ].map(createKnowledgeDocument),
+    version: '2.5',
+    lastUpdated: new Date('2024-02-15'),
+    isActive: true,
+  },
+  {
+    id: '8',
+    type: 'digital',
+    name: 'CustomerSupport Bot',
+    status: 'active',
+    joinedDate: new Date('2024-02-01'),
+    lastActive: new Date(),
+    jobDescription:
+      'AI-powered customer support assistant that handles inquiries, resolves issues, and escalates complex problems.',
+    workInstructions:
+      'Respond to customer inquiries, troubleshoot common issues, provide product information, and escalate complex cases to human agents.',
+    capabilities: [
+      'Customer Support',
+      'Issue Resolution',
+      'Product Knowledge',
+      'Escalation Management',
+      'Chat Support',
+    ],
+    knowledge: [
+      'Product Documentation',
+      'FAQ',
+      'Troubleshooting Guides',
+      'Customer Service Best Practices',
+    ].map(createKnowledgeDocument),
+    coreKnowledge: ['Product catalog', 'Support processes', 'Escalation procedures'].map(
+      createKnowledgeDocument,
+    ),
+    version: '1.8',
+    lastUpdated: new Date('2024-02-25'),
+    isActive: true,
+  },
 ]
+
+// Mock reminders for tasks view
+export const mockReminders: Reminder[] = [
+  {
+    id: '1',
+    title: 'Review quarterly report',
+    description: 'Go through Q4 performance metrics and prepare summary for the team meeting',
+    dueDate: new Date(2024, 2, 15),
+    dueTime: '14:30',
+    colleague: mockColleagues.find((c) => c.id === '2' && c.type === 'digital') as DigitalColleague,
+    isCompleted: false,
+    isRecurring: false,
+    priority: 'high',
+    reminderEnabled: true,
+    reminderMinutes: 30,
+    createdAt: new Date(2024, 2, 10),
+    tags: ['quarterly', 'review', 'urgent'],
+  },
+  {
+    id: '2',
+    title: 'Weekly team standup',
+    description: 'Join the weekly team synchronization meeting',
+    dueDate: new Date(2024, 2, 18),
+    dueTime: '10:00',
+    colleague: mockColleagues.find((c) => c.id === '4' && c.type === 'digital') as DigitalColleague,
+    isCompleted: false,
+    isRecurring: true,
+    recurrencePattern: 'weekly',
+    recurrenceInterval: 1,
+    priority: 'medium',
+    reminderEnabled: true,
+    reminderMinutes: 15,
+    createdAt: new Date(2024, 2, 11),
+    tags: ['meeting', 'standup', 'weekly'],
+  },
+  {
+    id: '3',
+    title: 'Deploy to production',
+    description: 'Deploy the latest version to production environment',
+    dueDate: new Date(),
+    dueTime: '16:00',
+    colleague: mockColleagues.find((c) => c.id === '2' && c.type === 'digital') as DigitalColleague,
+    isCompleted: false,
+    isRecurring: false,
+    priority: 'high',
+    reminderEnabled: true,
+    reminderMinutes: 60,
+    createdAt: new Date(),
+    tags: ['deploy', 'production', 'urgent'],
+  },
+]
+
+// Mock files for files view
+export const mockFiles: RecentFile[] = [
+  {
+    name: 'Project_Requirements.docx',
+    app: 'Word',
+    modified: '2 hours ago',
+    icon: <FileText className="h-5 w-5 text-blue-500" />,
+    shared: true,
+    size: '1.2 MB',
+    collaborators: 4,
+  },
+  {
+    name: 'Sprint_Planning_Notes.pdf',
+    app: 'PDF Reader',
+    modified: '1 day ago',
+    icon: <File className="h-5 w-5 text-red-500" />,
+    shared: false,
+    size: '245 KB',
+    collaborators: 0,
+  },
+  {
+    name: 'UI_Mockups.fig',
+    app: 'Figma',
+    modified: '3 days ago',
+    icon: <FileImage className="h-5 w-5 text-purple-500" />,
+    shared: true,
+    size: '5.7 MB',
+    collaborators: 6,
+  },
+  {
+    name: 'Demo_Video.mp4',
+    app: 'Video Player',
+    modified: '1 week ago',
+    icon: <FileVideo className="h-5 w-5 text-green-500" />,
+    shared: false,
+    size: '89 MB',
+    collaborators: 0,
+  },
+  {
+    name: 'Meeting_Recording.m4a',
+    app: 'Audio Player',
+    modified: '2 weeks ago',
+    icon: <Music className="h-5 w-5 text-orange-500" />,
+    shared: true,
+    size: '12 MB',
+    collaborators: 2,
+  },
+]
+
+// Filtered digital colleagues for components that specifically need DigitalColleague types
+export const mockDigitalColleagues: DigitalColleague[] = mockColleagues.filter(
+  (colleague): colleague is DigitalColleague => colleague.type === 'digital',
+)

@@ -1,5 +1,5 @@
 import type React from "react"
-import type { BusinessUnit } from "../DigitalColleagues/types"
+import type { BusinessUnit } from "../Foundry/types"
 
 export function getBusinessUnitById(businessUnits: BusinessUnit[], id: string): BusinessUnit | undefined {
   return businessUnits.find((unit) => unit.id === id)

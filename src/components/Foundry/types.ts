@@ -1200,3 +1200,32 @@ export interface ProjectFormData {
 export interface ProjectCreationData extends ProjectFormData {
   description?: string
 }
+
+export interface Tutorial {
+  title: string
+  description: string
+  duration: string
+  level: string
+  instructor: string
+  category: string
+  views: string
+}
+
+export interface CommunityPost {
+  title: string
+  author: string
+  likes: number
+  comments: number
+  image: string
+  time: string
+}
+
+export interface AIAssistantType {
+  id: string
+  name: string
+  description: string
+  avatarFallback: string
+  avatarUrl?: string
+  welcomeMessage: string
+  accentColor?: string
+}

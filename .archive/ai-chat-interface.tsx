@@ -11,10 +11,10 @@ import { Input } from "@/components/ui/input"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { cn } from "@/lib/utils"
 import type { BusinessUnit } from "../DigitalColleagues/types"
-import { CapabilityMenu } from "../Chat/capability-menu"
-import { getContextualActions } from "../../test-data/capabilities"
-import type { CapabilityContext, Capability, CapabilityAction } from "../../test-data/capabilities"
-import type { FileUpload } from "../Chat/types"
+import { CapabilityMenu } from "../src/components/Chat/capability-menu"
+import { getContextualActions } from "../src/test-data/capabilities"
+import type { CapabilityContext, Capability, CapabilityAction } from "../src/test-data/capabilities"
+import type { FileUpload } from "../src/components/Chat/types"
 
 // Legacy interface for backward compatibility
 export interface ChatMessage {

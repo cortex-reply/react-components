@@ -4,11 +4,11 @@ import { useState } from 'react'
 import { motion, AnimatePresence } from 'motion/react'
 import { Bot } from 'lucide-react'
 import { DigitalColleageusLayout } from '../DigitalColleageusLayout'
-import { DashboardHero } from '../../Heros/DashboardHero'
-import { AppCard } from '../../.archive/app-card'
-import { FileList } from '../../Projects/file-list'
-import { ProjectCard } from '../../Projects/project-card'
-import { mockApps, mockRecentFiles, mockTutorials } from '../../dc-temp/mock-data'
+import { DashboardHero } from '../../../Heros/DashboardHero'
+import { AppCard } from '../../app-card'
+import { FileList } from '../../../Projects/file-list'
+import { ProjectCard } from '../../../Projects/project-card'
+import { mockApps, mockRecentFiles, mockTutorials } from '../../../dc-temp/mock-data'
 import { mockSidebarItems, mockNotifications } from '../test-data'
 import { mockProjectSummary } from '../test-data'
 import type {
@@ -21,9 +21,9 @@ import type {
   Colleague,
   User,
 } from '../types'
-import type { File as FileType } from '../../Foundry/types'
+import type { File as FileType } from '../../../Foundry/types'
 // import { ColleaguesManagement } from "../colleagues-management"
-import ColleaguesView from './../Views/ColleaguesView'
+import ColleaguesView from '../Views/ColleaguesView'
 import KnowledgeView from '../Views/KnowledgeView'
 const AnimatedCircles = () => (
   <motion.div

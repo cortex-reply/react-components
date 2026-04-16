@@ -1,6 +1,8 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import { action } from '@storybook/addon-actions'
 import { ManagementSidebar } from './ManagementSidebar'
+import { GanttView } from '../Projects/GanttView'
+import { mockTasks, mockEpics, mockSprints } from './test-data'
 
 const meta: Meta<typeof ManagementSidebar> = {
   title: 'Foundry/ManagementSidebar',
@@ -11,7 +13,7 @@ const meta: Meta<typeof ManagementSidebar> = {
   argTypes: {
     currentView: {
       control: { type: 'select' },
-      options: ['kanban', 'planning', 'tasks', 'files', 'epics'],
+      options: ['kanban', 'planning', 'tasks', 'files', 'epics', 'gantt'],
     },
   },
 }
@@ -90,6 +92,22 @@ export const EpicsView: Story = {
           <p className="text-gray-600">This is where the epic planning would be displayed</p>
         </div>
       </div>
+    ),
+  },
+}
+
+export const Gantt: Story = {
+  args: {
+    currentView: 'gantt',
+    onViewChange: action('onViewChange'),
+    children: (
+      <GanttView
+        tasks={mockTasks as any}
+        epics={mockEpics as any}
+        sprints={mockSprints as any}
+        onUpdateEpic={action('onUpdateEpic')}
+        onTaskClick={action('onTaskClick')}
+      />
     ),
   },
 }

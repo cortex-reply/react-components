@@ -3,10 +3,15 @@ import React from 'react';
 import { Card } from '@/components/ui/card';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Badge } from '@/components/ui/badge';
-import { Epic } from '../DigitalColleagues/types';
+
+interface EpicFilterEpic {
+  id: string | number;
+  name: string;
+  color?: string;
+}
 
 interface EpicFilterProps {
-  epics: Epic[];
+  epics: EpicFilterEpic[];
   selectedEpics: string[];
   onSelectionChange: (selectedEpics: string[]) => void;
 }
@@ -28,7 +33,7 @@ export const EpicFilter: React.FC<EpicFilterProps> = ({
     if (selectedEpics.length === epics.length) {
       onSelectionChange([]);
     } else {
-      onSelectionChange(epics.map(epic => epic.id));
+      onSelectionChange(epics.map(epic => String(epic.id)));
     }
   };
 
@@ -47,16 +52,16 @@ export const EpicFilter: React.FC<EpicFilterProps> = ({
         
         <div className="space-y-2">
           {epics.map(epic => (
-            <div key={epic.id} className="flex items-center space-x-3">
+            <div key={String(epic.id)} className="flex items-center space-x-3">
               <Checkbox
-                id={epic.id}
-                checked={selectedEpics.includes(epic.id)}
-                onCheckedChange={() => handleEpicToggle(epic.id)}
+                id={String(epic.id)}
+                checked={selectedEpics.includes(String(epic.id))}
+                onCheckedChange={() => handleEpicToggle(String(epic.id))}
               />
               <div className="flex items-center gap-2 flex-1">
                 <div className={`w-3 h-3 rounded-full ${epic.color}`}></div>
                 <label
-                  htmlFor={epic.id}
+                  htmlFor={String(epic.id)}
                   className="text-sm font-medium text-gray-700 cursor-pointer flex-1"
                 >
                   {epic.name}
