@@ -473,7 +473,7 @@ export const SprintBoardView: React.FC<SprintBoardViewProps> = ({
 
             {/* Sliding Sprint Selector Panel */}
             <div
-              className={`fixed top-0 right-0 h-full w-80 bg-background border-l shadow-xl z-10 transition-all duration-300 ease-in-out ${
+              className={`fixed top-[var(--app-header-height)] right-0 h-[calc(100vh-4rem)] w-80 bg-background border-l shadow-xl z-10 transition-all duration-300 ease-in-out ${
                 isSprintSelectorOpen
                   ? 'translate-x-0 opacity-100 visible'
                   : 'translate-x-full opacity-0 invisible'
