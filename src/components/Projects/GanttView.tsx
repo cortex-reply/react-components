@@ -274,23 +274,7 @@ export const GanttView: React.FC<GanttViewProps> = ({
               )
             })}
 
-            {/* Sprint vertical lines */}
-            {realSprints.map((sprint) => {
-              const left = differenceInDays(new Date(sprint.startDate), timelineStart) * dayWidth
-              if (left < 0 || left > totalWidth) return null
-              const active = isSprintActive(sprint)
-              return (
-                <div
-                  key={`line-${sprint.id}`}
-                  className={`absolute inset-y-0 pointer-events-none ${
-                    active ? 'border-l border-primary/40' : 'border-l border-dashed border-border/60'
-                  }`}
-                  style={{ left }}
-                />
-              )
-            })}
-
-            {/* Today line */}
+{/* Today line */}
             {todayLeft >= 0 && todayLeft <= totalWidth && (
               <div
                 className="absolute inset-y-0 pointer-events-none z-10"
@@ -340,7 +324,7 @@ export const GanttView: React.FC<GanttViewProps> = ({
                     return (
                       <div
                         key={epic.id}
-                        className="absolute rounded overflow-hidden cursor-pointer hover:ring-2 hover:ring-white/40 transition-all"
+                        className="absolute rounded overflow-hidden cursor-pointer ring-1 ring-inset ring-foreground/30 hover:ring-2 hover:ring-white/40 transition-all"
                         style={{ left, width, height: 32, top: 8 }}
                         title={tooltip}
                       >
@@ -392,14 +376,16 @@ export const GanttView: React.FC<GanttViewProps> = ({
   const inner = (
     <div className={`flex flex-col ${isFullscreen ? 'h-screen' : 'h-full'} overflow-hidden`}>
       {/* Hero */}
-      <div ref={heroRef} className="flex-shrink-0">
-        <DashboardHero
-          title="Gantt Chart"
-          description="Epic timeline with sprint alignment and phase-based grouping."
-          gradient="bg-gradient-to-r from-indigo-600 via-blue-600 to-cyan-600"
-          badge={`${sortedKeys.length} epic${sortedKeys.length !== 1 ? 's' : ''}`}
-        />
-      </div>
+      {!isFullscreen && (
+        <div ref={heroRef} className="flex-shrink-0">
+          <DashboardHero
+            title="Gantt Chart"
+            description="Epic timeline with sprint alignment and phase-based grouping."
+            gradient="bg-gradient-to-r from-indigo-600 via-blue-600 to-cyan-600"
+            badge={`${sortedKeys.length} epic${sortedKeys.length !== 1 ? 's' : ''}`}
+          />
+        </div>
+      )}
 
       {/* Toolbar */}
       <div className="flex items-center gap-2 px-4 py-2 border-b bg-background flex-shrink-0">
